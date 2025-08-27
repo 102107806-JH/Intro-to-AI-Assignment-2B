@@ -1,18 +1,18 @@
 import math
 
 class Problem:
-    def __init__(self, graph, initial_state, goal_state, flowrate_prediction_model):  # Takes an extracted text file object  #
+    def __init__(self, graph, initial_state, goal_state, flowrate_prediction_model):
         self._graph = graph
         self._initial_state = initial_state
         self._goal_states = goal_state
-        self._flowrate_prediction_model = flowrate_prediction_model
+        self._flowrate_prediction_model = flowrate_prediction_model  # Model that will be used to predict the flow rate
 
     @property
     def initial_state(self):
         return self._initial_state
 
     def actions(self, state):  # Gives the actions that are available in current state #
-        destination_distance_pair_list = self._graph.get_edge_data(state)  # Gets a list of the destination cost pair
+        destination_distance_pair_list = self._graph.get_edge_data(state)  # Gets a list of the destinations distance pair
         # objects for the current state #
         actions_list = []  # We are only interested in the actions not the cost #
 
@@ -22,7 +22,7 @@ class Problem:
 
         actions_list.sort()  # Sort actions in ascending order #
 
-        return actions_list  # Returns a list of integers each representing a state that can be reached
+        return actions_list  # Returns a list of integers each representing a state (in this case the state is the scats number) that can be reached
         # from the current state #
 
     def result(self, state, action):  # Returns the result of performing an action on a state.
@@ -31,9 +31,9 @@ class Problem:
         # This can be directly returned because it is the next state #
 
     def action_cost(self, state, action, new_state):
-        distance = self._distance_between_states(state, action, new_state)
-        flowrate = self._flowrate_prediction_model.make_prediction()
-        time = self._time_between_nodes(distance, flowrate, 0)
+        distance = self._distance_between_states(state, action, new_state)  # Get the distance between states
+        flowrate = self._flowrate_prediction_model.make_prediction()  # Use the model to make a flow rate prediction #
+        time = self._time_between_nodes(distance, flowrate, intersection_pause_time=0)  # Use the calculated quantities to determine the time between nodes
         return time
 
     def _distance_between_states(self, state, action, new_state):
@@ -50,11 +50,15 @@ class Problem:
             raise Exception('Invalid action no resulting state!')  # There is no match this should never happen #
 
     def _time_between_nodes(self, distance, flowrate, intersection_pause_time):
-        alpha = -1.4648375
-        beta = 93.75
-        speed = (-1 * beta - math.sqrt(beta ** 2 + 4 * alpha * flowrate)) / (2 * alpha)
-        time = distance / speed + intersection_pause_time
+        alpha = -1.4648375  # Constants
+        beta = 93.75  # Constants
+        speed = (-1 * beta - math.sqrt(beta ** 2 + 4 * alpha * flowrate)) / (2 * alpha)  # Speed calculation
+
+        if speed > 60:  # Speed limit of 60 km/h if higher is possible then revert to 60
+            speed = 60
+
+        time = distance / speed + intersection_pause_time  # Calculation for the total amount of time
         return time
 
     def is_goal(self, state):
-        return state == self._goal_states  # Seeing if the state is in the goal states #
+        return state == self._goal_states  # Seeing if the state is the goal states #
