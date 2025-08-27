@@ -24,7 +24,7 @@ class AdjacencyListGraph:
     def scats_number_to_vertex(self, scats_number):
         vertex_idx = self._scats_to_idx_dict.get(scats_number, None)
         if vertex_idx is None:
-            raise Exception("The given scats number has no corresponding vertex in the graph")
+            raise Exception("The given scats number: " + scats_number + " has no corresponding vertex in the graph")
         else:
             return self._adjacency_list[vertex_idx]
 

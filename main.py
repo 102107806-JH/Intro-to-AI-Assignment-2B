@@ -1,9 +1,6 @@
-from data_structures.graph_classes.adjacency_list_graph import AdjacencyListGraph
+from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
 
 if __name__ == "__main__":
-    test_graph = AdjacencyListGraph()
-    test_graph.insert_vertex(4002, 123.2223, 34.31232)
-    test_graph.insert_vertex(4022, 123.2223, 34.31232)
-    test_graph.insert_vertex(5002, 123.2223, 34.31232)
-
-    print("Hello World")
+    testFileExtractor = GraphVertexEdgeInit(r"data/graph_init_data.xlsx")
+    test_graph = testFileExtractor.extract_file_contents()
+    print("fin")
