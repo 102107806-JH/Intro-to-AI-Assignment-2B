@@ -1,8 +1,11 @@
+import math
+
 class Problem:
-    def __init__(self, graph, initial_state, goal_state):  # Takes an extracted text file object  #
+    def __init__(self, graph, initial_state, goal_state, flowrate_prediction_model):  # Takes an extracted text file object  #
         self._graph = graph
         self._initial_state = initial_state
         self._goal_states = goal_state
+        self._flowrate_prediction_model = flowrate_prediction_model
 
     @property
     def initial_state(self):
@@ -28,17 +31,30 @@ class Problem:
         # This can be directly returned because it is the next state #
 
     def action_cost(self, state, action, new_state):
-        destination_cost_pair_list = self._graph.get_edge_data(state)  # Get all destinations and their costs
+        distance = self._distance_between_states(state, action, new_state)
+        flowrate = self._flowrate_prediction_model.make_prediction()
+        time = self._time_between_nodes(distance, flowrate, 0)
+        return time
+
+    def _distance_between_states(self, state, action, new_state):
+        destination_cost_pair_list = self._graph.get_edge_data(state)  # Get all destinations and their distances
         # associated with current state #
-        best_cost = float('inf')  # Could have multiple paths to the same destination from a given state #
+        best_distance = float('inf')  # Could have multiple paths to the same destination from a given state #
         for pair in destination_cost_pair_list:  # Go through all the pairs in the cost pair list #
             if pair.destination_scats_number == new_state:  # The destination and the new state match #
-                best_cost = min(best_cost, pair.distance)  # Get the best cost path to the destination #
+                best_distance = min(best_distance, pair.distance)  # Get the best cost path to the destination #
 
-        if best_cost != float('inf'):
-            return best_cost  # Return the best cost #
+        if best_distance != float('inf'):
+            return best_distance  # Return the best cost #
         else:
             raise Exception('Invalid action no resulting state!')  # There is no match this should never happen #
+
+    def _time_between_nodes(self, distance, flowrate, intersection_pause_time):
+        alpha = -1.4648375
+        beta = 93.75
+        speed = (-1 * beta - math.sqrt(beta ** 2 + 4 * alpha * flowrate)) / (2 * alpha)
+        time = distance / speed + intersection_pause_time
+        return time
 
     def is_goal(self, state):
         return state == self._goal_states  # Seeing if the state is in the goal states #
