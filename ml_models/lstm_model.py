@@ -47,24 +47,24 @@ def train_model(train_loader, min_val, max_val, hyperparameters):
         num_layers=hyperparameters['num_layers']
     )
     loss_function = nn.MSELoss()
+    optimizer_map = {
+        'Adam': optim.Adam,
+        'SGD': optim.SGD,
+        'RMSprop': optim.RMSprop,
+        'Adagrad': optim.Adagrad,
+        'Adadelta': optim.Adadelta,
+        'Adamax': optim.Adamax,
+        'NAdam': optim.NAdam,
+        'NAG': optim.SGD
+    }
 
     optimizer_name = hyperparameters.get('optimizer', 'Adam')
-    if optimizer_name == 'SGD':
-        optimizer = optim.SGD(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'NAG':
-        optimizer = optim.Adam(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'RMSprop':
-        optimizer = optim.RMSprop(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'Adagrad':
-        optimizer = optim.Adagrad(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'Adadelta':
-        optimizer = optim.Adadelta(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'Adamax':
-        optimizer = optim.Adamax(model.parameters(), lr=hyperparameters['learning_rate'])
-    elif optimizer_name == 'Nadam':
-        optimizer = optim.LBFGS
+    if optimizer_name in optimizer_map:
+        optimizer_class = optimizer_map[optimizer_name]  # Get the optimizer class from the map
+        # Instantiate the optimizer with the model parameters and learning rate
+        optimizer = optimizer_class(model.parameters(), lr=hyperparameters['learning_rate'])
     else:
-        raise ValueError('Invalid optimizer name')
+        raise ValueError(f"Invalid optimizer name {optimizer_name}.")
 
     for epoch in tqdm(range(hyperparameters['epochs']), desc="Training Epochs"):
         model.train()

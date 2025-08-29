@@ -21,7 +21,7 @@ if __name__ == "__main__":
         'learning_rate': [0.001, 0.0005, 0.0001],
         'hidden_size': [50, 100, 200, 400, 800],
         'num_layers': [1, 2, 3, 4, 8],
-        'optimizer': ['Adam', 'SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adamax', 'Nadam', 'NAG']
+        'optimizer': ['Adam', 'SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adamax', 'NAdam', 'NAG']
     }
 
     best_models = {}  # Dictionary to store the best model and its accuracy for each SCATS site
