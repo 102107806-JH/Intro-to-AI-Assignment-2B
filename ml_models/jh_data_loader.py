@@ -10,8 +10,9 @@ import pandas
 from datetime import datetime
 
 class TrafficFlowDataSet(Dataset):
-    def __init__(self, data_set_file_name, sequence_length):
+    def __init__(self, data_set_file_name, sequence_length, keep_date=False):
         self._sequence_length = sequence_length
+        self._keep_date = keep_date
 
         self._scats_site_to_one_hot = {}
         self._data_set_index_to_data_array_index = {}
@@ -75,9 +76,9 @@ class TrafficFlowDataSet(Dataset):
             end_datum = data_list[data_array_index + sequence_length - 1]  # -1 because i is included. Eg: say we have a sequence length of 3 [i, i + 1, i + 2]
 
 
-            start_date = start_datum[2]
-            end_date = end_datum[2]
-            if end_date > start_date:
+            start_date = start_datum[4]
+            end_date = end_datum[4]
+            if end_date >= start_date:
                 self._data_set_index_to_data_array_index[data_set_index] = data_array_index
                 data_set_index += 1
 
@@ -90,6 +91,7 @@ class TrafficFlowDataSet(Dataset):
             day = datum[1]
             time = datum[2]
             tfv = datum[3]
+            date = datum[4]
 
             formated_datum = [0] * len(self._scats_site_to_one_hot)
             idx = self._scats_site_to_one_hot[scats_number]
@@ -98,6 +100,9 @@ class TrafficFlowDataSet(Dataset):
             formated_datum.append(self._days_to_values[day])
 
             formated_datum.append(time)
+
+            if self._keep_date:
+                formated_datum.append(date)
 
             formated_datum.append(int(tfv))
 
