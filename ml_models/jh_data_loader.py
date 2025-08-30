@@ -9,9 +9,11 @@ import csv
 import pandas
 
 class TrafficFlowDataSet(Dataset):
-    def __init__(self, data_set_file_name):
+    def __init__(self, data_set_file_name, sequence_length):
+        self._sequence_length = sequence_length
 
         self._scats_site_to_one_hot = {}
+        self._index_to_data_set_index = {}
         self._days_to_values = {
             "Monday": 0,
             "Tuesday": 1,
@@ -21,23 +23,28 @@ class TrafficFlowDataSet(Dataset):
             "Saturday": 5,
             "Sunday": 6
         }
+        self._length = None # Inited in a private member function
+
 
         data_list = self._put_data_set_in_list(data_set_file_name)  # Store the data in a list #
 
+        self._index_to_data_point_populator(data_list, sequence_length=sequence_length)
+
         data_list = self._format_data(data_list)
 
-        print_list_ds(data_list)
+        self._np_data_array = np.asarray(data_list)
+
+    def __getitem__(self, index):
+        ds_index = self._index_to_data_set_index[index]
+        data = self._np_data_array[ds_index:ds_index + self._sequence_length, :]
+        x = data[:,:-1]  # Remove labels #
+        y = data[-1,-1]  # Only Interested in the last label #
+        return x, y
 
 
-
-
-
-
-    def __getitem__(self, item):
-        pass
 
     def __len__(self):
-        pass
+        return self._length
 
     def _put_data_set_in_list(self, data_set_file_name):
         pandas_data = pandas.read_excel(data_set_file_name)
@@ -59,6 +66,23 @@ class TrafficFlowDataSet(Dataset):
                 time += 1
 
         return data_list
+
+    def _index_to_data_point_populator(self, data_list, sequence_length):
+
+        data_set_index = 0
+
+        for i in range(len(data_list) - sequence_length + 1): # + 1 because ranges last number is excluded
+            start_datum = data_list[i]
+            end_datum = data_list[i + sequence_length - 1]  # -1 because i is included. Eg: say we have a sequence length of 3 [i, i + 1, i + 2]
+
+
+            start_time = start_datum[2]
+            end_time = end_datum[2]
+            if end_time > start_time:
+                self._index_to_data_set_index[data_set_index] = i;
+                data_set_index += 1
+
+        self._length = data_set_index
 
     def _format_data(self, data_list):
         formated_data_list = []
