@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 
 if __name__ == "__main__":
-    dataset = TrafficFlowDataSet(data_set_file_name="data/model_data.xlsx", sequence_length=3, keep_date=True)
+    dataset = TrafficFlowDataSet(data_set_file_name="data/model_data.xlsx", sequence_length=3, keep_date=False)
 
     train_loader = DataLoader(dataset=dataset,
                               batch_size=1,
@@ -16,14 +16,7 @@ if __name__ == "__main__":
     total_samples = len(dataset)
 
     for i, (input, labels) in enumerate(train_loader):
-        first_date = input[0, 0, -1]
-        last_date = input[0, -1, -1]
-        if first_date != last_date:
-            print(first_date, last_date)
-
-        if first_date > last_date:
-            print("error")
-            break
+        print(input, labels)
 
 
 
