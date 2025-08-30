@@ -7,13 +7,14 @@ import openpyxl
 import re
 import csv
 import pandas
+from datetime import datetime
 
 class TrafficFlowDataSet(Dataset):
     def __init__(self, data_set_file_name, sequence_length):
         self._sequence_length = sequence_length
 
         self._scats_site_to_one_hot = {}
-        self._index_to_data_set_index = {}
+        self._data_set_index_to_data_array_index = {}
         self._days_to_values = {
             "Monday": 0,
             "Tuesday": 1,
@@ -28,20 +29,18 @@ class TrafficFlowDataSet(Dataset):
 
         data_list = self._put_data_set_in_list(data_set_file_name)  # Store the data in a list #
 
-        self._index_to_data_point_populator(data_list, sequence_length=sequence_length)
+        self._data_set_index_to_data_array_index_populator(data_list, sequence_length=sequence_length)
 
         data_list = self._format_data(data_list)
 
         self._np_data_array = np.asarray(data_list)
 
-    def __getitem__(self, index):
-        ds_index = self._index_to_data_set_index[index]
-        data = self._np_data_array[ds_index:ds_index + self._sequence_length, :]
+    def __getitem__(self, data_set_index):
+        data_array_index = self._data_set_index_to_data_array_index[data_set_index]
+        data = self._np_data_array[data_array_index : data_array_index + self._sequence_length, :]
         x = data[:,:-1]  # Remove labels #
         y = data[-1,-1]  # Only Interested in the last label #
         return x, y
-
-
 
     def __len__(self):
         return self._length
@@ -54,6 +53,7 @@ class TrafficFlowDataSet(Dataset):
         for i in range(0, pandas_data.shape[0]):
             scats_number = pandas_data['SCATS_Number'].iloc[i]
             day = pandas_data['Weekday'].iloc[i]
+            date = int(pandas_data['Date'].iloc[i].strftime("%d"))
 
             if scats_number not in self._scats_site_to_one_hot:
                 self._scats_site_to_one_hot[scats_number] = scats_site_count
@@ -62,24 +62,23 @@ class TrafficFlowDataSet(Dataset):
             time = 0
             for j in range(3, pandas_data.shape[1]):
                 tfv = pandas_data.iat[i, j]
-                data_list.append([scats_number, day, time, tfv])
+                data_list.append([scats_number, day, time, tfv, date])
                 time += 1
 
         return data_list
 
-    def _index_to_data_point_populator(self, data_list, sequence_length):
-
+    def _data_set_index_to_data_array_index_populator(self, data_list, sequence_length):
         data_set_index = 0
 
-        for i in range(len(data_list) - sequence_length + 1): # + 1 because ranges last number is excluded
-            start_datum = data_list[i]
-            end_datum = data_list[i + sequence_length - 1]  # -1 because i is included. Eg: say we have a sequence length of 3 [i, i + 1, i + 2]
+        for data_array_index in range(len(data_list) - sequence_length + 1): # + 1 because ranges last number is excluded
+            start_datum = data_list[data_array_index]
+            end_datum = data_list[data_array_index + sequence_length - 1]  # -1 because i is included. Eg: say we have a sequence length of 3 [i, i + 1, i + 2]
 
 
-            start_time = start_datum[2]
-            end_time = end_datum[2]
-            if end_time > start_time:
-                self._index_to_data_set_index[data_set_index] = i;
+            start_date = start_datum[2]
+            end_date = end_datum[2]
+            if end_date > start_date:
+                self._data_set_index_to_data_array_index[data_set_index] = data_array_index
                 data_set_index += 1
 
         self._length = data_set_index
@@ -107,8 +106,6 @@ class TrafficFlowDataSet(Dataset):
         return formated_data_list
 
 
-
-def print_list_ds(list):
-    for element in list:
-        print(element)
-
+def print_list(list):
+    for item in list:
+        print(item)
