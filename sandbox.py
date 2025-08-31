@@ -34,7 +34,7 @@ if __name__ == "__main__":
     total_samples = len(dataset)
 
     for i, (input, labels) in enumerate(train_loader):
-        print(input, labels)
+        print(labels.shape)
         break
 
 

@@ -20,15 +20,13 @@ class ScaleAndShiftX:
         return x, y
 
 class ScaleY:
-    def __init__(self, divisor, minAfterDiv=0, maxAfterDiv=1):
+    def __init__(self, divisor):
         self._divisor = divisor
-        self._dif = maxAfterDiv - minAfterDiv
+
 
     def __call__(self, datum):
         x, y = datum
         y /= self._divisor
-        y *= self._dif
-        y += self._dif / 2
         return x, y
 
 

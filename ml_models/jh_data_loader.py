@@ -1,3 +1,5 @@
+import sys
+
 import torch
 import torchvision
 from torch.utils.data import DataLoader, Dataset
@@ -31,6 +33,9 @@ class TrafficFlowDataSet(Dataset):
 
         data_list = self._put_data_set_in_list(data_set_file_name)  # Store the data in a list #
 
+
+        data_list = data_list[0:2976]
+        #sys.exit()
         self._data_set_index_to_data_array_index_populator(data_list, sequence_length=sequence_length)  # Populate the "data_set_index_to_data_array_index" dictionary
 
         data_list = self._format_data(data_list)  # Formated data list #
@@ -145,3 +150,7 @@ class TrafficFlowDataSet(Dataset):
             formated_data_list.append(formated_datum)
 
         return formated_data_list
+
+def print_ls(list):
+    for item in list:
+        print(item)
