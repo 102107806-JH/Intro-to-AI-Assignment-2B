@@ -10,8 +10,9 @@ import pandas
 from datetime import datetime
 
 class TrafficFlowDataSet(Dataset):
-    def __init__(self, data_set_file_name, sequence_length, keep_date=False):
+    def __init__(self, data_set_file_name, sequence_length, transform=None, keep_date=False):
         self._sequence_length = sequence_length  # The sequence length of the RNN #
+        self._transform = transform  # stores the transform to be performed on the data set #
         self._keep_date = keep_date  # The date is only kept for testing purposes #
 
         self._scats_site_to_one_hot = {}  # Dictionary that maps a scats site to its one hot encoding #
@@ -34,14 +35,38 @@ class TrafficFlowDataSet(Dataset):
 
         data_list = self._format_data(data_list)  # Formated data list #
 
-        self._np_data_array = np.asarray(data_list)  # Store the formated data in a np array #
+        self._np_data_array = np.asarray(data_list, dtype=np.float32)  # Store the formated data in a np array #
+
+        self._max_day = max(self._np_data_array[:, -3])
+        self._max_time = max(self._np_data_array[:, -2])
+        self._max_tfv = max(self._np_data_array[:, -1])
+
+    @property
+    def max_day(self):
+        return self._max_day
+
+    @property
+    def max_time(self):
+        return self._max_time
+
+    @property
+    def max_tfv(self):
+        return self._max_tfv
+
+    def set_transform(self, transform):
+        self._transform = transform
 
     def __getitem__(self, data_set_index):
         data_array_index = self._data_set_index_to_data_array_index[data_set_index]  # Convert the dataset index into a data array index #
         data = self._np_data_array[data_array_index : data_array_index + self._sequence_length, :]  # Extract the sequence
-        x = data[:,:-1]  # Remove labels #
-        y = data[-1,-1]  # Only Interested in the last label #
-        return x, y
+        x_raw = data[:,:-1]  # Remove labels #
+        y_raw = np.array(data[-1,-1])  # Only Interested in the last label #
+        datum = x_raw, y_raw
+
+        if self._transform:
+            datum = self._transform(datum)
+
+        return datum
 
     def __len__(self):
         return self._length  # Return the length of the dataset
