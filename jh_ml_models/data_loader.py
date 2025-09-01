@@ -58,7 +58,7 @@ class TrafficFlowDataSet(Dataset):
             scats_number = pandas_data['SCATS_Number'].iloc[i]  # Scats number for given row #
 
             #only load data from selected site
-            if selected_scats_site != scats_number:
+            if  selected_scats_site != "ALL" and selected_scats_site != scats_number:
                 continue
 
             day = pandas_data['Weekday'].iloc[i]  # Day for given row #
@@ -113,32 +113,28 @@ class TrafficFlowDataSet(Dataset):
         self._length = data_set_index  # Record the length of the dataset #
 
     def _transform_data(self, np_data_array):
+
+        # Scaling the day
+        day_feature = np_data_array[:, 1]
+        max_day = np.max(day_feature)
+        day_feature /= max_day
+
+        # Scaling the date
+        date_feature = np_data_array[:, 2]
+        max_date = np.max(date_feature)
+        date_feature /= max_date
+
+        # Scaling the time
+        time_feature = np_data_array[:, 3]
+        max_time = np.max(time_feature)
+        time_feature /= max_time
+
         # Scaling TFV values
         tfv_feature = np_data_array[:, 4]
         tfv_label = np_data_array[:, 5]
-
-        tfv_max = np.max(tfv_feature)
-
-        tfv_feature /= tfv_max
-        tfv_label /= tfv_max
-
-        #Scaling the day
-        day_feature = np_data_array[:, 1]
-        day_max = np.max(day_feature)
-
-        day_feature /= day_max
-
-        #Scaling the time
-        time_feature = np_data_array[:, 3]
-        time_max = np.max(time_feature)
-
-        time_feature /= time_max
-
-        #Scaling the date
-        date_feature = np_data_array[:, 2]
-        date_max = np.max(date_feature)
-
-        date_feature /= date_max
+        max_tfv = np.max(tfv_feature)
+        tfv_feature /= max_tfv
+        tfv_label /= max_tfv
 
         #remove the scats site number
         np_data_array = np_data_array[:, 1:]

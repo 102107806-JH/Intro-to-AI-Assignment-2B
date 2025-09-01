@@ -4,7 +4,7 @@ from torch import nn
 class GRU(nn.Module):
     def __init__(self, feature_size, hidden_size, num_layers, device):
         super().__init__()
-        self._features_size = feature_size
+        self._feature_size = feature_size
         self._hidden_size = hidden_size
         self._device = device
         self._num_layers = num_layers
