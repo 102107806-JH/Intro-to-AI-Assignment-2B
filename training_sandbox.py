@@ -1,10 +1,7 @@
-from jh_ml_models.model_runner import model_runner
-from torch.utils.data import DataLoader
-from jh_ml_models.gru_model import GRU
-import numpy as np
-from torch import nn
-from jh_ml_models.test_and_train import train_model, test_model
 import torch
+from torch import nn
+from jh_ml_models.gru_model import GRU
+from jh_ml_models.model_fitter import Model_Fitter
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -13,11 +10,21 @@ if __name__ == "__main__":
     batch_size = 16
     lr = 5e-5
     hidden_size = 16
-    num_epochs = 10
+    num_epochs = 50
 
-    model = GRU(feature_size=4, hidden_size=hidden_size, num_layers=3 ,device=device).to(device)
-    loss_function = nn.MSELoss()
+    model = GRU(feature_size=4, hidden_size=hidden_size, num_layers=6 ,device=device).to(device)
+    train_loss_function = nn.MSELoss()
+    test_loss_function = nn.L1Loss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scats_site_number = 970
 
-    model_runner(model, loss_function, optimizer, batch_size, num_epochs, scats_site_number, device=device)
+    fitter = Model_Fitter(model=model,
+                          train_loss_function=train_loss_function,
+                          test_loss_function=test_loss_function,
+                          optimizer=optimizer,
+                          batch_size=batch_size,
+                          num_epochs=num_epochs,
+                          device=device)
+
+    fitter.fit_model(scats_site_number)
+

@@ -36,4 +36,4 @@ def test_model(data_loader, model, loss_function, device):
             total_loss += loss_function(output, y).item()
 
     avg_loss = total_loss / num_batches
-    print(f"Test Loss: {avg_loss}")
+    print(f"Test Loss (MAE): {avg_loss}")
