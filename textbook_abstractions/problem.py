@@ -41,17 +41,16 @@ class Problem:
         input_sequence_df = self._traffic_data[self._traffic_data['SCATS_Number'] == new_state].iloc[:, 3:]  # Skip Date
         # and Weekday columns
 
-        if input_sequence_df.empty:
-            # Handle cases where no data is available for the given SCATS number
-            # Return a default high cost to discourage this path
+        # Use the model to make a flow rate prediction
+        input_sequence_df = self._traffic_data[self._traffic_data['SCATS_Number'] == new_state]
+
+        if input_sequence_df.empty or len(input_sequence_df) < 12:
+            # Not enough history → discourage by setting flowrate low
             flowrate = 1
         else:
-            # Flatten the DataFrame to get a 1D array and take the last 12 elements
-            input_sequence = input_sequence_df.values.flatten()[-12:].astype(np.float32)
+            # Take last 12 timesteps, full feature set
+            input_sequence = input_sequence_df[['Volume_norm','Time_sin','Time_cos','Weekday_sin','Weekday_cos']].values[-12:]
             flowrate = self._flowrate_prediction_model.make_prediction(input_sequence)
-
-        # Use the model to make a flow rate prediction
-        flowrate = self._flowrate_prediction_model.make_prediction(input_sequence)
         time = self._time_between_nodes(distance, flowrate, intersection_pause_time=0.00833)  # 30 seconds to pass
         # through the intersection
         return time

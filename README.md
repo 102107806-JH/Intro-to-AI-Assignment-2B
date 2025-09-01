@@ -1,2 +1,179 @@
 # Intro-to-AI-Assignment-2B
-Test Commit and Push
+
+# Best LSTM Hyperparameters:
+epochs = 50, learning_rate = 0.01, hidden_size = 150, num_layers = 3, optimizer = Adam
+
+Best result: ~94% accuracy (SCATS 3120).
+Average across all sites: 85–92% accuracy.
+Worst sites: ~72–75% accuracy (SCATS 3812, 380
+
+# LSTM Model Training Settings
+LSTM Model Results using the provided parameter range:
+param_grid = {
+'epochs': [10, 20, 30, 40, 50, 100],
+'learning_rate': [0.00001, 0.0005, 0.0001, 0.001, 0.01],
+'hidden_size': [50, 100, 200, 300, 400],
+'num_layers': [1, 2, 3, 4],
+'optimizer': ['Adam', 'RMSprop', 'Adagrad', 'Adadelta', 'Adamax', 'NAdam', 'NAG']
+}
+
+# RAW Model Training Data
+Final training for SCATS 970 complete.
+Best sMAPE: 9.29%
+Best Parameters: {'epochs': 40, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'Adagrad'}
+
+Final training for SCATS 2000 complete.
+Best sMAPE: 8.45%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 2200 complete.
+Best sMAPE: 13.84%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 2820 complete.
+Best sMAPE: 15.04%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 2825 complete.
+Best sMAPE: 14.33%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.01, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'Adam'}
+
+Final training for SCATS 2827 complete.
+Best sMAPE: 10.73%
+Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 200, 'num_layers': 1, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 2846 complete.
+Best sMAPE: 10.67%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'Adagrad'}
+
+Final training for SCATS 3001 complete.
+Best sMAPE: 19.24%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 2, 'optimizer': 'NAdam'}
+
+Final training for SCATS 3002 complete.
+Best sMAPE: 14.30%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 3, 'optimizer': 'Adamax'}
+
+Final training for SCATS 3120 complete.
+Best sMAPE: 5.70%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 2, 'optimizer': 'Adam'}
+
+Final training for SCATS 3122 complete.
+Best sMAPE: 11.74%
+Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adamax'}
+
+Final training for SCATS 3126 complete.
+Best sMAPE: 11.42%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 3127 complete.
+Best sMAPE: 11.16%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 2, 'optimizer': 'Adamax'}
+
+Final training for SCATS 3180 complete.
+Best sMAPE: 15.69%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'Adamax'}
+
+Final training for SCATS 3662 complete.
+Best sMAPE: 10.09%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 3682 complete.
+Best sMAPE: 13.02%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 3685 complete.
+Best sMAPE: 12.05%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adamax'}
+
+Final training for SCATS 3804 complete.
+Best sMAPE: 23.88%
+Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 3812 complete.
+Best sMAPE: 27.29%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 400, 'num_layers': 1, 'optimizer': 'Adam'}
+
+Final training for SCATS 4030 complete.
+Best sMAPE: 13.57%
+Best Parameters: {'epochs': 40, 'learning_rate': 0.0005, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 4032 complete.
+Best sMAPE: 14.06%
+Best Parameters: {'epochs': 10, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adam'}
+
+Final training for SCATS 4034 complete.
+Best sMAPE: 9.23%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adam'}
+
+Final training for SCATS 4035 complete.
+Best sMAPE: 11.23%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 4040 complete.
+Best sMAPE: 8.06%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 4043 complete.
+Best sMAPE: 8.70%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 400, 'num_layers': 4, 'optimizer': 'Adamax'}
+
+Final training for SCATS 4051 complete.
+Best sMAPE: 13.78%
+Best Parameters: {'epochs': 40, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adagrad'}
+
+Final training for SCATS 4057 complete.
+Best sMAPE: 16.10%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adagrad'}
+
+Final training for SCATS 4063 complete.
+Best sMAPE: 10.89%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 2, 'optimizer': 'Adam'}
+
+Final training for SCATS 4262 complete.
+Best sMAPE: 17.25%
+Best Parameters: {'epochs': 30, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adam'}
+
+Final training for SCATS 4263 complete.
+Best sMAPE: 9.07%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 4264 complete.
+Best sMAPE: 12.42%
+Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'Adam'}
+
+Final training for SCATS 4266 complete.
+Best sMAPE: 11.14%
+Best Parameters: {'epochs': 30, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 4270 complete.
+Best sMAPE: 9.21%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 4272 complete.
+Best sMAPE: 10.25%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'RMSprop'}
+
+Final training for SCATS 4273 complete.
+Best sMAPE: 20.01%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 1, 'optimizer': 'NAdam'}
+
+Final training for SCATS 4321 complete.
+Best sMAPE: 16.03%
+Best Parameters: {'epochs': 40, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+
+Final training for SCATS 4324 complete.
+Best sMAPE: 12.11%
+Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 2, 'optimizer': 'Adam'}
+
+Final training for SCATS 4335 complete.
+Best sMAPE: 16.76%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.001, 'hidden_size': 400, 'num_layers': 1, 'optimizer': 'Adamax'}
+
+Final training for SCATS 4812 complete.
+Best sMAPE: 11.65%
+Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 1, 'optimizer': 'Adagrad'}
+
+Final training for SCATS 4821 complete.
+Best sMAPE: 9.64%
+Best Parameters: {'epochs': 40, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 1, 'optimizer': 'Adam'}
