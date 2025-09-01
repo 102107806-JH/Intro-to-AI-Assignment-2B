@@ -5,7 +5,6 @@ from ml_models.lstm_model import train_model
 from ml_models.lstm_data_handler import preprocess_data
 import pandas as pd
 import itertools
-from ml_models.jh_data_loader import TrafficFlowDataSet
 
 if __name__ == "__main__":
     # Load the dataset

@@ -1,18 +1,11 @@
-import sys
-
 import torch
 import torchvision
 import torch.nn as nn
-from jinja2.optimizer import optimize
-from mpmath.identification import transforms
-import torchvision.transforms as transforms
 from numpy.ma.extras import average
-from sympy import sequence
 import torchvision.transforms
-from ml_models.jh_data_loader import TrafficFlowDataSet
-from torch.utils.data import DataLoader, Dataset
-import numpy as np
-from ml_models.jh_transforms import ToTensor, ScaleAndShiftX, ScaleY
+from OLD_FILES_DELETE_BEFORE_SUB.jh_data_loader import TrafficFlowDataSet
+from torch.utils.data import DataLoader
+from OLD_FILES_DELETE_BEFORE_SUB.jh_transforms import ToTensor, ScaleAndShiftX, ScaleY
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
 
