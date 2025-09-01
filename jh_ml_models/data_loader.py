@@ -12,10 +12,8 @@ import pandas
 from datetime import datetime
 
 class TrafficFlowDataSet(Dataset):
-    def __init__(self, data_set_file_name, sequence_length):
+    def __init__(self, data_set_file_name, sequence_length, selected_scats_site):
         self._sequence_length = sequence_length  # The sequence length of the RNN #
-
-        self._scats_site_to_one_hot = {}  # Dictionary that maps a scats site to its one hot encoding #
 
         self._data_set_index_to_data_array_index = {}  # Converts a dataset index to an array index #
 
@@ -29,7 +27,7 @@ class TrafficFlowDataSet(Dataset):
             "Sunday": 6
         }  # Convert a day to a value #
 
-        data_list = self._put_data_set_in_list(data_set_file_name)  # Store the data in a list #
+        data_list = self._put_data_set_in_list(data_set_file_name, selected_scats_site)  # Store the data in a list #
 
         self._data_set_index_to_data_array_index_populator(data_list, sequence_length)
 
@@ -51,24 +49,25 @@ class TrafficFlowDataSet(Dataset):
         return datum
 
 
-    def _put_data_set_in_list(self, data_set_file_name):
+    def _put_data_set_in_list(self, data_set_file_name, selected_scats_site):
         pandas_data = pandas.read_excel(data_set_file_name)  # Read the data excel file with pandas #
 
         data_list = []  # list to store the read data #
         scats_site_count = 0  # counts the number of unique scats sites
         for i in range(0, pandas_data.shape[0]):  # Go through every row #
             scats_number = pandas_data['SCATS_Number'].iloc[i]  # Scats number for given row #
+
+            #only load data from selected site
+            if selected_scats_site != scats_number:
+                continue
+
             day = pandas_data['Weekday'].iloc[i]  # Day for given row #
             date = int(pandas_data['Date'].iloc[i].strftime("%d"))  # Day of the month formated in day formating #
-
-            if scats_number not in self._scats_site_to_one_hot:  # If the scats number has not been seen #
-                self._scats_site_to_one_hot[scats_number] = scats_site_count  # Map Scats number to site count #
-                scats_site_count += 1  # Increase the site count #
 
             time = 0  # The time is just recorded as an integer
             for j in range(3, pandas_data.shape[1]):
                 tfv = pandas_data.iat[i, j]  # Get traffic flow volume for a given time #
-                data_list.append([self._scats_site_to_one_hot[int(scats_number)], self._days_to_values[day], time, date, int(tfv)])   # Create a new data point in the graph #
+                data_list.append([int(scats_number), self._days_to_values[day], time, date, int(tfv)])   # Create a new data point in the graph #
                 time += 1  # Increment the time #
 
         # Creating the target for each data point #
@@ -143,7 +142,6 @@ class TrafficFlowDataSet(Dataset):
 
         #remove the scats site number
         np_data_array = np_data_array[:, 1:]
-
 
         return np_data_array
 
