@@ -2,11 +2,12 @@ import torch
 from torch import nn
 
 class GRU(nn.Module):
-    def __init__(self, feature_size, hidden_size):
+    def __init__(self, feature_size, hidden_size, num_layers, device):
         super().__init__()
         self._features_size = feature_size
         self._hidden_size = hidden_size
-        self._num_layers = 3
+        self._device = device
+        self._num_layers = num_layers
         self._gru = nn.GRU(
             input_size=feature_size,
             hidden_size=hidden_size,
@@ -18,10 +19,12 @@ class GRU(nn.Module):
 
     def forward(self, x):
         batch_size = x.shape[0]
-        h0 = torch.zeros(self._num_layers, batch_size, self._hidden_size)
-        h0.requires_grad = True
-        _, hn = self._gru(x, h0)
-        out = self._linear(hn[0]).flatten()
+        h0 = torch.zeros(self._num_layers, batch_size, self._hidden_size).to(self._device)
+        gru_out, hn = self._gru(x, h0)
+
+        # gru_out is in form (batch, sequence_index, features). The below takes
+        # the final sequence features across all batches #
+        out = self._linear(gru_out[:, -1, :]).flatten()
 
         return out
 
