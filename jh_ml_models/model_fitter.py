@@ -1,5 +1,3 @@
-import sys
-
 import torch
 from torch.utils.data import DataLoader
 from jh_ml_models.data_loader import TrafficFlowDataSet
@@ -26,7 +24,7 @@ class Model_Fitter():
         test_loader = DataLoader(test_dataset, batch_size=self._batch_size, shuffle=True)
         validation_loader = DataLoader(validation_dataset, batch_size=self._batch_size, shuffle=True)
 
-        print("Untrained Test __________")
+        print("Initial Test __________")
         self._test_model(test_loader)
         print()
 
@@ -37,30 +35,29 @@ class Model_Fitter():
             print()
 
     def _train_model(self, data_loader):
-        num_batches = len(data_loader)
-        total_loss = 0
+        n_bat = len(data_loader)
+        cost_sum = 0
         self._model.train()
 
         for x, y in data_loader:
             x = x.to(self._device)
             y = y.to(self._device)
 
-            output = self._model(x)
-            loss = self._train_loss_function(output, y)
+            yhat = self._model(x)
+            loss = self._train_loss_function(yhat, y)
 
             self._optimizer.zero_grad()
             loss.backward()
             self._optimizer.step()
 
-            total_loss += loss.item()
+            cost_sum += loss.item()
 
-        avg_loss = total_loss / num_batches
-        print(f"Train Loss: {avg_loss}")
+        mean_loss = cost_sum / n_bat
+        print(f"Train Loss: {mean_loss}")
 
     def _test_model(self, data_loader):
-
-        num_batches = len(data_loader)
-        total_loss = 0
+        n_bat = len(data_loader)
+        cost_sum = 0
 
         self._model.eval()
         with torch.no_grad():
@@ -68,8 +65,8 @@ class Model_Fitter():
                 x = x.to(self._device)
                 y = y.to(self._device)
 
-                output = self._model(x)
-                total_loss += self._test_loss_function (output, y).item()
+                yhat = self._model(x)
+                cost_sum += self._test_loss_function (yhat, y).item()
 
-        avg_loss = total_loss / num_batches
-        print(f"Test Loss (MAE): {avg_loss}")
+        mean_loss = cost_sum/ n_bat
+        print(f"Test Loss (MAE): {mean_loss}")

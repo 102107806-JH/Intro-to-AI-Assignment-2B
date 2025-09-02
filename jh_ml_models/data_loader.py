@@ -1,15 +1,6 @@
-import sys
-
-import torch
-import torchvision
-from torch.utils.data import DataLoader, Dataset
-import numpy as np
-import math
-import openpyxl
-import re
-import csv
 import pandas
-from datetime import datetime
+import numpy as np
+from torch.utils.data import DataLoader, Dataset
 
 class TrafficFlowDataSet(Dataset):
     def __init__(self, data_set_file_name, sequence_length, selected_scats_site):
