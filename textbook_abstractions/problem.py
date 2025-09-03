@@ -1,11 +1,16 @@
 import math
+from jh_ml_models.flowrate_predictor import FlowratePredictor
+from datetime import date, datetime
+
 
 class Problem:
-    def __init__(self, graph, initial_state, goal_state, flowrate_predictor):
+    def __init__(self, graph, initial_state, goal_state, initial_time, sequence_length):
         self._graph = graph
         self._initial_state = initial_state
         self._goal_states = goal_state
-        self._flowrate_predictor = flowrate_predictor  # Model that will be used to predict the flow rate
+        self._flowrate_predictor = FlowratePredictor(initial_time=initial_time,
+                                                     sequence_length=sequence_length,
+                                                     database_file="data/data_base.xlsx")  # Model that will be used to predict the flow rate
 
     @property
     def initial_state(self):
@@ -32,7 +37,7 @@ class Problem:
 
     def action_cost(self, state, action, new_state, elapsed_time):
         distance = self._distance_between_states(state, action, new_state)  # Get the distance between states
-        flowrate = self._flowrate_predictor.make_prediction(elapsed_time)  # Use the model to make a flow rate prediction #
+        flowrate = self._flowrate_predictor.make_prediction(elapsed_time=elapsed_time, scats_site=new_state)  # Use the model to make a flow rate prediction #
         time = self._time_between_nodes(distance, flowrate, intersection_pause_time_hours=30/3600)  # Use the calculated quantities to determine the time between nodes
         return time
 

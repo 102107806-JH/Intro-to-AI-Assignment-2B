@@ -8,17 +8,17 @@ from datetime import date, datetime
 from textbook_abstractions.problem import Problem
 
 class PathFinder():
-    def __init__(self, graph, flowrate_predictor):
+    def __init__(self, graph):
         self._graph = graph
-        self._flowrate_predictor = flowrate_predictor
 
-    def find_paths(self, initial_state, goal_state, current_time=datetime.now(), k_val=1):
-        self._flowrate_predictor.set_initial_time(current_time)
+    def find_paths(self, initial_state, goal_state, initial_time, sequence_length,k_val=1):
 
         problem = Problem(graph=self._graph,
                           initial_state=initial_state,
                           goal_state=goal_state,
-                          flowrate_predictor=self._flowrate_predictor)
+                          initial_time=initial_time,
+                          sequence_length=sequence_length
+                          )
 
         soloution_nodes = self._dijkstras_serach(problem=problem, k_val=k_val)
 
