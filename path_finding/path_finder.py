@@ -61,8 +61,7 @@ class PathFinder():
         data = None
         for action in problem.actions(state):  # Going through all the actions available from the current state #
             new_state = problem.result(state,action)  # The resulting state from the action #
-            elapsed_time = node.path_cost  # The time elapsed to get to the parent node #
-            path_cost = elapsed_time + problem.action_cost(state, action, new_state, elapsed_time)  # The path cost to the new state #
+            path_cost = node.path_cost + problem.action_cost(state, action, new_state, time_since_initial_time=node.path_cost)  # The path cost to the new state #
             children.append(Node(state=new_state, parent=node, action=action, path_cost=path_cost, total_cost=path_cost))  # Creating a new child #
 
         return children  # Return all the children #

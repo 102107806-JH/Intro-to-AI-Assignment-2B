@@ -10,7 +10,7 @@ class Problem:
         self._goal_states = goal_state
         self._flowrate_predictor = FlowratePredictor(initial_time=initial_time,
                                                      sequence_length=sequence_length,
-                                                     database_file="data/data_base.xlsx")  # Model that will be used to predict the flow rate
+                                                     database_file_path="data/data_base.xlsx")  # Model that will be used to predict the flow rate
 
     @property
     def initial_state(self):
@@ -35,11 +35,11 @@ class Problem:
         return action  # The action is an integer representing the destination node.
         # This can be directly returned because it is the next state #
 
-    def action_cost(self, state, action, new_state, elapsed_time):
+    def action_cost(self, state, action, new_state, time_since_initial_time):
         distance = self._distance_between_states(state, action, new_state)  # Get the distance between states
-        flowrate = self._flowrate_predictor.make_prediction(elapsed_time=elapsed_time, scats_site=new_state)  # Use the model to make a flow rate prediction #
-        time = self._time_between_nodes(distance, flowrate, intersection_pause_time_hours=30/3600)  # Use the calculated quantities to determine the time between nodes
-        return time
+        flowrate = self._flowrate_predictor.make_prediction(time_since_initial_time=time_since_initial_time, scats_site=new_state)  # Use the model to make a flow rate prediction #
+        predicted_action_time = self._time_between_nodes(distance, flowrate, intersection_pause_time_hours=30/3600)  # Use the calculated quantities to determine the time between nodes
+        return predicted_action_time
 
     def _distance_between_states(self, state, action, new_state):
         destination_cost_pair_list = self._graph.get_edge_data(state)  # Get all destinations and their distances
