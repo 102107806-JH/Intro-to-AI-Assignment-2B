@@ -20,7 +20,7 @@ class FlowratePredictor():
         database_list = (pandas.read_excel(database_file_path).to_numpy()).tolist()
         self._database_dictionary = self._init_data_dictionary(database_list)
         self._remove_values_past_current_time_from_database_dict()
-        print("end")
+        print()
 
     def _remove_values_past_current_time_from_database_dict(self):
         updated_dict = {}
@@ -48,11 +48,8 @@ class FlowratePredictor():
 
                 if entry_time < max_time:
                     updated_dict[scats].append(entry)
-                    print(entry)
 
-        print()
-
-
+        self._database_dictionary = updated_dict
 
     def _init_data_dictionary(self, database_list):
         database_dictionary = {}
