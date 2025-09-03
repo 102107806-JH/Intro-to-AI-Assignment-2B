@@ -31,7 +31,7 @@ class MockDataBaseCreator():
             if scat_number not in self._scats_site_list:
                 self._scats_site_list.append(int(scat_number))
 
-    def _write_new_excel_file(self):
+    def write_new_excel_file(self):
         path_prefix = "data/traffic_signal_volume_cur/VSDATA_2025"
 
         months = self._format_list_content(list(range(7,9)))
