@@ -1,5 +1,5 @@
 *.pyc
 __pycache__/
 .idea/
-data/traffic_signal_volume_data_august_2025
-data/traffic_signal_volume_data_july_2025
+data/traffic_signal_volume_cur
+
