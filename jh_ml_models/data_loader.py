@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader, Dataset
 
 class TrafficFlowDataSet(Dataset):
     def __init__(self, data_set_file_name, sequence_length, selected_scats_site):
+        self._transform_dict = None
+
         self._sequence_length = sequence_length  # The sequence length of the RNN #
 
         self._data_set_index_to_data_array_index = {}  # Converts a dataset index to an array index #
@@ -38,7 +40,6 @@ class TrafficFlowDataSet(Dataset):
 
 
         return datum
-
 
     def _put_data_set_in_list(self, data_set_file_name, selected_scats_site):
         pandas_data = pandas.read_excel(data_set_file_name)  # Read the data excel file with pandas #
@@ -111,14 +112,14 @@ class TrafficFlowDataSet(Dataset):
         day_feature /= max_day
 
         # Scaling the date
-        date_feature = np_data_array[:, 2]
-        max_date = np.max(date_feature)
-        date_feature /= max_date
-
-        # Scaling the time
-        time_feature = np_data_array[:, 3]
+        time_feature = np_data_array[:, 2]
         max_time = np.max(time_feature)
         time_feature /= max_time
+
+        # Scaling the time
+        date_feature = np_data_array[:, 3]
+        max_date = np.max(date_feature)
+        date_feature /= max_date
 
         # Scaling TFV values
         tfv_feature = np_data_array[:, 4]
@@ -130,9 +131,17 @@ class TrafficFlowDataSet(Dataset):
         #remove the scats site number
         np_data_array = np_data_array[:, 1:]
 
+        self._transform_dict = {
+            "max_day": max_day,
+            "max_time": max_time,
+            "max_date": max_date,
+            "max_tfv": max_tfv
+        }
         return np_data_array
 
-
+    @property
+    def transform_dict(self):
+        return self._transform_dict
 
 def print_ls(list):
     for item in list:

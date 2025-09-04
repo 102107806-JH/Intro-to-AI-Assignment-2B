@@ -17,6 +17,9 @@ class GRU(nn.Module):
 
         self._linear = nn.Linear(in_features=self._hidden_size, out_features=1)
 
+        self._transform_dict = {}
+
+
     def forward(self, x):
         batch_size = x.shape[0]
         h0 = torch.zeros(self._num_layers, batch_size, self._hidden_size).to(self._device)
@@ -27,5 +30,13 @@ class GRU(nn.Module):
         out = self._linear(gru_out[:, -1, :]).flatten()
 
         return out
+
+    @property
+    def transform_dict(self):
+        return self._transform_dict
+
+    @transform_dict.setter
+    def transform_dict(self, transform_dict):
+        self._transform_dict = transform_dict
 
 
