@@ -36,7 +36,7 @@ if __name__ == "__main__":
                           num_epochs=num_epochs,
                           sequence_length=sequence_length,
                           device=device,
-                          model_save_path="saved_models/gru/tcn.pth")
+                          model_save_path="saved_models/gru.pth")
 
     fitter.fit_model(scats_site_number)
 

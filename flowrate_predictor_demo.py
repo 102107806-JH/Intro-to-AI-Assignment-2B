@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     current_data = CurrentData(database_file_path="data/data_base.xlsx", initial_time=current_time + timedelta(hours=48))
 
-    scats_site = 3002
+    scats_site = 970
 
     flow_rate_list_predicted = []
     flow_rate_list_actual = []
