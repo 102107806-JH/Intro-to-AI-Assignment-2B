@@ -128,6 +128,9 @@ class FlowratePredictor():
             else:
                 raise("INVALID MODEL IN TRAFIC FLOW PREDICTOR")
 
+            if tfv_prediction < 0: # Removing any potential wrong negatives #
+                tfv_prediction = 0
+
             self._update_database_dictionary(tfv_prediction, scats_site)  # The new prediction data needs to be added to the database dictionary #
 
     def _retrieve_model_input_sequence(self, scats_site):  # Gets the data the models need to perform a prediction on #
@@ -160,7 +163,7 @@ class FlowratePredictor():
         # Make the prediction
         yhat = self._gru_model(formated_torch_tensor).item()
         yhat *= self._gru_model.transform_dict["max_tfv"]  # Get back to the actual tfv number #
-        yhat = int(yhat)  # If Desired the prediction does not need to be converted to an integer #
+        #yhat = int(yhat)  # If Desired the prediction does not need to be converted to an integer #
         return yhat
 
     def _tcn_predict(self, unformatted_input_data, scats_site): # Same as the GRU model but with the tcn #
@@ -180,7 +183,7 @@ class FlowratePredictor():
         formated_torch_tensor = torch.from_numpy(formated_np_array).to(torch.float32).to(self._device)
         yhat = self._tcn_model(formated_torch_tensor).item()
         yhat *= self._tcn_model.transform_dict["max_tfv"]
-        yhat = int(yhat)
+        #yhat = int(yhat)
         return yhat
 
     def _update_database_dictionary(self, tfv_prediction, scats_site):
