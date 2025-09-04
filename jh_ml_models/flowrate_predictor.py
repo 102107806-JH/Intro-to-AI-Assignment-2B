@@ -1,4 +1,4 @@
-from data_base.mock_data_base import CurrentData
+from data_handling.current_data import CurrentData
 from datetime import date, datetime, timedelta
 import math
 import copy
@@ -7,11 +7,16 @@ import numpy as np
 
 class FlowratePredictor():
     def __init__(self, initial_time, sequence_length, database_file_path, mode):
+        """
+        This class is used by the problem class to develop flow rate predictions.
+        It works with the CurrentData class to store predicted values and retrieve
+        training data.
+        """
         self._initial_time = initial_time
         self._sequence_length = sequence_length
         self._current_data = CurrentData(initial_time=initial_time,
-                                        database_file_path=database_file_path)
-        self._load_models()
+                                        database_file_path=database_file_path)  # Init an instance of the current data object #
+        self._load_models()  # Load models #
         self._mode = mode
         self._days_to_values = {
             "Monday": 0,
@@ -22,10 +27,9 @@ class FlowratePredictor():
             "Saturday": 5,
             "Sunday": 6
         }  # Dictionary for converting the days to values #
-        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Set up the device #
 
-
-    # 1 Load required models
+    # MODEL LOADING ###########################################################
     def _load_models(self):
         self._load_gru()
         self._load_tcn()
@@ -36,24 +40,41 @@ class FlowratePredictor():
         self._gru_model.eval()
 
     def _load_tcn(self):
-        self._tcn_model = torch.load("saved_models/gru/gru.pth")
+        self._tcn_model = torch.load("saved_models/gru/tcn.pth")
         self._tcn_model.eval()
 
     def _load_lstm(self):
         """
         This is where you load your lstm. Feel free to add any attributes that
-        you may need when making your predictions.
+        you may need when making your predictions later.
         """
         pass
 
+    # RETRIEVING DATA AND INFERENCE ###########################################
     def get_data(self, time_since_initial_time, scats_site):
+        """
+        This function is a wrapper that joins all the sub functions together.
+        First it gets the time of the query that is being made. It then determines
+        based on the scat site and the time of the query the number of predictions
+        that need to be made. It then makes the predictions and updates the
+        self._current_data object with these predictions so that they can be
+        used later in the algorithm if required. Lastly it retrieves the data
+        from the current data which corresponds to the current query time and
+        scats site
+        """
         query_time = self._initial_time + timedelta(hours=time_since_initial_time)  # The time of query to the database #
         number_predictions_required = self._number_of_predictions_required(query_time, scats_site)
         self._make_predictions_and_update_current_data(number_predictions_required, scats_site)
-        tfv = self._current_data.query(query_time, scats_site)
+        tfv = self._current_data.query(query_time, scats_site)  # Need to query because it is possible that all predictions have already been made #
         return tfv
 
     def _number_of_predictions_required(self, prediction_time, scats_site):
+        """
+        For the given prediction time and scats_site this function calculates
+        the number of predictions that need to be made. This needs to be done
+        because it is possible that a query could be made multiple time steps
+        past the last data point for a scats site.
+        """
         final_scats_site_entry = self._current_data.get_scats_data(scats_site)[-1]  # Get the final scats site entry for the given scat site #
         entry_time = final_scats_site_entry[0]  # Get the time that this entry was made as a time object #
         number_predictions_required = 0  # The number of predictions that will be required #
@@ -66,7 +87,15 @@ class FlowratePredictor():
         return number_predictions_required  # Return the number of predictions that are required #
 
     def _make_predictions_and_update_current_data(self, number_of_predictions_required, scats_site):
-
+        """
+        This function loops over the number of predictions that need to be made
+        and makes them. It selects the appropriate model function and executes it
+        lastly calls the self._current_data objects append function and adds
+        the prediction made to the current data. This is done because it is possible
+        the same scats_site at the same time will be accessed again later. This
+        saves compute as each scat_site at each time interval only needs to be
+        predicted once.
+        """
         for i in range(number_of_predictions_required):
             unformatted_input_data = copy.deepcopy(self._current_data.get_input_sequence(scats_site, self._sequence_length))  # Data is edited inside prediction functions we must not edit the underlying database #
 
@@ -88,9 +117,30 @@ class FlowratePredictor():
             self._current_data.append_data_to_scats_site(scats_site, data_to_be_appended_to_current_data) # The new prediction data needs to be added to the database dictionary #
 
     def _lstm_predict(self, unformatted_input_data, scats_site):
+        """
+        :param unformatted_input_data: A nested list. Contains an internal list for every
+        time step in the sequence. Each internal list consists of a datatime object as the
+        0th element and a traffic flow volume value as the first. For example for a
+        sequence length of 4 it would look something like this.
+        [
+        [dateTimeObj0 for tfv0, tfv0],
+        [dateTimeObj1 for tfv1, tfv1],
+        [dateTimeObj0 for tfv2, tfv2],
+        [dateTimeObj0 for tfv3, tfv3],
+        ]
+        Each datTimeObj contains the time of the tfv measurement.
+        :param scats_site: the scats_site where the data is from
+        :return: A traffic flow volume prediction
+
+        You will have to format the data yourself. Please refer to the _gru_predict
+        for inspiration if needed.
+        """
         return None
 
     def _gru_predict(self, unformatted_input_data, scats_site):
+        """
+        Formats the unformatted data and inputs into the model to make a traffic flow volume prediction.
+        """
         input_data_as_list = []
         for datum in unformatted_input_data:  # Put the text based datum into numbers #
             time_obj = datum[0]
@@ -121,7 +171,7 @@ class FlowratePredictor():
 
     def _tcn_predict(self, unformatted_input_data, scats_site): # Same as the GRU model but with the tcn #
         """
-        Refer to '_gru_predict'
+        Formats the unformatted data and inputs into the model to make a traffic flow volume prediction.
         """
         input_data_as_list = []
         for datum in unformatted_input_data:  # Put the text based datum into numbers #
