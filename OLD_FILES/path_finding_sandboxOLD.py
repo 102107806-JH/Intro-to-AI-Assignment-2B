@@ -1,7 +1,7 @@
 from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
 from textbook_abstractions.problem import Problem
 from search_algorithms.dijkstra_search import dijkstras_serach
-from jh_ml_models.flowrate_predictor import FlowratePredictor
+from OLD_FILES.flowrate_predictorOLD import FlowratePredictor
 
 if __name__ == "__main__":
     testFileExtractor = GraphVertexEdgeInit(r"../data/graph_init_data.xlsx")

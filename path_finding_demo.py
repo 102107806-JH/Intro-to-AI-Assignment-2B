@@ -1,9 +1,6 @@
 from path_finding.path_finder import PathFinder
 from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
-from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
-from jh_ml_models.flowrate_predictor import FlowratePredictor
-import time
-from datetime import date, datetime
+from datetime import datetime
 
 if __name__ == "__main__":
     testFileExtractor = GraphVertexEdgeInit(r"data/graph_init_data.xlsx")

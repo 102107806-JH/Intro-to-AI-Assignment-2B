@@ -21,9 +21,9 @@ class PathFinder():
                           mode=mode
                           )
 
-        soloution_nodes = self._dijkstras_serach(problem=problem, k_val=k_val)
+        solution_nodes = self._dijkstras_serach(problem=problem, k_val=k_val)
 
-        return soloution_nodes
+        return solution_nodes
 
     def _dijkstras_serach(self, problem, k_val):
         """

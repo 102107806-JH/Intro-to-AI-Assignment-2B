@@ -1,6 +1,5 @@
 import math
 from jh_ml_models.flowrate_predictor import FlowratePredictor
-from datetime import date, datetime
 
 
 class Problem:
