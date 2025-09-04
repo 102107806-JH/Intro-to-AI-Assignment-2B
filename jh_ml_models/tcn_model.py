@@ -26,6 +26,9 @@ class TCN(nn.Module):
         self._linear = nn.Linear(in_features=conv2d_Lout,
                                  out_features=1)
 
+        self._transform_dict = {}
+
+
     def forward(self, x):
         x = x.permute(0, 2, 1)  # Align the dimensions as per documentation #
         c1_out = F.tanh(self._conv1d_1(x))
@@ -33,3 +36,11 @@ class TCN(nn.Module):
         out = self._linear(c2_out)
         out = out.flatten()
         return out
+
+    @property
+    def transform_dict(self):
+        return self._transform_dict
+
+    @transform_dict.setter
+    def transform_dict(self, transform_dict):
+        self._transform_dict = transform_dict

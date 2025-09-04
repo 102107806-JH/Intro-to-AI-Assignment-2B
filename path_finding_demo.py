@@ -11,5 +11,5 @@ if __name__ == "__main__":
     current_time = datetime.now()
     current_time = current_time.replace(month=8)  # We dont have access to data from current month faking that we are actually in the 8th month
     path_finder = PathFinder(graph=graph)
-    path_finder.find_paths(initial_state=3662, goal_state=2000, initial_time=current_time, sequence_length=12,k_val=100)
+    solution_nodes = path_finder.find_paths(initial_state=3662, goal_state=2000, initial_time=current_time, sequence_length=12, k_val=100, mode="TCN")
     print("Program End")

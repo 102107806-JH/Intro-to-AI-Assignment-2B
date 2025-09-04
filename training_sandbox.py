@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # Hyper parameters (Common)
     batch_size = 5
     lr = 5e-5
-    num_epochs = 50
+    num_epochs = 3
     sequence_length = 12
 
     # Hyper parameters (GRU)
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     kernel_size = 4
     c1_out_channels = 6
 
-    #model = GRU(feature_size=4, hidden_size=hidden_size, num_layers=num_layers ,device=device).to(device)
+    #model = GRU(feature_size=4, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
     model = TCN(feature_size=4, sequence_length=sequence_length, kernel_size=kernel_size, c1_out_channels=c1_out_channels, device=device).to(device)
     train_loss_function = nn.MSELoss()
     test_loss_function = nn.L1Loss()
@@ -35,7 +35,8 @@ if __name__ == "__main__":
                           batch_size=batch_size,
                           num_epochs=num_epochs,
                           sequence_length=sequence_length,
-                          device=device)
+                          device=device,
+                          model_save_path="saved_models/gru/tcn.pth")
 
     fitter.fit_model(scats_site_number)
 

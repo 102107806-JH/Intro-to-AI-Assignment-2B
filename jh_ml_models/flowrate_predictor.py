@@ -4,9 +4,12 @@ from calendar import day_name
 from datetime import date, datetime, timedelta
 import pandas
 import math
+import torch
+import numpy as np
+import copy
 
 class FlowratePredictor():
-    def __init__(self, initial_time, sequence_length, database_file_path):
+    def __init__(self, initial_time, sequence_length, database_file_path, mode):
         self._initial_time = initial_time
         self._sequence_length = sequence_length
         self._days_to_values = {
@@ -18,10 +21,29 @@ class FlowratePredictor():
             "Saturday": 5,
             "Sunday": 6
         }
+        self._load_models()
         database_list = (pandas.read_excel(database_file_path).to_numpy()).tolist()
         self._database_dictionary = self._init_data_dictionary(database_list)
         self._database_dictionary = self._remove_values_past_current_time_from_database_dict(self._database_dictionary)
-        self._mode = "GRU"
+        self._mode = mode
+        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # Load required models
+    def _load_models(self):
+        self._load_gru()
+        self._load_tcn()
+        self._load_lstm()
+
+    def _load_gru(self):
+        self._gru_model = torch.load("saved_models/gru/gru.pth")
+        self._gru_model.eval()
+
+    def _load_tcn(self):
+        self._tcn_model = torch.load("saved_models/gru/gru.pth")
+        self._tcn_model.eval()
+
+    def _load_lstm(self):
+        pass
 
     # Database handling and loading functions #
     def _init_data_dictionary(self, database_list):
@@ -88,7 +110,7 @@ class FlowratePredictor():
     def _make_predictions_update_data_base(self, number_of_predictions_required, scats_site):
 
         for i in range(number_of_predictions_required):
-            unformatted_input_data = self._retrieve_model_input_sequence(scats_site)
+            unformatted_input_data = copy.deepcopy(self._retrieve_model_input_sequence(scats_site))  # Data is edited inside prediction functions we must not edit the underlying database #
 
             tfv_prediction = None
             if self._mode == "LSTM":
@@ -97,6 +119,8 @@ class FlowratePredictor():
                 tfv_prediction = self._gru_predict(unformatted_input_data, scats_site)
             elif self._mode == "TCN":
                 tfv_prediction = self._tcn_predict(unformatted_input_data, scats_site)
+            else:
+                raise("INVALID MODEL IN TRAFIC FLOW PREDICTOR")
 
             self._update_database_dictionary(tfv_prediction, scats_site)
 
@@ -109,10 +133,46 @@ class FlowratePredictor():
         return 50
 
     def _gru_predict(self, unformatted_input_data, scats_site):
-        return 50
+        for datum in unformatted_input_data:
+            datum[0] = self._days_to_values[datum[0]] # Days to numbers
+            datum[2] = int(datum[2][0:2])  # Date to numbers
+
+        unformatted_input_data_as_np_arr = np.asarray(unformatted_input_data, dtype=np.float32)
+
+        # Applying transformations
+        unformatted_input_data_as_np_arr[:, 0] /= self._gru_model.transform_dict["max_day"]
+        unformatted_input_data_as_np_arr[:, 1] /= self._gru_model.transform_dict["max_time"]
+        unformatted_input_data_as_np_arr[:, 2] /= self._gru_model.transform_dict["max_date"]
+        unformatted_input_data_as_np_arr[:, 3] /= self._gru_model.transform_dict["max_tfv"]
+
+        formated_np_array = np.zeros((1, unformatted_input_data_as_np_arr.shape[0], unformatted_input_data_as_np_arr.shape[1]))
+        formated_np_array[0] = unformatted_input_data_as_np_arr
+        formated_torch_tensor = torch.from_numpy(formated_np_array).to(torch.float32).to(self._device)
+        yhat = self._gru_model(formated_torch_tensor).item()
+        yhat *= self._gru_model.transform_dict["max_tfv"]
+        yhat = int(yhat)
+        return yhat
 
     def _tcn_predict(self, unformatted_input_data, scats_site):
-        return 50
+        for datum in unformatted_input_data:
+            datum[0] = self._days_to_values[datum[0]]  # Days to numbers
+            datum[2] = int(datum[2][0:2])  # Date to numbers
+
+        unformatted_input_data_as_np_arr = np.asarray(unformatted_input_data, dtype=np.float32)
+
+        # Applying transformations
+        unformatted_input_data_as_np_arr[:, 0] /= self._tcn_model.transform_dict["max_day"]
+        unformatted_input_data_as_np_arr[:, 1] /= self._tcn_model.transform_dict["max_time"]
+        unformatted_input_data_as_np_arr[:, 2] /= self._tcn_model.transform_dict["max_date"]
+        unformatted_input_data_as_np_arr[:, 3] /= self._tcn_model.transform_dict["max_tfv"]
+
+        formated_np_array = np.zeros((1, unformatted_input_data_as_np_arr.shape[0],unformatted_input_data_as_np_arr.shape[1]))
+        formated_np_array[0] = unformatted_input_data_as_np_arr
+        formated_torch_tensor = torch.from_numpy(formated_np_array).to(torch.float32).to(self._device)
+        yhat = self._tcn_model(formated_torch_tensor).item()
+        yhat *= self._tcn_model.transform_dict["max_tfv"]
+        yhat = int(yhat)
+        return yhat
 
     def _update_database_dictionary(self, tfv_prediction, scats_site):
         final_scats_site_prediction = self._database_dictionary[scats_site][-1]
@@ -133,11 +193,6 @@ class FlowratePredictor():
                 tfv = entry[-1]
                 return tfv
         raise("QUERY TIME FOR SCATS SITE HAS NO CORRESPONDING ENTRY!")
-
-
-
-    def _load_models(self):
-        pass
 
     # Helper methods #
     def _db_entry_to_time_obj(self, entry):

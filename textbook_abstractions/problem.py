@@ -4,13 +4,14 @@ from datetime import date, datetime
 
 
 class Problem:
-    def __init__(self, graph, initial_state, goal_state, initial_time, sequence_length):
+    def __init__(self, graph, initial_state, goal_state, initial_time, sequence_length, mode):
         self._graph = graph
         self._initial_state = initial_state
         self._goal_states = goal_state
         self._flowrate_predictor = FlowratePredictor(initial_time=initial_time,
                                                      sequence_length=sequence_length,
-                                                     database_file_path="data/data_base.xlsx")  # Model that will be used to predict the flow rate
+                                                     database_file_path="data/data_base.xlsx",
+                                                     mode=mode)  # Model that will be used to predict the flow rate
 
     @property
     def initial_state(self):

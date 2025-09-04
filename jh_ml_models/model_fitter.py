@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 from jh_ml_models.data_loader import TrafficFlowDataSet
 
 class Model_Fitter():
-    def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device):
+    def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device, model_save_path=None):
         self._model = model
         self._train_loss_function = train_loss_function
         self._test_loss_function = test_loss_function
@@ -12,11 +12,15 @@ class Model_Fitter():
         self._num_epochs = num_epochs
         self._sequence_length = sequence_length
         self._device = device
+        self._model_save_path = model_save_path
 
     def fit_model(self, scats_site_number):
         dataset = TrafficFlowDataSet(data_set_file_name="data/model_data.xlsx",
                                      sequence_length=self._sequence_length,
                                      selected_scats_site=scats_site_number)
+
+
+        self._model.transform_dict = dataset.transform_dict
 
         train_dataset, test_dataset, validation_dataset = torch.utils.data.random_split(dataset,[0.9, 0.05, 0.05])
 
@@ -33,6 +37,10 @@ class Model_Fitter():
             self._train_model(validation_loader)
             self._test_model(test_loader)
             print()
+
+        if self._model_save_path is not None:
+            torch.save(self._model, self._model_save_path)
+
 
     def _train_model(self, data_loader):
         n_bat = len(data_loader)

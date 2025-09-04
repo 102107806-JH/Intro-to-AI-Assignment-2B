@@ -11,16 +11,19 @@ class PathFinder():
     def __init__(self, graph):
         self._graph = graph
 
-    def find_paths(self, initial_state, goal_state, initial_time, sequence_length,k_val=1):
+    def find_paths(self, initial_state, goal_state, initial_time, sequence_length, k_val=1, mode="GRU"):
 
         problem = Problem(graph=self._graph,
                           initial_state=initial_state,
                           goal_state=goal_state,
                           initial_time=initial_time,
-                          sequence_length=sequence_length
+                          sequence_length=sequence_length,
+                          mode=mode
                           )
 
         soloution_nodes = self._dijkstras_serach(problem=problem, k_val=k_val)
+
+        return soloution_nodes
 
     def _dijkstras_serach(self, problem, k_val):
         """
