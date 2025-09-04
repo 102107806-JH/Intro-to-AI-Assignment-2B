@@ -51,6 +51,7 @@ class FlowratePredictor():
         number_predictions_required = self._number_of_predictions_required(query_time, scats_site)
         self._make_predictions_and_update_current_data(number_predictions_required, scats_site)
         tfv = self._current_data.query(query_time, scats_site)
+        return tfv
 
     def _number_of_predictions_required(self, prediction_time, scats_site):
         final_scats_site_entry = self._current_data.get_scats_data(scats_site)[-1]  # Get the final scats site entry for the given scat site #

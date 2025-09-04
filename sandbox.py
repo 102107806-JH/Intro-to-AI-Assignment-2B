@@ -11,6 +11,6 @@ if __name__ == "__main__":
                                            database_file_path="data/data_base.xlsx",
                                            mode="GRU")
 
-    flowrate_predictor.get_data(time_since_initial_time=0, scats_site=2000)
+    flowrate_predictor.get_data(time_since_initial_time=0.3, scats_site=2000)
 
     print("Program End")

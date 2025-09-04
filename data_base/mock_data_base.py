@@ -53,7 +53,7 @@ class CurrentData():
         scats_site_data = self._current_data_dictionary[scats_site]
 
         for entry in reversed(scats_site_data):  # Start searching in reverse #
-            bottom_time = self._db_entry_to_time_obj(entry)  # Get the time of the given entry #
+            bottom_time = entry[0]  # Get the time of the given entry #
             top_time = bottom_time + timedelta(minutes=15)  # Get the maximum time for a query to be considered part of this prediction #
 
             if query_time >= bottom_time and top_time > query_time:  # If the query time is between the two times then we have found the correct query #
