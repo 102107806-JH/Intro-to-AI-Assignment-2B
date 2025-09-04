@@ -10,6 +10,20 @@ import copy
 
 class FlowratePredictor():
     def __init__(self, initial_time, sequence_length, database_file_path, mode):
+        """
+        Begin by initializing required variables. Following this the prediction
+        models are loaded. Then the 'database' is loaded. We dont have access to
+        a real database in this task so the 'database' is just an excel file with
+        all the required data. This data is first placed into a list. The data
+        is then loaded into a dictionary that has a key for each scat site and
+        the values are nested lists containing all the data for that scat site
+        in chronological order. The database contains values from
+        01/07/2025 - 31/08/2025. The data in the 08 month is treated as the
+        current data. The reason the 07 month was included was in case a query
+        near the start of the month was made which due to querys "looking back"
+        could have resulted in an error. When a query is made it will draw the
+        data from the database on the 8th month.
+        """
         self._initial_time = initial_time  # This is the time that the search was started at #
         self._sequence_length = sequence_length  # The sequence length (number of timesteps) of the sequences that are to be fed into the model #
         self._days_to_values = {
@@ -49,6 +63,19 @@ class FlowratePredictor():
 
     # Database handling and loading functions #############################################################################
     def _init_data_dictionary(self, database_list):
+        """
+        This function transfers the data between the database_list and
+        the data dictionary. In the process it formats the data into the
+        correct form. Each key is a scat site and the values are the data for
+        that scat site in the form of a nested list. For example the value
+        stored at scat_site = 970 would look something like the following
+        [
+        ['Monday', 0, 1, 98],
+        ['Monday', 1, 1, 58],
+        ['Monday', 2, 1, 78],
+        ...
+        ]
+        """
         database_dictionary = {}  # Dictionary that will act as the database
 
         # Create a key for each scats site and set the value to an empty list #
@@ -70,6 +97,14 @@ class FlowratePredictor():
         return database_dictionary  # Return the created database dictionary #
 
     def _remove_values_past_current_time_from_database_dict(self, dictionary):
+        """
+        Values need to be removed from the database dictionary. This is because
+        (as mentioned) we are treating the 8th month as the current month because
+        we dont have access to realtime data. As such the database contains
+        data that is in the future. This is not allowed and this data needs
+        to be deleted. This is what this function does. It deletes all invalid
+        data.
+        """
         updated_dict = {}  # Updated dictionary that will contain the updated data #
         for scats_site in dictionary:  # Populate the updated dict with empty lists for each unique scats site #
             updated_dict[scats_site] = []
@@ -93,6 +128,22 @@ class FlowratePredictor():
 
     # Database retrieval and model predictions ##############################################################################
     def get_data(self, time_since_initial_time, scats_site):
+        """
+        This function wraps all the database retrieval and model prediction functions.
+        First it gets the time of the query. It does this by adding the time
+        since the initial time to the initial time. It then gets the number of
+        predictions that need to be made. This is done because as the
+        graph is traversed it is possible that the query time may lay a few
+        time steps ahead of the last retrievable time in the database. For
+        example say I am going from node A -> node B -> node C. The time predicted
+        time taken to get to node B from A could be 45 minutes and as such when
+        it comes time to make the prediction of the time to get to node C multiple
+        time steps may need to be predicted. After this the mock database is
+        updated with the predictions that have been made so that they dont
+        need to be made again. Finally, after these predictions have been made
+        and stored in the database is queried to retrieve the tfv
+        value for the given query time and scats site.
+        """
         query_time = self._initial_time + timedelta(hours=time_since_initial_time)  # The time of query to the database #
         number_of_predictions_required = self._number_of_predictions_required(query_time, scats_site)  # Calculates the number of predictions that need to be made for the query time and the given scats site. It could be more than one as travel time progresses #
         self._make_predictions_update_data_base(number_of_predictions_required, scats_site)  # Make the required predictions and update the database so that these predictions dont have to be re-made #
@@ -100,6 +151,12 @@ class FlowratePredictor():
         return tfv
 
     def _number_of_predictions_required(self, prediction_time, scats_site):
+        """
+        This function gets the number of predictions that need to be made for
+        a given time and scats site. We can retrieve the last entry for a scats
+        site and the time this occurred this can be compared with the current
+        time to get the number of entries that are required.
+        """
         final_scats_site_entry = self._database_dictionary[scats_site][-1]  # Get the final scats site entry for the given scat site #
         entry_time = self._db_entry_to_time_obj(final_scats_site_entry)  # Get the time that this entry was made as a time object #
         number_predictions_required = 0  # The number of predictions that will be required #
@@ -112,6 +169,13 @@ class FlowratePredictor():
         return number_predictions_required  # Return the number of predictions that are required #
 
     def _make_predictions_update_data_base(self, number_of_predictions_required, scats_site):
+        """
+        This function loops through the number of required predictions that
+        need to be made and then has the selected model perform these predictions.
+        It then updates the database with the predictions that have been made.
+        So that they don't need to be made again later.
+
+        """
 
         for i in range(number_of_predictions_required):  # Loop through the number of required predictions
             # Bellow function retrieves the data the models are required to make the predictions on #
@@ -133,16 +197,49 @@ class FlowratePredictor():
 
             self._update_database_dictionary(tfv_prediction, scats_site)  # The new prediction data needs to be added to the database dictionary #
 
-    def _retrieve_model_input_sequence(self, scats_site):  # Gets the data the models need to perform a prediction on #
+    def _retrieve_model_input_sequence(self, scats_site):
+        """
+        This function takes a scat site an retrieves the input sequence that
+        the models will use for inference. It has been determined how many
+        predictions need to be this function is just called to retrieve the
+        data for one of those predictions.
+        """
         scats_site_data = self._database_dictionary[scats_site]  # Get all the data for the given scat site #
         final_data_sequence = scats_site_data[-self._sequence_length :]  # Get the sequence required to make the prediction
         return final_data_sequence  # Return the sequence in list format
 
     def _lstm_predict(self, unformatted_input_data, scats_site):
+        """
+        Takes the unformatted input data WHICH IS IN A LIST and the scats site number.
+        The list is in the form [sequence][features]. Each feature is in the form
+        [day_of_week, time, date, tfv]. For example for a sequence of length 3
+        it could look like:
+        [
+        ['Tuesday', 45, 23, 345],
+        ['Tuesday', 46, 23, 345],
+        ['Tuesday', 47, 23, 345]
+        ]
+        You will need to get this data into the correct form for your model to
+        make predictions I would recommend. Changing the mode in the
+        'path_finding_demo.py' file to LSTM and using the debugger to inspect the
+        'unnformated_input_data'. Also please observe the '_gru_predict' and 'tcn_predict'
+        functions if your are at all unclear or for ideas. I have included the
+        scats site as a parameter in case you need it.
+        """
         return None
 
     def _gru_predict(self, unformatted_input_data, scats_site):
-
+        """
+                Takes the unformatted input data WHICH IS IN A LIST and the scats site number.
+                The list is in the form [sequence][features]. Each feature is in the form
+                [day_of_week, time, date, tfv]. For example for a sequence of length 3
+                it could look like:
+                [
+                ['Tuesday', 45, 23, 345],
+                ['Tuesday', 46, 23, 345],
+                ['Tuesday', 47, 23, 345]
+                ]
+        """
         for datum in unformatted_input_data:  # Put the text based datum into numbers #
             datum[0] = self._days_to_values[datum[0]] # Days to numbers
             datum[2] = int(datum[2][0:2])  # Date to numbers
@@ -167,6 +264,9 @@ class FlowratePredictor():
         return yhat
 
     def _tcn_predict(self, unformatted_input_data, scats_site): # Same as the GRU model but with the tcn #
+        """
+        Refer to '_gru_predict'
+        """
         for datum in unformatted_input_data:
             datum[0] = self._days_to_values[datum[0]]
             datum[2] = int(datum[2][0:2])
@@ -187,6 +287,10 @@ class FlowratePredictor():
         return yhat
 
     def _update_database_dictionary(self, tfv_prediction, scats_site):
+        """
+        Appends a prediction to the database at the corresponding scats site.
+        This means that the prediction does not need to be made again.
+        """
         final_scats_site_entry = self._database_dictionary[scats_site][-1]  # Get the final database entry #
         entry_time = self._db_entry_to_time_obj(final_scats_site_entry)  # Get the time of the final entry as datetime object #
         new_entry_time = entry_time + timedelta(minutes=15)  # The next entry is recorded 15 minutes in the future #
@@ -194,6 +298,10 @@ class FlowratePredictor():
         self._database_dictionary[scats_site].append(new_entry)  # Append the entire new entry into the corresponding scats site list in the dictionary #
 
     def _query_database(self, query_time, scats_site):
+        """
+        Searches the database for a given scat site and retreives the entry at
+        the inputted query time.
+        """
         scats_site_data = self._database_dictionary[scats_site]  # Get the data for the given scats site #
 
         for entry in reversed(scats_site_data):  # Start searching in reverse #
@@ -207,7 +315,9 @@ class FlowratePredictor():
 
     # Helper methods ##############################################################################
     def _db_entry_to_time_obj(self, entry):
-        # Formats a database entry into a python datetime object #
+        """
+        Formats a database entry into a python datetime object
+        """
         temp_time = entry[1]
         total_minutes = temp_time * 15
         entry_minutes = total_minutes % 60
@@ -218,7 +328,9 @@ class FlowratePredictor():
         return entry_time
 
     def _time_obj_to_db_entry(self, time_obj, tfv):
-        # Formats a time object into list that can be inserted into the database
+        """
+        Formats a datetime object and tfv value into a database entry list.
+        """
         day_name = time_obj.strftime("%A")
         hour = time_obj.hour
         minute = time_obj.minute
