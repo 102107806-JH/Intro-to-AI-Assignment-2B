@@ -37,7 +37,7 @@ class Problem:
 
     def action_cost(self, state, action, new_state, time_since_initial_time):
         distance = self._distance_between_states(state, action, new_state)  # Get the distance between states
-        flowrate = self._flowrate_predictor.make_prediction(time_since_initial_time=time_since_initial_time, scats_site=new_state)  # Use the model to make a flow rate prediction #
+        flowrate = self._flowrate_predictor.get_data(time_since_initial_time=time_since_initial_time, scats_site=new_state)  # Use the model to make a flow rate prediction #
         predicted_action_time = self._time_between_nodes(distance, flowrate, intersection_pause_time_hours=30/3600)  # Use the calculated quantities to determine the time between nodes
         return predicted_action_time
 
