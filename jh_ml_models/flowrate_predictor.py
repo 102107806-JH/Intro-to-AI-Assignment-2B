@@ -43,25 +43,33 @@ class FlowratePredictor():
         self._database_dictionary = self._init_data_dictionary(database_list)  # Move the data from a list into a dictionary #
         self._database_dictionary = self._remove_values_past_current_time_from_database_dict(self._database_dictionary)  # Remove values past the initial time to simulate a real situation where we would not have future values #
 
-
-    # Load required models
+    #1 Load required models
+    #1.1
     def _load_models(self):
         self._load_gru()
         self._load_tcn()
         self._load_lstm()
 
+    #1.2
     def _load_gru(self):
         self._gru_model = torch.load("saved_models/gru/gru.pth")
         self._gru_model.eval()
 
+    #1.3
     def _load_tcn(self):
         self._tcn_model = torch.load("saved_models/gru/gru.pth")
         self._tcn_model.eval()
 
+    #1.4
     def _load_lstm(self):
+        """
+        This is where you load your lstm. Feel free to add any attributes that
+        you may need when making your predictions.
+        """
         pass
 
-    # Database handling and loading functions #############################################################################
+    #2 Database handling and loading functions #############################################################################
+    #2.1
     def _init_data_dictionary(self, database_list):
         """
         This function transfers the data between the database_list and
@@ -96,6 +104,7 @@ class FlowratePredictor():
 
         return database_dictionary  # Return the created database dictionary #
 
+    #2.2
     def _remove_values_past_current_time_from_database_dict(self, dictionary):
         """
         Values need to be removed from the database dictionary. This is because
@@ -126,7 +135,7 @@ class FlowratePredictor():
 
         return updated_dict  # Return the updated dictionary #
 
-    # Database retrieval and model predictions ##############################################################################
+    #3 Database retrieval and model predictions ##############################################################################
     def get_data(self, time_since_initial_time, scats_site):
         """
         This function wraps all the database retrieval and model prediction functions.
@@ -150,6 +159,7 @@ class FlowratePredictor():
         tfv = self._query_database(query_time, scats_site)  # Query the updated database which will allow us to get the the tfv for the scats_site at the querry time #
         return tfv
 
+    #3.1
     def _number_of_predictions_required(self, prediction_time, scats_site):
         """
         This function gets the number of predictions that need to be made for
@@ -168,6 +178,7 @@ class FlowratePredictor():
 
         return number_predictions_required  # Return the number of predictions that are required #
 
+    #3.2
     def _make_predictions_update_data_base(self, number_of_predictions_required, scats_site):
         """
         This function loops through the number of required predictions that
@@ -197,6 +208,7 @@ class FlowratePredictor():
 
             self._update_database_dictionary(tfv_prediction, scats_site)  # The new prediction data needs to be added to the database dictionary #
 
+    #3.2.1
     def _retrieve_model_input_sequence(self, scats_site):
         """
         This function takes a scat site an retrieves the input sequence that
@@ -208,6 +220,7 @@ class FlowratePredictor():
         final_data_sequence = scats_site_data[-self._sequence_length :]  # Get the sequence required to make the prediction
         return final_data_sequence  # Return the sequence in list format
 
+    #3.2.2
     def _lstm_predict(self, unformatted_input_data, scats_site):
         """
         Takes the unformatted input data WHICH IS IN A LIST and the scats site number.
@@ -224,10 +237,12 @@ class FlowratePredictor():
         'path_finding_demo.py' file to LSTM and using the debugger to inspect the
         'unnformated_input_data'. Also please observe the '_gru_predict' and 'tcn_predict'
         functions if your are at all unclear or for ideas. I have included the
-        scats site as a parameter in case you need it.
+        scats site as a parameter in case you need it. Return the trafic flow prediciton
+        as a float or double.
         """
         return None
 
+    #3.2.3
     def _gru_predict(self, unformatted_input_data, scats_site):
         """
                 Takes the unformatted input data WHICH IS IN A LIST and the scats site number.
@@ -263,6 +278,7 @@ class FlowratePredictor():
         #yhat = int(yhat)  # If Desired the prediction does not need to be converted to an integer #
         return yhat
 
+    #3.2.4
     def _tcn_predict(self, unformatted_input_data, scats_site): # Same as the GRU model but with the tcn #
         """
         Refer to '_gru_predict'
@@ -286,6 +302,7 @@ class FlowratePredictor():
         #yhat = int(yhat)
         return yhat
 
+    #3.2.5
     def _update_database_dictionary(self, tfv_prediction, scats_site):
         """
         Appends a prediction to the database at the corresponding scats site.
@@ -297,6 +314,7 @@ class FlowratePredictor():
         new_entry = self._time_obj_to_db_entry(new_entry_time, tfv_prediction)  # Get the new entry time in the correct list format #
         self._database_dictionary[scats_site].append(new_entry)  # Append the entire new entry into the corresponding scats site list in the dictionary #
 
+    #3.3
     def _query_database(self, query_time, scats_site):
         """
         Searches the database for a given scat site and retreives the entry at
@@ -313,7 +331,7 @@ class FlowratePredictor():
                 return tfv
         raise("QUERY TIME FOR SCATS SITE HAS NO CORRESPONDING ENTRY!")  # This should never happen #
 
-    # Helper methods ##############################################################################
+    #Helper methods ##############################################################################
     def _db_entry_to_time_obj(self, entry):
         """
         Formats a database entry into a python datetime object
