@@ -82,7 +82,7 @@ class FlowratePredictionTester():
         You will have to format the data yourself. Please refer to the _gru_predict
         for inspiration if needed.
         """
-        return None
+        return 0
 
     def _gru_predict(self, unformatted_input_data, scats_site):
         """

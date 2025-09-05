@@ -1,8 +1,58 @@
 from prototype_model_tester.flowrate_prediction_tester import FlowratePredictionTester
 from prototype_model_tester.test_data_store import TestDataStore
-
+import math
+from datetime import datetime, timedelta
 
 class ModelTester():
-    def __init__(self):
-        test_data_store = TestDataStore(database_file_path="data/data_base.xlsx")
-        flowrate_prediction_tester = FlowratePredictionTester()
+    def __init__(self, database_file_path):
+        self._test_data_store = TestDataStore(database_file_path=database_file_path)
+        self._flowrate_prediction_tester = FlowratePredictionTester()
+
+    def test_models(self, scats_site, prediction_depth, sequence_length, start_datetime, end_datetime):
+        time_dif = end_datetime - start_datetime
+        time_dif_total_seconds = time_dif.days * 24 * 60 * 60 + time_dif.seconds
+        number_of_predictions = + math.floor((time_dif_total_seconds / 60) / 15)
+        output_dictionary = {
+            "Prediction_Times": [],
+            "GRU": [],
+            "TCN": [],
+            "LSTM": [],
+            "Targets": []
+        }
+        current_predicition_datetime = start_datetime
+        for i in range(number_of_predictions):
+            sequence = self._test_data_store.query_sequence(
+                query_time=current_predicition_datetime - timedelta(minutes=15 * prediction_depth),
+                scats_site=scats_site,
+                sequence_length=sequence_length)
+
+            gru_prediction = self._flowrate_prediction_tester.test(
+                unformatted_input_data=sequence,
+                scats_site=scats_site,
+                mode="GRU",
+                prediction_depth=prediction_depth)
+
+            tcn_prediction = self._flowrate_prediction_tester.test(
+                unformatted_input_data=sequence,
+                scats_site=scats_site,
+                mode="TCN",
+                prediction_depth=prediction_depth)
+
+            lstm_prediction = self._flowrate_prediction_tester.test(
+                unformatted_input_data=sequence,
+                scats_site=scats_site,
+                mode="LSTM",
+                prediction_depth=prediction_depth)
+
+            target = self._test_data_store.query(
+                query_time=current_predicition_datetime,
+                scats_site=scats_site)
+
+            output_dictionary["GRU"].append(gru_prediction)
+            output_dictionary["TCN"].append(tcn_prediction)
+            output_dictionary["LSTM"].append(lstm_prediction)
+            output_dictionary["Targets"].append(target)
+
+            current_predicition_datetime = current_predicition_datetime + timedelta(minutes=15)
+        return output_dictionary
+
