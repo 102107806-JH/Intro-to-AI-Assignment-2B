@@ -2,5 +2,3 @@
 __pycache__/
 .idea/
 data/traffic_signal_volume_cur
-jh_training_script.py
-

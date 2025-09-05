@@ -2,7 +2,7 @@ import pandas
 from datetime import date, datetime, timedelta
 import math
 
-class CurrentData():
+class CurrentDataStore():
     def __init__(self, initial_time, database_file_path):
         """
         This class uses a dictionary to store the current available data. The
