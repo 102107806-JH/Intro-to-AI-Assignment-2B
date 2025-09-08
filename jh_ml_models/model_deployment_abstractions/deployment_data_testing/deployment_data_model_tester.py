@@ -4,8 +4,12 @@ import math
 from datetime import timedelta
 
 class DeploymentDataModelTester():
+    """
+    Wraps the 'TestDeploymentDataStore' and the 'FlowratePredictionTester' and
+    enables testing of the models on the deployment data.
+    """
     def __init__(self, database_file_path):
-        self._test_data_store = TestDeploymentDataStore(database_file_path=database_file_path)
+        self._test_deployment_data_store = TestDeploymentDataStore(database_file_path=database_file_path)
         self._flowrate_prediction_tester = FlowratePredictionTester()
 
     def test_models(self, scats_site, prediction_depth, sequence_length, start_datetime, end_datetime):
@@ -21,7 +25,7 @@ class DeploymentDataModelTester():
         }
         current_predicition_datetime = start_datetime
         for i in range(number_of_predictions):
-            sequence = self._test_data_store.query_sequence(
+            sequence = self._test_deployment_data_store.query_sequence(
                 query_time=current_predicition_datetime - timedelta(minutes=15 * prediction_depth),
                 scats_site=scats_site,
                 sequence_length=sequence_length)
@@ -44,7 +48,7 @@ class DeploymentDataModelTester():
                 mode="LSTM",
                 prediction_depth=prediction_depth)
 
-            target = self._test_data_store.query(
+            target = self._test_deployment_data_store.query(
                 query_time=current_predicition_datetime,
                 scats_site=scats_site)
 
