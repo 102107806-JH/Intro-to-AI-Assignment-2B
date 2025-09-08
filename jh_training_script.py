@@ -1,8 +1,8 @@
 import torch
 from torch import nn
-from jh_ml_models.gru_model import GRU
-from jh_ml_models.tcn_model import TCN
-from jh_ml_models.model_fitter import Model_Fitter
+from jh_ml_models.model_code.gru_model import GRU
+from jh_ml_models.model_code.tcn_model import TCN
+from jh_ml_models.model_fitting.model_fitter import Model_Fitter
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -21,8 +21,8 @@ if __name__ == "__main__":
     kernel_size = 4
     c1_out_channels = 6
 
-    model = GRU(feature_size=4, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
-    #model = TCN(feature_size=4, sequence_length=sequence_length, kernel_size=kernel_size, c1_out_channels=c1_out_channels, device=device).to(device)
+    #model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
+    model = TCN(feature_size=4, sequence_length=sequence_length, kernel_size=kernel_size, c1_out_channels=c1_out_channels, device=device).to(device)
     train_loss_function = nn.MSELoss()
     test_loss_function = nn.L1Loss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -36,7 +36,7 @@ if __name__ == "__main__":
                           num_epochs=num_epochs,
                           sequence_length=sequence_length,
                           device=device,
-                          model_save_path="saved_models/gru.pth")
+                          model_save_path="saved_models/tcn.pth")
 
     fitter.fit_model(scats_site_number)
 

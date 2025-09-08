@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from jh_ml_models.data_loader import TrafficFlowDataSet
+from jh_ml_models.model_fitting.data_loader import TrafficFlowDataSet
 
 class Model_Fitter():
     def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device, model_save_path=None):

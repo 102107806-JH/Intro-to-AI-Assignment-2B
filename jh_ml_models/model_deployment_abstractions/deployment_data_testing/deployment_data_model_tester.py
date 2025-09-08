@@ -1,11 +1,11 @@
-from prototype_model_tester.flowrate_prediction_tester import FlowratePredictionTester
-from prototype_model_tester.test_data_store import TestDataStore
+from jh_ml_models.model_deployment_abstractions.deployment_data_testing.flowrate_prediction_tester import FlowratePredictionTester
+from jh_ml_models.model_deployment_abstractions.deployment_data_testing.test_deployment_data_store import TestDeploymentDataStore
 import math
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-class ModelTester():
+class DeploymentDataModelTester():
     def __init__(self, database_file_path):
-        self._test_data_store = TestDataStore(database_file_path=database_file_path)
+        self._test_data_store = TestDeploymentDataStore(database_file_path=database_file_path)
         self._flowrate_prediction_tester = FlowratePredictionTester()
 
     def test_models(self, scats_site, prediction_depth, sequence_length, start_datetime, end_datetime):

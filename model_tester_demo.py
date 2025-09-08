@@ -1,14 +1,12 @@
-from prototype_model_tester.test_data_store import TestDataStore
-from datetime import datetime, timedelta
-from prototype_model_tester.flowrate_prediction_tester import FlowratePredictionTester
+from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-import math
-from prototype_model_tester.model_tester import ModelTester
+from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployment_data_model_tester import DeploymentDataModelTester
+
 if __name__ == "__main__":
     start_datetime = datetime(year=2025, month=8, day=1, hour=0, minute=0)
     end_datetime = datetime(year=2025, month=8, day=2, hour=0,minute=0)
-    model_tester = ModelTester(database_file_path="data/data_base.xlsx")
+    model_tester = DeploymentDataModelTester(database_file_path="data/data_base.xlsx")
     results = model_tester.test_models(
         scats_site=970,
         prediction_depth=1,
