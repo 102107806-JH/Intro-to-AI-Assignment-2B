@@ -34,6 +34,10 @@ class FlowratePredictor():
         used later in the algorithm if required. Lastly it retrieves the data
         from the current data which corresponds to the current query time and
         scats site.
+        :param time_since_initial_time: datetime object the represents the amount
+        of time elapsed since the initial time
+        :param scats_site: The scats site where we wish to get the data from
+        :return: A float that is the tfv predicition
         """
         query_time = self._initial_time + timedelta(hours=time_since_initial_time)  # The time of query to the database #
         number_predictions_required = self._number_of_predictions_required(query_time, scats_site)
@@ -47,6 +51,10 @@ class FlowratePredictor():
         the number of predictions that need to be made. This needs to be done
         because it is possible that a query could be made multiple time steps
         past the last data point for a scats site.
+        :param prediction_time: The time which the prediction is being made at
+        :param scats_site: The scats site where the predicition is being made
+        :return: The number of predictions that are require in order to make a
+        prediction at the prediction time.
         """
         final_scats_site_entry = self._current_data.get_scats_data(scats_site)[-1]  # Get the final scats site entry for the given scat site #
         entry_time = final_scats_site_entry[0]  # Get the time that this entry was made as a time object #
@@ -69,6 +77,12 @@ class FlowratePredictor():
         the same scats_site at the same time will be accessed again later. This
         saves compute as each scat_site at each time interval only needs to be
         predicted once.
+        :param number_of_predictions_required: The number of predictions that need
+        to be made at the scats_site. Previous predictions are used to make future
+        ones because in real life we would need this as we wouldnt have access
+        to this data
+        :param scats_site: The scats site.
+        :return: Null
         """
         for i in range(number_of_predictions_required):
             unformatted_input_data = copy.deepcopy(self._current_data.get_input_sequence(scats_site, self._sequence_length))  # Data  edited inside prediction functions we must not edit the underlying database #

@@ -45,6 +45,12 @@ class ModelCollection():
         """
         This functions takes the unformatted input data and then routes it. To
         the corresponding variable depending on the mode that has been selected.
+        :param unformatted_input_data: A nested list that contains a nested list
+        for each time step. Each nested list is of the form: [dateTimeObj for tfv, tfv]
+        :param scats_site: The scats site where the predicition needs to be made.
+        :param mode: The mode (model being used to make predictions) that is being
+        used.
+        :return:tfv prediction
         """
         tfv_prediction = None  # Stores the predicted tfv value #
 
@@ -86,6 +92,19 @@ class ModelCollection():
     def _gru_predict(self, unformatted_input_data, scats_site):
         """
         Formats the unformatted data and inputs into the model to make a traffic flow volume prediction.
+        :param unformatted_input_data: A nested list. Contains an internal list for every
+        time step in the sequence. Each internal list consists of a datatime object as the
+        0th element and a traffic flow volume value as the first. For example for a
+        sequence length of 4 it would look something like this.
+        [
+        [dateTimeObj0 for tfv0, tfv0],
+        [dateTimeObj1 for tfv1, tfv1],
+        [dateTimeObj0 for tfv2, tfv2],
+        [dateTimeObj0 for tfv3, tfv3],
+        ]
+        Each datTimeObj contains the time of the tfv measurement.
+        :param scats_site: the scats_site where the data is from
+        :return: A traffic flow volume prediction
         """
         input_data_as_list = []  # Stores the input data in the correct form #
         for datum in unformatted_input_data:  # Loop through all the time steps in the unformatted_input_data sequence #
@@ -117,6 +136,19 @@ class ModelCollection():
     def _tcn_predict(self, unformatted_input_data, scats_site): # Same as the GRU model but with the tcn #
         """
         Formats the unformatted data and inputs into the model to make a traffic flow volume prediction.
+        :param unformatted_input_data: A nested list. Contains an internal list for every
+        time step in the sequence. Each internal list consists of a datatime object as the
+        0th element and a traffic flow volume value as the first. For example for a
+        sequence length of 4 it would look something like this.
+        [
+        [dateTimeObj0 for tfv0, tfv0],
+        [dateTimeObj1 for tfv1, tfv1],
+        [dateTimeObj0 for tfv2, tfv2],
+        [dateTimeObj0 for tfv3, tfv3],
+        ]
+        Each datTimeObj contains the time of the tfv measurement.
+        :param scats_site: the scats_site where the data is from
+        :return: A traffic flow volume prediction
         """
         input_data_as_list = [] # Stores the input data in the correct form #
         for datum in unformatted_input_data:  # Loop through all the time steps in the unformatted_input_data sequence #

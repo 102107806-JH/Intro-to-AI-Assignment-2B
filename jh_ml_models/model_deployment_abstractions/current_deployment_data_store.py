@@ -30,6 +30,11 @@ class CurrentDeploymentDataStore():
         This function reads data into the current data dictionary from the
         provided database Excel file. Additionally, it only loads in entries that
         are before the 'initial time'.
+        :param database_file_path: The path to the fake Excel database file. That
+        contains the data that would be used during deployment.
+        :param initial_time: The initial time at which the pathfinding will start.
+        The deployment data which is after this will not be loaded.
+        :return: A data dictionary with all the current deployment data
         """
         # Round down the initial time to the nearest 15 minute interval
         initial_time_rounded_down = datetime(year=initial_time.year,
@@ -77,9 +82,13 @@ class CurrentDeploymentDataStore():
         """
         Get the nested list that is going to form the input sequence for the
         model.
+        :param scats_site: The scats site where we want to extract the sequence.
+        :param sequence_length: The length of the sequence that we want to extract.
+        :return: Nested list where each nested entry is time step data of a given
+        teme step for the scats site. Returns the last possible sequence.
         """
-        scats_site_data = self._current_deployment_data_dictionary[scats_site]
-        final_data_sequence = scats_site_data[-sequence_length:]
+        scats_site_data = self._current_deployment_data_dictionary[scats_site]  # Get the data list for the scats site #
+        final_data_sequence = scats_site_data[-sequence_length:]  #  Get the last possible sequence #
         return final_data_sequence
 
     def append_data_to_scats_site(self, scats_site, data):
@@ -87,8 +96,11 @@ class CurrentDeploymentDataStore():
 
     def query(self, query_time, scats_site):
         """
-         Returns the tfv value from the current data for the inputted query time
+        Returns the tfv value from the current data for the inputted query time
          and scats site number.
+        :param query_time: The time of the tfv value you want to obtain.
+        :param scats_site: The scats site of the tfv value that you want to obtain.
+        :return: tfv value for the given scats site and the query time.
         """
         scats_site_data = self._current_deployment_data_dictionary[scats_site]  # Get a reference to the scats_site data #
         for entry in reversed(scats_site_data):  # Go through all the scats site data #

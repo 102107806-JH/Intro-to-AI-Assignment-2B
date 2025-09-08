@@ -15,6 +15,9 @@ class TestDeploymentDataStore():
         """
         This function loads the data out of the fake database file and puts it
         into a dictionary.
+        :param database_file_path: The path to the current fake database Excel
+        file
+        :return: Data dictionary storing the current deployment data
         """
         database_list = (pandas.read_excel(database_file_path).to_numpy()).tolist()  # Convert the db file into a list #
         current_data_dictionary = {}  # Dictionary that will store the current data #
@@ -42,8 +45,12 @@ class TestDeploymentDataStore():
 
     def query(self, query_time, scats_site):
         """
-         Returns the tfv value from the current data for the inputted query time
-         and scats site number.
+        Returns the tfv value from the current data for the inputted query time
+        and scats site number.
+        :param query_time: The time which you want to extract the scats value.
+        Refer to the if statement to see how times are binned.
+        :param scats_site: The scats site which you want to extract data for.
+        :return: tfv value for the query time and scats_site
         """
         scats_site_data = self._test_data_dictionary[scats_site]  # Get a reference to the scats_site data #
         for entry in scats_site_data:  # Go through all the scats site data #
@@ -60,6 +67,22 @@ class TestDeploymentDataStore():
     def query_sequence(self, query_time, scats_site, sequence_length):
         """
         Get the sequence for the 'query_time' and 'scats_site'.
+        :param query_time: The time which you want to extract the sequence.
+        Refer to the if statement to see how times are binned.
+        :param scats_site: The scats site which you want to extract data for.
+        :param sequence_length: The length of the sequence you want extracted.
+        THE SEQUENCE 'LOOKS BACK'.
+        :return: A nested list. Contains an internal list for every
+        time step in the sequence. Each internal list consists of a datatime object as the
+        0th element and a traffic flow volume value as the first. For example for a
+        sequence length of 4 it would look something like this.
+        [
+        [dateTimeObj  for query time - 45 minutes, tfv for query time - 45 minutes],
+        [dateTimeObj  for query time - 30 minutes, tfv for query time  - 30 minutes],
+        [dateTimeObj  for query time - 15 minutes, tfv for query time - 15 minutes],
+        [dateTimeObj  for query time, tfv for query time],
+        ]
+        Each datTimeObj contains the time of the tfv measurement.
         """
         scats_site_data = self._test_data_dictionary[scats_site]  # Get a reference to the scats_site data #
         for i, entry in enumerate(scats_site_data):  # Go through all the scats site data #
