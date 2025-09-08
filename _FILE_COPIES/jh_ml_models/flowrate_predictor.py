@@ -1,5 +1,5 @@
-from data_handling.current_data import CurrentData
-from datetime import date, datetime, timedelta
+from jh_ml_models.model_deployment_abstractions.current_deployment_data_store import CurrentDataStore
+from datetime import timedelta
 import math
 import copy
 import torch
@@ -14,7 +14,7 @@ class FlowratePredictor():
         """
         self._initial_time = initial_time
         self._sequence_length = sequence_length
-        self._current_data = CurrentData(initial_time=initial_time,
+        self._current_data = CurrentDataStore(initial_time=initial_time,
                                         database_file_path=database_file_path)  # Init an instance of the current data object #
         self._load_models()  # Load models #
         self._mode = mode

@@ -1,5 +1,5 @@
 import math
-from jh_ml_models.flowrate_predictor import FlowratePredictor
+from jh_ml_models.model_deployment_abstractions.flowrate_predictor import FlowratePredictor
 
 
 class Problem:

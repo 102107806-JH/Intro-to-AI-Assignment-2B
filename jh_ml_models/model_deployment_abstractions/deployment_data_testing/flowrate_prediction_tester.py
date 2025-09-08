@@ -1,0 +1,37 @@
+import torch
+import numpy as np
+import copy
+from datetime import datetime, timedelta
+from jh_ml_models.model_code.model_collection import ModelCollection
+
+
+class FlowratePredictionTester():
+    """
+    This class is somewhat similar to the 'FlowratePredictor' class. It wraps the
+    model collection and feeds it data in order to make a prediction.
+    """
+    def __init__(self):
+        self._model_collection = ModelCollection()  # Collection of all the different models that are available #
+
+    def test(self, unformatted_input_data, scats_site, mode, prediction_depth):
+        """
+        This function is responsible for making the predictions. It takes the 'unformatted_input_data'
+        for a given 'scats_site' passes this data to the model collection along
+        with the 'mode' which determines what model will be used. The 'predicition_depth'
+        is how many time steps ahead are try to be predicted. For example if the
+        'prediction_depth' equals 2. The next time step tfv will be predicted
+        this predicted value will then be used as the last tfv in the next predicition
+        whilst the zeroth timestep in the original 'unformatted_input_data' is
+        removed (to maintain the correct sequence length). This process can continue
+        for however many timesteps are required.
+        """
+        unformatted_input_data = copy.deepcopy(unformatted_input_data) # Data may be edited inside prediction functions we must not edit the underlying data so we take a deep copy #
+        tfv_prediction = None  # Stores the tfv_prediction and is updated at each new depth #
+
+        for i in range(prediction_depth):
+            tfv_prediction = self._model_collection.make_predicition(unformatted_input_data, scats_site, mode)  # Get the prediction #
+            final_time = unformatted_input_data[-1][0]  # The time of the final tfv value in the sequence stored inside a datetime object #
+            unformatted_input_data.pop(0)  # Remove the 0th list element #
+            unformatted_input_data.append([final_time + timedelta(minutes=15), tfv_prediction])  # Append the newly made tfv predicition and its corresponding time to the unformatted input data #
+
+        return tfv_prediction  # Returns the final tfv predicition
