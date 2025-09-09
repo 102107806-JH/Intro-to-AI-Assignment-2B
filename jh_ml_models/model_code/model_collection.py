@@ -118,10 +118,6 @@ class ModelCollection():
         input_data_as_np_arr = np.asarray(input_data_as_list, dtype=np.float32)  # Change the data into a numpy array #
 
         # Applying transformations to get the data into the right format #
-        #input_data_as_np_arr[:, 0] /= self._gru_model.transform_dict["max_day"]
-        #input_data_as_np_arr[:, 1] /= self._gru_model.transform_dict["max_time"]
-        #input_data_as_np_arr[:, 2] /= self._gru_model.transform_dict["max_date"]
-        #input_data_as_np_arr[:, 3] /= self._gru_model.transform_dict["max_tfv"]
         input_data_as_np_arr[:, 0] = (input_data_as_np_arr[:, 0] - self._gru_model.transform_dict["min_day"]) / (self._gru_model.transform_dict["max_day"] - self._gru_model.transform_dict["min_day"])
         input_data_as_np_arr[:, 1] = (input_data_as_np_arr[:, 1] - self._gru_model.transform_dict["min_time"]) / (self._gru_model.transform_dict["max_time"] - self._gru_model.transform_dict["min_time"])
         input_data_as_np_arr[:, 2] = (input_data_as_np_arr[:, 2] - self._gru_model.transform_dict["min_date"]) / (self._gru_model.transform_dict["max_date"] - self._gru_model.transform_dict["min_date"])
@@ -134,7 +130,6 @@ class ModelCollection():
 
         # Make the prediction
         yhat = self._gru_model(formated_torch_tensor).item()
-        #yhat *= self._gru_model.transform_dict["max_tfv"]  # Get back to the actual tfv number #
         yhat = yhat * (self._gru_model.transform_dict["max_tfv"] - self._gru_model.transform_dict["min_tfv"]) + self._gru_model.transform_dict["min_tfv"]  # Get back to the actual tfv number #
         return yhat
 
@@ -167,10 +162,6 @@ class ModelCollection():
         input_data_as_np_arr = np.asarray(input_data_as_list, dtype=np.float32)  # Change the data into a numpy array #
 
         # Applying transformations to get the data into the right format #
-        #input_data_as_np_arr[:, 0] /= self._tcn_model.transform_dict["max_day"]
-        #input_data_as_np_arr[:, 1] /= self._tcn_model.transform_dict["max_time"]
-        #input_data_as_np_arr[:, 2] /= self._tcn_model.transform_dict["max_date"]
-        #input_data_as_np_arr[:, 3] /= self._tcn_model.transform_dict["max_tfv"]
         input_data_as_np_arr[:, 0] = (input_data_as_np_arr[:, 0] - self._gru_model.transform_dict["min_day"]) / (self._gru_model.transform_dict["max_day"] - self._gru_model.transform_dict["min_day"])
         input_data_as_np_arr[:, 1] = (input_data_as_np_arr[:, 1] - self._gru_model.transform_dict["min_time"]) / (self._gru_model.transform_dict["max_time"] - self._gru_model.transform_dict["min_time"])
         input_data_as_np_arr[:, 2] = (input_data_as_np_arr[:, 2] - self._gru_model.transform_dict["min_date"]) / (self._gru_model.transform_dict["max_date"] - self._gru_model.transform_dict["min_date"])
@@ -183,6 +174,5 @@ class ModelCollection():
 
         # Make the prediction
         yhat = self._tcn_model(formated_torch_tensor).item()
-        #yhat *= self._tcn_model.transform_dict["max_tfv"]  # Get back to the actual tfv number #
         yhat = yhat * (self._gru_model.transform_dict["max_tfv"] - self._gru_model.transform_dict["min_tfv"]) + self._gru_model.transform_dict["min_tfv"]  # Get back to the actual tfv number #
         return yhat
