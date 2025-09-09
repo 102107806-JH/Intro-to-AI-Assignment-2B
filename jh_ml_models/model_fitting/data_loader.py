@@ -109,24 +109,38 @@ class TrafficFlowDataSet(Dataset):
         # Scaling the day
         day_feature = np_data_array[:, 1]
         max_day = np.max(day_feature)
-        day_feature /= max_day
+        min_day = np.min(day_feature)
+        #day_feature /= max_day
+        day_feature = (day_feature - min_day) / (max_day - min_day)
+        np_data_array[:, 1] = day_feature
 
         # Scaling the date
         time_feature = np_data_array[:, 2]
         max_time = np.max(time_feature)
-        time_feature /= max_time
+        min_time = np.min(time_feature)
+        #time_feature /= max_time
+        time_feature = (time_feature - min_time) / (max_time - min_time)
+        np_data_array[:, 2] = time_feature
 
         # Scaling the time
         date_feature = np_data_array[:, 3]
         max_date = np.max(date_feature)
-        date_feature /= max_date
+        min_date = np.min(date_feature)
+        #date_feature /= max_date
+        date_feature = (date_feature - min_date) / (max_date - min_date)
+        np_data_array[:, 3] = date_feature
 
         # Scaling TFV values
         tfv_feature = np_data_array[:, 4]
         tfv_label = np_data_array[:, 5]
         max_tfv = np.max(tfv_feature)
-        tfv_feature /= max_tfv
-        tfv_label /= max_tfv
+        min_tfv = np.min(tfv_feature)
+        #tfv_feature /= max_tfv
+        #tfv_label /= max_tfv
+        tfv_feature = (tfv_feature - min_tfv) / (max_tfv - min_tfv)
+        tfv_label = (tfv_label - min_tfv) / (max_tfv - min_tfv)
+        np_data_array[:, 4] = tfv_feature
+        np_data_array[:, 5] = tfv_label
 
         #remove the scats site number
         np_data_array = np_data_array[:, 1:]
@@ -135,7 +149,11 @@ class TrafficFlowDataSet(Dataset):
             "max_day": max_day,
             "max_time": max_time,
             "max_date": max_date,
-            "max_tfv": max_tfv
+            "max_tfv": max_tfv,
+            "min_day": min_day,
+            "min_time": min_time,
+            "min_date": min_date,
+            "min_tfv": min_tfv
         }
         return np_data_array
 

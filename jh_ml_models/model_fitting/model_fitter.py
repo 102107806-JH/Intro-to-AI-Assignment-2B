@@ -33,7 +33,7 @@ class Model_Fitter():
         print()
 
         for epoch in range(self._num_epochs):
-            print(f"Epoch {epoch}\n-------------")
+            print(f"Epoch {epoch + 1}\n-------------")
             self._train_model(validation_loader)
             self._test_model(test_loader)
             print()
