@@ -34,6 +34,10 @@ class PathFinder():
         to the root node of the tree which prevents cycling an ensures that the
         algorithm does not get stuck in an infinite loop. The algorithm halts when
         either the frontier is empty or k solutions have been found.
+        :param problem: Textbook problem abstraction that allows the calculation of
+        an action cost.
+        :param k_val: The number of paths that we want to be able to find.
+        :return: list of solution nodes all of which lead to the goal
         """
         node = Node(state=problem.initial_state)  # Put the initial state inside a node
         frontier = PriorityQueue(key_lambda=lambda node: (node.total_cost, node.state,node.order_pushed_into_collection))  # Create frontier and establish sorting order #

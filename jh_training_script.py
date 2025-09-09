@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    mode = "gru"
 
     # Hyper parameters (Common)
     batch_size = 5
@@ -21,18 +22,21 @@ if __name__ == "__main__":
     # Hyper parameters (TCN)
     kernel_size = 4
     c1_out_channels = 6
-
-    #model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
-    model = TCN(feature_size=4, sequence_length=sequence_length, kernel_size=kernel_size, c1_out_channels=c1_out_channels, device=device).to(device)
+    if mode == "gru":
+        model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
+    elif mode == "tcn":
+        model = TCN(feature_size=4, sequence_length=sequence_length, kernel_size=kernel_size, c1_out_channels=c1_out_channels, device=device).to(device)
+    else:
+        raise Exception("Invalid mode")
     train_loss_function = nn.MSELoss() #nn.L1Loss()
     test_loss_function = nn.MSELoss() #nn.L1Loss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scats_site_number = 'ALL'
 
     split_proportions = {
-        "train": 0.001,
-        "test": 0.05,
-        "validation": 0.001
+        "train": 0.7,
+        "test": 0.2,
+        "validation": 0.1
     }
     split_proportions["discard"] = 1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
 
@@ -46,7 +50,7 @@ if __name__ == "__main__":
                           device=device,
                           split_proportions=split_proportions,
                           validate=True,
-                          model_save_path="saved_models/tcn.pth")
+                          model_save_path="saved_models/" + mode + ".pth")
 
     metric_dictionary = fitter.fit_model(scats_site_number)
     plt.plot(metric_dictionary["validation_loss"], 'g')

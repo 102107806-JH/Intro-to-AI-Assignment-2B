@@ -4,18 +4,18 @@ import datetime
 from datetime import datetime, timedelta
 if __name__ == "__main__":
     finish_time = datetime.now()
-    finish_time += timedelta(minutes=3)
-    hyper_parameter_tuner = HyperParameterTuner(mode="tcn", epochs_per_run=50)
+    finish_time += timedelta(minutes=50)
+    hyper_parameter_tuner = HyperParameterTuner(mode="tcn", epochs_per_run=100)
 
     hyper_parameter_dictionary = {
         # Common hps
-        "lr" : HyperParameter(lower_limit=None, upper_limit=None, data_type=list, data_list=[1e-5,1e-4,1e-3,1e-2,1e-1]),
-        "batch_size" : HyperParameter(lower_limit=None, upper_limit=None, data_type=list, data_list=[4, 8, 16, 24, 32, 64, 128]),
+        "lr" : HyperParameter(lower_limit=None, upper_limit=None, data_type=list, data_list=[1e-5, 1e-4, 1e-3, 1e-2]),
+        "batch_size" : HyperParameter(lower_limit=None, upper_limit=None, data_type=list, data_list=[16, 32, 64, 128, 256]),
         # GRU
         "hidden_size" : HyperParameter(lower_limit=None, upper_limit=None, data_type=list, data_list=[16, 32, 64, 128, 256, 512, 1024]),
         "num_layers" : HyperParameter(lower_limit=1, upper_limit=10, data_type=int),
         # TCN
-        "kernel_size" : HyperParameter(lower_limit=1, upper_limit=6, data_type=int),
+        "kernel_size" : HyperParameter(lower_limit=2, upper_limit=6, data_type=int),
         "C1_out_channels" : HyperParameter(lower_limit=1, upper_limit=24, data_type=int)
     }
 

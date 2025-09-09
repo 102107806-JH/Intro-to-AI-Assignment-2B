@@ -1,0 +1,353 @@
+C:\Users\jotha\Desktop\PythonVeEnvs\Assignment2B\Scripts\python.exe "C:\Users\jotha\Desktop\uni\sem2_2025\Introduction to Artifical Intelligence - COS30019\Assignments\Assignment 2b\Repository\Intro-to-AI-Assignment-2B\hyper_parameter_tuning_script.py"
+Hyper parameter tuning will stop at approximately: 09/09/2025  19:43:45
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 16
+Kernel Size: 5
+Number of Layer 1 output channels: 3
+Testing model that has not been trained ### Pre-training test loss : 0.03403580685791201
+Epoch 100 #### Train loss : 0.0040579168810101 #### Validation loss : 0.004327407862070859 ####
+Testing trained model ###Post-training test loss : 0.004311692929597542
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 32
+Kernel Size: 6
+Number of Layer 1 output channels: 6
+Testing model that has not been trained ### Pre-training test loss : 0.21756778114332173
+Epoch 100 #### Train loss : 0.0010256257408487034 #### Validation loss : 0.001035093903608088 ####
+Testing trained model ###Post-training test loss : 0.001037509464252267
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Kernel Size: 5
+Number of Layer 1 output channels: 22
+Testing model that has not been trained ### Pre-training test loss : 0.03473018395879337
+Epoch 100 #### Train loss : 0.0022137115884106606 #### Validation loss : 0.0024500264044036157 ####
+Testing trained model ###Post-training test loss : 0.002437669347273186
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 64
+Kernel Size: 3
+Number of Layer 1 output channels: 23
+Testing model that has not been trained ### Pre-training test loss : 0.08064460370865043
+Epoch 100 #### Train loss : 0.0015018268817267011 #### Validation loss : 0.0014598989555452135 ####
+Testing trained model ###Post-training test loss : 0.00146427025902085
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Kernel Size: 5
+Number of Layer 1 output channels: 17
+Testing model that has not been trained ### Pre-training test loss : 0.03627797851021115
+Epoch 100 #### Train loss : 0.0016128171591844875 #### Validation loss : 0.0017711978434817865 ####
+Testing trained model ###Post-training test loss : 0.0017832948433351703
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 16
+Kernel Size: 2
+Number of Layer 1 output channels: 11
+Testing model that has not been trained ### Pre-training test loss : 0.07406163473098637
+Epoch 100 #### Train loss : 0.001081196380806048 #### Validation loss : 0.0009900781516325734 ####
+Testing trained model ###Post-training test loss : 0.0010282380668315224
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 16
+Kernel Size: 3
+Number of Layer 1 output channels: 22
+Testing model that has not been trained ### Pre-training test loss : 0.08191350531613756
+Epoch 100 #### Train loss : 0.0012913908138296073 #### Validation loss : 0.0012120329114305418 ####
+Testing trained model ###Post-training test loss : 0.0012105663110906746
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 8
+Kernel Size: 2
+Number of Layer 1 output channels: 10
+Testing model that has not been trained ### Pre-training test loss : 0.02081310271148086
+Epoch 100 #### Train loss : 0.00353518546315339 #### Validation loss : 0.003665738342113262 ####
+Testing trained model ###Post-training test loss : 0.003674003502110064
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 16
+Kernel Size: 2
+Number of Layer 1 output channels: 5
+Testing model that has not been trained ### Pre-training test loss : 0.045106623160416734
+Epoch 100 #### Train loss : 0.008509550210222068 #### Validation loss : 0.009488333432402993 ####
+Testing trained model ###Post-training test loss : 0.009481840511961352
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 128
+Kernel Size: 4
+Number of Layer 1 output channels: 6
+Testing model that has not been trained ### Pre-training test loss : 0.15457162795739882
+Epoch 100 #### Train loss : 0.08561083604581654 #### Validation loss : 0.0864155376330018 ####
+Testing trained model ###Post-training test loss : 0.08626539446413517
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Kernel Size: 6
+Number of Layer 1 output channels: 7
+Testing model that has not been trained ### Pre-training test loss : 0.3587203099849118
+Epoch 100 #### Train loss : 0.0023787346726749092 #### Validation loss : 0.002526521682739258 ####
+Testing trained model ###Post-training test loss : 0.0025512353458907455
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 16
+Kernel Size: 3
+Number of Layer 1 output channels: 16
+Testing model that has not been trained ### Pre-training test loss : 0.20339324966281236
+Epoch 100 #### Train loss : 0.0009202399697276277 #### Validation loss : 0.0009332814331014922 ####
+Testing trained model ###Post-training test loss : 0.0009466204479279455
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 32
+Kernel Size: 3
+Number of Layer 1 output channels: 7
+Testing model that has not been trained ### Pre-training test loss : 0.03168144838702298
+Epoch 100 #### Train loss : 0.0011471554349150716 #### Validation loss : 0.0011620400482714767 ####
+Testing trained model ###Post-training test loss : 0.001162362342704058
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 4
+Kernel Size: 1
+Number of Layer 1 output channels: 20
+Testing model that has not been trained ### Pre-training test loss : 0.13927556863938642
+Epoch 100 #### Train loss : 0.0013837988832644393 #### Validation loss : 0.0012538069857585864 ####
+Testing trained model ###Post-training test loss : 0.0012539427769591705
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Kernel Size: 1
+Number of Layer 1 output channels: 17
+Testing model that has not been trained ### Pre-training test loss : 0.10544393289905445
+Epoch 100 #### Train loss : 0.0015651876747142524 #### Validation loss : 0.001668128534220159 ####
+Testing trained model ###Post-training test loss : 0.0016649632743792608
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 128
+Kernel Size: 5
+Number of Layer 1 output channels: 12
+Testing model that has not been trained ### Pre-training test loss : 0.3025876556001782
+Epoch 100 #### Train loss : 0.0011957926653849427 #### Validation loss : 0.0013745137184741907 ####
+Testing trained model ###Post-training test loss : 0.0013676237540494185
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 4
+Kernel Size: 6
+Number of Layer 1 output channels: 22
+Testing model that has not been trained ### Pre-training test loss : 0.6048585510855367
+Epoch 100 #### Train loss : 0.0019586089112160194 #### Validation loss : 0.0019558513372621364 ####
+Testing trained model ###Post-training test loss : 0.0019582975961119323
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Kernel Size: 5
+Number of Layer 1 output channels: 5
+Testing model that has not been trained ### Pre-training test loss : 0.02538184079221276
+Epoch 100 #### Train loss : 0.002280598295328673 #### Validation loss : 0.002118947151757311 ####
+Testing trained model ###Post-training test loss : 0.002097249001963064
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 32
+Kernel Size: 5
+Number of Layer 1 output channels: 23
+Testing model that has not been trained ### Pre-training test loss : 0.016460453838429704
+Epoch 100 #### Train loss : 0.001147802746836244 #### Validation loss : 0.0013436612503100482 ####
+Testing trained model ###Post-training test loss : 0.0013486557965359045
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Kernel Size: 3
+Number of Layer 1 output channels: 8
+Testing model that has not been trained ### Pre-training test loss : 0.15199299843497635
+Epoch 100 #### Train loss : 0.0010114982387676719 #### Validation loss : 0.0010076282487716526 ####
+Testing trained model ###Post-training test loss : 0.0010053213045466691
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Kernel Size: 6
+Number of Layer 1 output channels: 10
+Testing model that has not been trained ### Pre-training test loss : 0.5531369880506187
+Epoch 100 #### Train loss : 0.0025693958887131885 #### Validation loss : 0.0029784762300550938 ####
+Testing trained model ###Post-training test loss : 0.002968261978821829
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 64
+Kernel Size: 5
+Number of Layer 1 output channels: 13
+Testing model that has not been trained ### Pre-training test loss : 0.047922345400094414
+Epoch 100 #### Train loss : 0.014622108064710147 #### Validation loss : 0.014971477561630309 ####
+Testing trained model ###Post-training test loss : 0.014922314818250015
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 256
+Kernel Size: 4
+Number of Layer 1 output channels: 5
+Testing model that has not been trained ### Pre-training test loss : 0.027655231523191093
+Epoch 100 #### Train loss : 0.020480269682593644 #### Validation loss : 0.020299407420679927 ####
+Testing trained model ###Post-training test loss : 0.020291049033403397
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Kernel Size: 2
+Number of Layer 1 output channels: 16
+Testing model that has not been trained ### Pre-training test loss : 0.017819337214633916
+Epoch 100 #### Train loss : 0.0010648258867149707 #### Validation loss : 0.001065737429598812 ####
+Testing trained model ###Post-training test loss : 0.001064943615347147
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 8
+Kernel Size: 1
+Number of Layer 1 output channels: 10
+Testing model that has not been trained ### Pre-training test loss : 0.05989339657716081
+Epoch 100 #### Train loss : 0.0009608496842477048 #### Validation loss : 0.0009876295582390627 ####
+Testing trained model ###Post-training test loss : 0.000986460345186524
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 8
+Kernel Size: 3
+Number of Layer 1 output channels: 7
+Testing model that has not been trained ### Pre-training test loss : 0.019729136098069807
+Epoch 100 #### Train loss : 0.000931482374119854 #### Validation loss : 0.0010177248314211323 ####
+Testing trained model ###Post-training test loss : 0.0010183503963564573
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 64
+Kernel Size: 1
+Number of Layer 1 output channels: 24
+Testing model that has not been trained ### Pre-training test loss : 0.2272065926197521
+Epoch 100 #### Train loss : 0.0024896574738834587 #### Validation loss : 0.0020867993189312983 ####
+Testing trained model ###Post-training test loss : 0.0021004437330702785
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 4
+Kernel Size: 2
+Number of Layer 1 output channels: 2
+Testing model that has not been trained ### Pre-training test loss : 0.031070866685330805
+Epoch 100 #### Train loss : 0.001103864402557338 #### Validation loss : 0.0010668086939157131 ####
+Testing trained model ###Post-training test loss : 0.0010668369419370705
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 64
+Kernel Size: 3
+Number of Layer 1 output channels: 17
+Testing model that has not been trained ### Pre-training test loss : 0.03417264606063355
+Epoch 100 #### Train loss : 0.007899245018109916 #### Validation loss : 0.008140380370605271 ####
+Testing trained model ###Post-training test loss : 0.007911567023256794
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 64
+Kernel Size: 5
+Number of Layer 1 output channels: 23
+Testing model that has not been trained ### Pre-training test loss : 0.018503923854342432
+Epoch 100 #### Train loss : 0.0009728053756546052 #### Validation loss : 0.0009323776794190053 ####
+Testing trained model ###Post-training test loss : 0.0009671983043517685
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Kernel Size: 6
+Number of Layer 1 output channels: 11
+Testing model that has not been trained ### Pre-training test loss : 0.2820928623532034
+Epoch 100 #### Train loss : 0.019100369710940868 #### Validation loss : 0.018843825440853834 ####
+Testing trained model ###Post-training test loss : 0.018934830091893673
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Kernel Size: 6
+Number of Layer 1 output channels: 9
+Testing model that has not been trained ### Pre-training test loss : 0.30425264254497114
+Epoch 100 #### Train loss : 0.0010341672823415138 #### Validation loss : 0.000982787627435755 ####
+Testing trained model ###Post-training test loss : 0.0009745862407726236
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 16
+Kernel Size: 1
+Number of Layer 1 output channels: 4
+Testing model that has not been trained ### Pre-training test loss : 0.01865549183905147
+Epoch 100 #### Train loss : 0.0009592541419150515 #### Validation loss : 0.0009845253488969146 ####
+Testing trained model ###Post-training test loss : 0.0009885599763023608
+
+---------------------------------------------------------------
+TCN HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 4
+Kernel Size: 1
+Number of Layer 1 output channels: 21
+Testing model that has not been trained ### Pre-training test loss : 0.09773988612736101
+Epoch 100 #### Train loss : 0.0009463141031812235 #### Validation loss : 0.0010690183708174665 ####
+Testing trained model ###Post-training test loss : 0.0010692224563056021
+RESULTS--------------------------------------
+Best Loss 0.0009466204479279455
+Hyper-Parameters
+lr : 0.001
+batch_size : 16
+hidden_size : 16
+num_layers : 5
+kernel_size : 3
+C1_out_channels : 16
+
+Process finished with exit code 0

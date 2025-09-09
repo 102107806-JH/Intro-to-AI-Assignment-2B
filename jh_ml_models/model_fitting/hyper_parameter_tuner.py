@@ -9,24 +9,35 @@ from jh_ml_models.model_fitting.model_fitter import Model_Fitter
 from datetime import datetime, timedelta
 class HyperParameterTuner():
     def __init__(self, mode, epochs_per_run):
-        self._mode = mode
-        self._sequence_length = 12
-        self._feature_size = 4
-        self._epochs_per_run = epochs_per_run
+        self._mode = mode  # The mode ie: the type of model that we will be training #
+        self._sequence_length = 12  # The sequence length number of time steps #
+        self._feature_size = 4  # The number of features per time step #
+        self._epochs_per_run = epochs_per_run  # The number of epochs per testing run of the hyperparameters #
+        # The proportion of the overall dataset that are used for different splits. Was only a small amount
+        # of the original dataset in order to speed up the process of hyperparameter selection
         self._split_proportions = {
             "train": 0.01,
             "test": 0.2,
             "validation": 0.005
         }
-        self._split_proportions["discard"] = 1 - self._split_proportions["train"] - self._split_proportions["test"] - self._split_proportions["validation"]
-        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self._split_proportions["discard"] = 1 - self._split_proportions["train"] - self._split_proportions["test"] - self._split_proportions["validation"]  # Proportion of the dataset that will be discarded
+        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # The device that is used #
 
     def random_search(self, hyper_parameter_dictionary, finish_time):
-        best_loss = float("inf")
-        best_loss_hyper_parameter_datum_dictionary  = None
-        print(f"Hyper parameter tuning will stop at approximately: {finish_time.strftime('%d/%m/%Y  %H:%M:%S')}")
-        while datetime.now() < finish_time:
+        """
+        Implements a random search of the hyperparameter space.
+        :param hyper_parameter_dictionary: A dictionary containing custom hyperparameter objects. Each key is a hyperparameter
+        and the values are the objects. The object just provides a convenient way to access the hyperparameter objects.
+        :param finish_time: A datetime object when you wish the training to stop. Once this time is passed the current
+        hyperparameter data point be evaluated will be finished then the program will end,
+        :return: None
+        """
+        best_loss = float("inf")  # The best cost that has been encountered so far #
+        best_loss_hyper_parameter_datum_dictionary  = None  # Will store the dictionary that contains the hyperparameters that correspond to the best cost #
+        print(f"Hyper parameter tuning will stop at approximately: {finish_time.strftime('%d/%m/%Y  %H:%M:%S')}")  # Display to the user approximately when the program will end #
+        while datetime.now() < finish_time:  # Keep going until we are past the final time #
             print()
+            # This dictionary that displays the specific hyperparameter datum to be tested
             hyper_parameter_datum_dictionary = {
                 # Common hps
                 "lr": hyper_parameter_dictionary["lr"].get_random_bound_val(),
@@ -38,20 +49,31 @@ class HyperParameterTuner():
                 "kernel_size": hyper_parameter_dictionary["kernel_size"].get_random_bound_val(),
                 "C1_out_channels": hyper_parameter_dictionary["C1_out_channels"].get_random_bound_val()
             }
+            # Incase there is an invalid hyperparameter selection that is made.
             try:
                 loss = self._test_hp_datum(hyper_parameter_datum_dictionary)
             except:
                 print("Invalid hyper parameter combination. Continuing to next random sample")
                 continue
+
+            # Update the relevant variables when a better loss is encountered
             if loss < best_loss:
                 best_loss = loss
                 best_loss_hyper_parameter_datum_dictionary = copy.deepcopy(hyper_parameter_datum_dictionary)
+
+        # Print the results
         print("RESULTS--------------------------------------")
         print(f"Best Loss {best_loss}")
         print(f"Hyper-Parameters")
         print_dict(best_loss_hyper_parameter_datum_dictionary)
 
     def _test_hp_datum(self, hyper_parameter_datum_dictionary):
+        """
+        Passes the hyperparameter dictionary to the function with the correct model inside
+        :param hyper_parameter_datum_dictionary:  Hyperparameter datum that is use to
+        train the model.
+        :return: The test loss after the model has been trained.
+        """
         metric_dictionary = None
         if self._mode == "gru":
             metric_dictionary = self._test_hp_datum_gru(hyper_parameter_datum_dictionary)
