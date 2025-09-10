@@ -35,11 +35,8 @@ class ModelCollection():
         self._tcn_model.eval()
 
     def _load_lstm(self):
-        """
-        This is where you load your lstm. Feel free to add any attributes that
-        you may need when making your predictions later.
-        """
-        pass
+        self._lstm_model = torch.load("saved_models/lstm.pth")
+        self._lstm_model.eval()
 
     def make_predicition(self, unformatted_input_data, scats_site, mode):
         """
@@ -70,24 +67,58 @@ class ModelCollection():
 
     def _lstm_predict(self, unformatted_input_data, scats_site):
         """
-        :param unformatted_input_data: A nested list. Contains an internal list for every
-        time step in the sequence. Each internal list consists of a datatime object as the
-        0th element and a traffic flow volume value as the first. For example for a
-        sequence length of 4 it would look something like this.
-        [
-        [dateTimeObj0 for tfv0, tfv0],
-        [dateTimeObj1 for tfv1, tfv1],
-        [dateTimeObj0 for tfv2, tfv2],
-        [dateTimeObj0 for tfv3, tfv3],
-        ]
-        Each datTimeObj contains the time of the tfv measurement.
-        :param scats_site: the scats_site where the data is from
-        :return: A traffic flow volume prediction
-
-        You will have to format the data yourself. Please refer to the _gru_predict
-        for inspiration if needed.
+        CORRECTED: Uses simple division normalization to match training
         """
-        return 0
+        # Extract volume values and time information
+        volumes = []
+        time_features = []
+
+        for datum in unformatted_input_data:
+            time_obj = datum[0]
+            tfv = datum[1]
+
+            # Calculate seconds in day for cyclical encoding
+            seconds_in_day = 24 * 60 * 60
+            seconds = time_obj.hour * 3600 + time_obj.minute * 60 + time_obj.second
+
+            # Cyclical time encoding
+            time_sin = np.sin(2 * np.pi * seconds / seconds_in_day)
+            time_cos = np.cos(2 * np.pi * seconds / seconds_in_day)
+
+            # Cyclical weekday encoding
+            weekday = time_obj.weekday()  # 0-6
+            weekday_sin = np.sin(2 * np.pi * weekday / 7)
+            weekday_cos = np.cos(2 * np.pi * weekday / 7)
+
+            volumes.append(tfv)
+            time_features.append([time_sin, time_cos, weekday_sin, weekday_cos])
+
+        volumes = np.array(volumes, dtype=np.float32)
+        time_features = np.array(time_features, dtype=np.float32)
+
+        # FIXED: Use simple division normalization like training
+        if hasattr(self._lstm_model, 'transform_dict'):
+            max_tfv = self._lstm_model.transform_dict.get('max_tfv', 169.7)
+        else:
+            max_tfv = 169.7
+
+        volumes_norm = volumes / max_tfv  # Simple division, not min-max
+
+        # Combine features: [Volume_norm, Time_sin, Time_cos, Weekday_sin, Weekday_cos]
+        input_features = np.zeros((len(volumes), 5), dtype=np.float32)
+        input_features[:, 0] = volumes_norm
+        input_features[:, 1:] = time_features
+
+        # Shape for LSTM: (batch_size=1, sequence_length, features=5)
+        formatted_array = np.zeros((1, input_features.shape[0], input_features.shape[1]))
+        formatted_array[0] = input_features
+        formatted_tensor = torch.from_numpy(formatted_array).to(torch.float32).to(self._device)
+
+        # Run LSTM model
+        yhat_norm = self._lstm_model(formatted_tensor).item()
+
+        yhat = yhat_norm * max_tfv  # Multiply by the max tfv to get back to the original tfv #
+        return yhat
 
     def _gru_predict(self, unformatted_input_data, scats_site):
         """

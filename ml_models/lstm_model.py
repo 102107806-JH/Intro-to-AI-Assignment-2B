@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
+import os
 
 
 class LstmTrafficModel(nn.Module):
@@ -83,7 +84,7 @@ class LstmFlowRatePredictor:
         return self._inverse_normalize(prediction.item())  # Return prediction in original units
 
 
-def train_model(train_loader, min_val, max_val, hyperparameters, patience=5):
+def train_model(train_loader, min_val, max_val, hyperparameters, transform_dict=None, patience=5):
     """
     Trains the model on the training data (model_data.xlsx) then returns the trained model and the sMAPE (the margin of
     error calculated as a percentage) So 9% means the data can predict accurately 91% of the time.
@@ -152,6 +153,16 @@ def train_model(train_loader, min_val, max_val, hyperparameters, patience=5):
                 break
     if best_model_state:  # Restore the best model weights with the lowest validation loss
         model.load_state_dict(best_model_state)
+
+    # Attach transform_dict so it can be used later during inference
+    if transform_dict is not None:
+        model.transform_dict = transform_dict
+
+    # Save model so ModelCollection can load it
+    os.makedirs("saved_models", exist_ok=True)
+    torch.save(model, "saved_models/lstm.pth")
+    print("✅ LSTM model saved to saved_models/lstm.pth")
+
 
     # Evaluating the Model on the test data
     model.eval()

@@ -1,5 +1,7 @@
 from datetime import datetime
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("TkAgg")
 import numpy as np
 from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployment_data_model_tester import DeploymentDataModelTester
 
@@ -16,8 +18,10 @@ if __name__ == "__main__":
 
     average_dif_gru = np.average(np.abs(np.array(results["Targets"]) - np.array(results["GRU"])))
     average_dif_tcn = np.average(np.abs(np.array(results["Targets"]) - np.array(results["TCN"])))
-    print(f"AVERAGE ABS DIFFERENCE FROM ACTUAL:\nGRU:{average_dif_gru}\nTCN:{average_dif_tcn}")
+    average_dif_lstm = np.average(np.abs(np.array(results["Targets"]) - np.array(results["LSTM"])))
+    print(f"AVERAGE ABS DIFFERENCE FROM ACTUAL:\nGRU:{average_dif_gru}\nTCN:{average_dif_tcn}\nLSTM:{average_dif_lstm}")
     plt.plot(results["Targets"],'g')
     plt.plot(results["GRU"], 'r')
     plt.plot(results["TCN"], 'b')
+    plt.plot(results["LSTM"],'m')
     plt.show()
