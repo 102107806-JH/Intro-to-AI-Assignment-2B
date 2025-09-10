@@ -6,6 +6,8 @@ from dash import dcc, html, Input, Output, State
 from datetime import datetime
 from path_finding.path_finder import PathFinder
 from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
+import random
+import os
 
 nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node coordinates
 nodes_df.rename(
@@ -110,18 +112,14 @@ app.layout = html.Div(
     State("sequence-length", "value"),
     State("k-val", "value"),
 )
-
 def update_map(n_clicks, origin, destination, model_type, sequence_length, k_val):
     if n_clicks == 0:
         return base_figure()
-
-    graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")  # Build graph
+    graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
     graph = graph_builder.extract_file_contents()
-
-    current_time = datetime.now().replace(month=8)  # Fake current time as August same as the Demo
-
-    path_finder = PathFinder(graph=graph)  # Create path finder object
-    solution_nodes = path_finder.find_paths(  # Find paths
+    current_time = datetime.now().replace(month=8)
+    path_finder = PathFinder(graph=graph)
+    solution_nodes = path_finder.find_paths(
         initial_state=origin,
         goal_state=destination,
         initial_time=current_time,
@@ -133,31 +131,51 @@ def update_map(n_clicks, origin, destination, model_type, sequence_length, k_val
     if not solution_nodes:
         return base_figure()
 
-    best_path = solution_nodes[0]  # Take first solution path
-    path_states = []
-    node = best_path
-    while node:
-        path_states.append(node.state)
-        node = node.parent
-    path_states.reverse()
+    path_colors = [
+        "blue", "green", "orange", "yellow", "cyan",
+        "magenta", "brown", "pink", "grey", "black"
+    ]
+    fig = base_figure()
+    for i, path in enumerate(solution_nodes):
+        path_states = []
+        node = path
+        while node:
+            path_states.append(node.state)
+            node = node.parent
+        path_states.reverse()
 
-    coords = nodes_df.set_index("SCATS_Number").loc[path_states]  # Get coordinates for each state
-    lats, lons = coords["lat"], coords["lon"]
+        coords = nodes_df.set_index("SCATS_Number").loc[path_states]
+        lats, lons = coords["lat"], coords["lon"]
 
-    fig = base_figure()  # Build updated map
-    fig.add_trace(
-        go.Scattermapbox(
-            lat=lats,
-            lon=lons,
-            mode="lines+markers",
-            line=dict(width=4, color="purple"),
-            marker=dict(size=10, color="purple"),
-            text=[str(s) for s in path_states],
-            name="Optimal Path",
-        )
-    )
+        if i == 0:
+            # Optimal path in purple
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=lats,
+                    lon=lons,
+                    mode="lines+markers",
+                    line=dict(width=4, color="purple"),
+                    marker=dict(size=10, color="purple"),
+                    text=[str(s) for s in path_states],
+                    name="Optimal Path",
+                )
+            )
+        else:
+            # Assign a different color for each alternative path
+            color = random.choice([c for c in path_colors if c not in ("purple", "red")])
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=lats,
+                    lon=lons,
+                    mode="lines+markers",
+                    line=dict(width=3, color=color),
+                    marker=dict(size=8, color=color),
+                    text=[str(s) for s in path_states],
+                    name=f"Alternative Path {i+1}",
+                )
+            )
+
     return fig
-
 
 if __name__ == "__main__":
     app.run(debug=True)
