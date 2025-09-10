@@ -1,83 +1,86 @@
+import copy
+
 import pandas
 import datetime
 import numpy as np
 import pandas as pd
+from dateutil.rrule import weekday
+from numpy.ma.extras import average
 
 
 class MockDataBaseCleaner():
     def __init__(self, path_to_database):
-        self._dataframe = pd.read_excel(path_to_database)
+        self._np_data_arr = pd.read_excel(path_to_database).to_numpy()
+        self._first_tfv_col_idx = 3
 
-    def process(self):
-        self._remove_negatives()
-        date_av_dictionary = self._get_average_value_for_each_date()
-        self._replace_zero_days_with_average(date_av_dictionary)
-        self._write_to_new_excel()
+    def clean_data(self):
+        av_dict = self._get_day_time_averages()
+        self._fill_in_bad_days(av_dict)
+        self._remove_isolated_bad_input()
+        self._write_to_excel()
 
-    def _remove_negatives(self):
-        for i in range(self._dataframe.shape[0]):
-            for j in range(self._dataframe.shape[1]):
-
-                # Average replacing isolated -1's
-                if type(self._dataframe.iat[i, j]) == np.int64 and self._dataframe.iat[i, j] < 0:
-                    if j == 3: # The first timestep for the day cant take the previous value as it is a date
-                        next_val = self._dataframe.iat[i, j + 1]
-                        self._dataframe.iat[i, j] = next_val
-                    elif j == self._dataframe.shape[1] - 1:  # The last timestep for the day cant take the next value as it does not exist
-                        previous_val = self._dataframe.iat[i, j - 1]
-                        self._dataframe.iat[i, j] = previous_val
-                    else:
-                        next_val = self._dataframe.iat[i, j + 1]
-                        previous_val = self._dataframe.iat[i, j - 1]
-                        self._dataframe.iat[i, j] = int((previous_val + next_val) / 2)  # Take the average of the current and the previous val
-
-                #Average replacing for multiple -1's in a row. All isolated -1's have been replaced.
-                if type(self._dataframe.iat[i, j]) == np.int64 and self._dataframe.iat[i, j] < 0:
-                    if type(self._dataframe.iat[i - 1, j]) == np.int64:
-                        self._dataframe.iat[i, j] = self._dataframe.iat[i - 1, j]  # if the previous days data is an int set the current days data to it
-                    else:
-                        self._dataframe.iat[i, j] = 0  # The previous days data was not an int so zero it
-
-    def _get_average_value_for_each_date(self):
-        date_av_dictionary = {}
-        for i in range(self._dataframe.shape[0]):
-            date = self._dataframe.iat[i, 2]
-            if date not in date_av_dictionary:
-                date_av_dictionary[date] = []
-
-            row_tfv_list = []
-            # Calculate the row average. To determine if it needs to be included in the average
-            for j in range(3, self._dataframe.shape[1]):
-                row_tfv_list.append(self._dataframe.iat[i, j])
-
-            if np.average(np.asarray(row_tfv_list)) != 0:  # Exclude rows that contain only zeros #
-                date_av_dictionary[date].append(row_tfv_list)  # Is storing all valid entries for a given date
-
-
-        for date in date_av_dictionary:
-            date_av_dictionary[date] = np.asarray(date_av_dictionary[date])  # Convert to numpy array for easier processing #
-            date_av_dictionary[date] = np.mean(date_av_dictionary[date], axis=0)  # Convert the average for each time step #
-
-        return date_av_dictionary
-
-    def _replace_zero_days_with_average(self, date_av_dictionary):
-        for i in range(self._dataframe.shape[0]):
-            date = self._dataframe.iat[i, 2]
-            row_tfv_list = []
-
-            for j in range(3, self._dataframe.shape[1]):
-                row_tfv_list.append(self._dataframe.iat[i, j])
-
-            if np.average(np.asarray(row_tfv_list)) != 0:  # Row is not zero based and does not need replacing we can therfore continue to the next row #
+    def _get_day_time_averages(self):
+        av_dict = {}
+        for i in range(self._np_data_arr.shape[0]):
+            #Row is bad disregard
+            if np.sum(self._np_data_arr[i,self._first_tfv_col_idx:]) <= 0:
                 continue
 
-            date_av_list = list(date_av_dictionary[date])  #Get the average for given date
-            for av_list_idx, j in enumerate(range(3, self._dataframe.shape[1])):
-                self._dataframe.iat[i, j] = int(date_av_list[av_list_idx])
+            weekday = self._np_data_arr[i, 1]
+            for time, j in enumerate(range(self._first_tfv_col_idx, self._np_data_arr.shape[1])):
+                key = f"{weekday} {time}"
+
+                if self._np_data_arr[i, j] < 0:
+                    continue # bad input less than 0
+                elif key not in av_dict:
+                    av_dict[key]=[self._np_data_arr[i, j], 1]
+                else:
+                    entry = av_dict[key]
+                    entry[0] += self._np_data_arr[i, j]
+                    entry[1] += 1
+
+        for key in av_dict:
+            av_dict[key] = av_dict[key][0] / av_dict[key][1]
+
+        return av_dict
+
+    def _fill_in_bad_days(self, av_dict):
+
+        for i in range(self._np_data_arr.shape[0]):
+            #Row is not bad continue
+            if np.sum(self._np_data_arr[i,self._first_tfv_col_idx:]) > 0:
+                continue
+
+            weekday = self._np_data_arr[i, 1]
+            for time, j in enumerate(range(self._first_tfv_col_idx, self._np_data_arr.shape[1])):
+                key = f"{weekday} {time}"
+                overwrite_val = av_dict[key]
+                self._np_data_arr[i, j] = overwrite_val
+
+    def _remove_isolated_bad_input(self):
+        for i in range(self._np_data_arr.shape[0]):
+            weekday = self._np_data_arr[i, 1]
+            for time, j in enumerate(range(self._first_tfv_col_idx, self._np_data_arr.shape[1])):
+                key = f"{weekday} {time}"
+                if self._np_data_arr[i, j] < 0:
+                    #All isolated -1's removed
+                    if j == self._first_tfv_col_idx:
+                        self._np_data_arr[i, j] = self._np_data_arr[i, j+1]
+                    elif j == self._np_data_arr.shape[1] - 1:
+                        self._np_data_arr[i, j] = self._np_data_arr[i, j-1]
+                    else:
+                        self._np_data_arr[i, j] = (self._np_data_arr[i, j-1] + self._np_data_arr[i, j+1])/2
+
+                # -1's occur in a row take the previous days value at this time
+                if self._np_data_arr[i, j] < 0:
+                    self._np_data_arr[i, j] = self._np_data_arr[i-1, j]
 
 
-    def _write_to_new_excel(self):
-        self._dataframe.to_excel("data/cleaned_data_base.xlsx", index=False)
+
+
+
+    def _write_to_excel(self):
+        pandas.DataFrame(self._np_data_arr).to_excel("data/cleaned_data_base.xlsx", index=False)
 
 
 
