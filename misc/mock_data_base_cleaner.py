@@ -17,8 +17,26 @@ class MockDataBaseCleaner():
     def _remove_negatives(self):
         for i in range(self._dataframe.shape[0]):
             for j in range(self._dataframe.shape[1]):
+
+                # Average replacing isolated -1's
                 if type(self._dataframe.iat[i, j]) == np.int64 and self._dataframe.iat[i, j] < 0:
-                    self._dataframe.iat[i, j] = 0
+                    if j == 3: # The first timestep for the day cant take the previous value as it is a date
+                        next_val = self._dataframe.iat[i, j + 1]
+                        self._dataframe.iat[i, j] = next_val
+                    elif j == self._dataframe.shape[1] - 1:  # The last timestep for the day cant take the next value as it does not exist
+                        previous_val = self._dataframe.iat[i, j - 1]
+                        self._dataframe.iat[i, j] = previous_val
+                    else:
+                        next_val = self._dataframe.iat[i, j + 1]
+                        previous_val = self._dataframe.iat[i, j - 1]
+                        self._dataframe.iat[i, j] = int((previous_val + next_val) / 2)  # Take the average of the current and the previous val
+
+                #Average replacing for multiple -1's in a row. All isolated -1's have been replaced.
+                if type(self._dataframe.iat[i, j]) == np.int64 and self._dataframe.iat[i, j] < 0:
+                    if type(self._dataframe.iat[i - 1, j]) == np.int64:
+                        self._dataframe.iat[i, j] = self._dataframe.iat[i - 1, j]  # if the previous days data is an int set the current days data to it
+                    else:
+                        self._dataframe.iat[i, j] = 0  # The previous days data was not an int so zero it
 
     def _get_average_value_for_each_date(self):
         date_av_dictionary = {}
