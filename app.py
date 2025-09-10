@@ -6,10 +6,12 @@ from dash import dcc, html, Input, Output, State
 from datetime import datetime
 from path_finding.path_finder import PathFinder
 from file_handling.graph_vertex_edge_init import GraphVertexEdgeInit
-import random
-import os
+import datetime as dt
+import numpy as np
+from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployment_data_model_tester import DeploymentDataModelTester
 
-nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node coordinates
+# Load SCATS node metadata
+nodes_df = pd.read_excel("./data/graph_init_data.xlsx")
 nodes_df.rename(
     columns={
         "SCATS Number": "SCATS_Number",
@@ -19,25 +21,61 @@ nodes_df.rename(
     inplace=True,
 )
 
-gdf = gpd.read_file("./GUI/vic_lga.shp")
-boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]  # Load Boroondara boundary
+gdf = gpd.read_file("./GUI/vic_lga.shp") # Load map boundaries
+boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]
 boroondara_geojson = boroondara.__geo_interface__
+
+MODEL_XLSX = "./data/model_data.xlsx" # Load traffic data for timeline (hourly)
+model_df = pd.read_excel(MODEL_XLSX, sheet_name="Sheet1")
+time_cols = [c for c in model_df.columns if isinstance(c, dt.time)]
+id_cols = [c for c in model_df.columns if c not in time_cols]
+
+long_df = model_df.melt(
+    id_vars=id_cols, value_vars=time_cols,
+    var_name="tod", value_name="count"
+)
+long_df["datetime"] = pd.to_datetime(
+    long_df["Date"].dt.date.astype(str) + " " + long_df["tod"].astype(str)
+)
+long_df["date"] = long_df["datetime"].dt.date
+long_df["hour_ts"] = long_df["datetime"].dt.floor("h")
+
+hourly = (
+    long_df.groupby(["SCATS_Number", "date", "hour_ts"], as_index=False)["count"]
+    .sum()
+    .rename(columns={"count": "volume"})
+    .sort_values(["SCATS_Number", "date", "hour_ts"])
+)
+hourly["prev_volume"] = hourly.groupby(["SCATS_Number", "date"])["volume"].shift(1)
+hourly["delta"] = hourly["volume"] - hourly["prev_volume"]
+hourly["pct_change"] = (hourly["delta"] / hourly["prev_volume"].replace(0, np.nan)) * 100
+
+
+daily_extrema = ( # Peak/low daily markers
+    hourly.groupby(["SCATS_Number", "date"])
+    .agg(peak_volume=("volume", "max"), low_volume=("volume", "min"))
+    .reset_index()
+)
+hourly = hourly.merge(daily_extrema, on=["SCATS_Number", "date"], how="left")
+hourly["is_peak"] = hourly["volume"] == hourly["peak_volume"]
+hourly["is_low"] = hourly["volume"] == hourly["low_volume"]
+traffic_df = hourly.merge(nodes_df, on="SCATS_Number", how="inner")
+
+def compute_color(row):  # Color for each node based on peak/low/no data
+    if row["is_peak"]:
+        return "white"
+    if row["is_low"]:
+        return "gray"
+    if pd.notna(row["delta"]):
+        if row["delta"] > 0:
+            return "#FFD21F"  # yellow
+        if row["delta"] < 0:
+            return "#1F77FF"  # blue
+    return "#BDBDBD"  # flat/no data
 
 def base_figure():
     fig = go.Figure()
-    fig.add_trace(
-        go.Scattermapbox(
-            lat=nodes_df["lat"],
-            lon=nodes_df["lon"],
-            mode="markers",
-            marker=dict(size=12, color="blue"),
-            text=nodes_df["SCATS_Number"],
-            hoverinfo="text+lat+lon",
-            name="SCATS Nodes",
-        )
-    )
-
-    fig.update_layout(  # Add Boroondara outline
+    fig.update_layout(
         mapbox_style="mapbox://styles/mapbox/satellite-streets-v12",
         mapbox_accesstoken="pk.eyJ1IjoiczEwNTMzNDEyOCIsImEiOiJjbWYwdTZqNXcwczc0MmpvZmJ0N2Z4OHN2In0.oxNCZNuCeBQ0BBK_UDqZ3g",
         mapbox=dict(
@@ -57,11 +95,14 @@ def base_figure():
     )
     return fig
 
+
 app = dash.Dash(__name__)
+available_dates = sorted(traffic_df["date"].unique()) if len(traffic_df) else []
+default_date = available_dates[-1] if available_dates else dt.date.today()
 app.layout = html.Div(
     [
         html.H1("Boroondara SCATS Path Finder"),
-        html.Div(  # User input controls
+        html.Div(
             [
                 html.Label("Origin SCATS Site"),
                 dcc.Dropdown(
@@ -90,92 +131,186 @@ app.layout = html.Div(
                 html.Label("K Value"),
                 dcc.Input(id="k-val", type="number", value=1, min=1),
                 html.Button("Find Path", id="submit-button", n_clicks=0),
+                html.Hr(),
+                html.Label("Date"),
+                dcc.Dropdown(
+                    id="date-dropdown",
+                    options=[{"label": str(d), "value": str(d)} for d in available_dates],
+                    value=str(default_date),
+                    clearable=False,
+                ),
+                html.Label("Hour of Day"),
+                dcc.Slider(
+                    id="hour-slider",
+                    min=0, max=23, step=1, value=8,
+                    marks={h: f"{h:02d}:00" for h in range(0, 24, 2)},
+                ),
+                html.Div(
+                    [
+                        html.Button("⏵ Play", id="play-btn", n_clicks=0, style={"marginRight": "8px"}),
+                        html.Button("⏸ Pause", id="pause-btn", n_clicks=0),
+                        html.Span(id="hour-readout", style={"marginLeft": "12px", "fontWeight": "bold"}),
+                    ],
+                    style={"marginTop": "10px"},
+                ),
+                dcc.Interval(id="timer", interval=1200, n_intervals=0, disabled=True),
+                dcc.Graph(id="tester-graph", figure=go.Figure(), style={"height": "300px", "marginTop": "20px"}),
             ],
             style={"width": "30%", "display": "inline-block", "verticalAlign": "top"},
         ),
         html.Div(
-            [
-                dcc.Graph(id="map", figure=base_figure()),
-            ],
+            [dcc.Graph(id="map", figure=base_figure())],
             style={"width": "65%", "display": "inline-block"},
         ),
     ]
 )
 
-
 @app.callback(
-    Output("map", "figure"),
+    [Output("map", "figure"), Output("tester-graph", "figure"), Output("hour-readout", "children")],
     Input("submit-button", "n_clicks"),
+    Input("date-dropdown", "value"),
+    Input("hour-slider", "value"),
     State("origin-input", "value"),
     State("destination-input", "value"),
     State("model-type", "value"),
     State("sequence-length", "value"),
     State("k-val", "value"),
 )
-def update_map(n_clicks, origin, destination, model_type, sequence_length, k_val):
-    if n_clicks == 0:
-        return base_figure()
-    graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
-    graph = graph_builder.extract_file_contents()
-    current_time = datetime.now().replace(month=8)
-    path_finder = PathFinder(graph=graph)
-    solution_nodes = path_finder.find_paths(
-        initial_state=origin,
-        goal_state=destination,
-        initial_time=current_time,
+def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, sequence_length, k_val):
+    map_fig = base_figure()
+
+    if date_val:
+        date_val = pd.to_datetime(date_val).date()
+        hour_ts = pd.Timestamp.combine(date_val, dt.time(hour_val, 0))
+        subset = traffic_df[traffic_df["hour_ts"] == hour_ts].copy()
+        if not subset.empty:
+            subset["color"] = subset.apply(compute_color, axis=1)
+            hover_text = (
+                    "SCATS: " + subset["SCATS_Number"].astype(str) +
+                    "<br>Hour: " + subset["hour_ts"].astype(str) +
+                    "<br>Volume: " + subset["volume"].astype(int).astype(str) +
+                    "<br>Δ cars: " + subset["delta"].fillna(0).astype(int).astype(str) +
+                    "<br>% change: " + subset["pct_change"].fillna(0).round(1).astype(str) + "%"
+            )
+            map_fig.add_trace(
+                go.Scattermapbox(
+                    lat=subset["lat"],
+                    lon=subset["lon"],
+                    mode="markers",
+                    marker=dict(size=12, color=subset["color"], opacity=0.9),
+                    text=hover_text,
+                    hoverinfo="text",
+                    name="Traffic Volume",
+                )
+            )
+
+    if n_clicks > 0:
+        graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
+        graph = graph_builder.extract_file_contents()
+        current_time = datetime.now().replace(month=8)
+        path_finder = PathFinder(graph=graph)
+        solution_nodes = path_finder.find_paths(
+            initial_state=origin,
+            goal_state=destination,
+            initial_time=current_time,
+            sequence_length=sequence_length,
+            k_val=k_val,
+            mode=model_type,
+        )
+        if solution_nodes:
+            nodes_iter = solution_nodes if hasattr(solution_nodes, "__len__") else [solution_nodes]
+            colors = ["purple", "green", "orange", "cyan", "yellow", "pink", "brown"]
+            for i, path in enumerate(nodes_iter):
+                path_states, node = [], path
+                while hasattr(node, "state") and node:
+                    path_states.append(node.state)
+                    node = getattr(node, "parent", None)
+                path_states.reverse()
+                if path_states:
+                    coords = nodes_df.set_index("SCATS_Number").loc[path_states]
+                    map_fig.add_trace(
+                        go.Scattermapbox(
+                            lat=coords["lat"],
+                            lon=coords["lon"],
+                            mode="lines+markers",
+                            line=dict(width=4, color=colors[i % len(colors)]),
+                            marker=dict(size=10, color=colors[i % len(colors)]),
+                            text=[str(s) for s in path_states],
+                            name="Optimal Path" if i == 0 else f"Path {i+1}",
+                        )
+                    )
+
+    start_datetime = datetime(year=2025, month=8, day=1, hour=0, minute=0)
+    end_datetime = datetime(year=2025, month=8, day=2, hour=0, minute=0)
+    model_tester = DeploymentDataModelTester(database_file_path="data/data_base.xlsx")
+    results = model_tester.test_models(
+        scats_site=origin,
+        prediction_depth=1,
         sequence_length=sequence_length,
-        k_val=k_val,
-        mode=model_type,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
     )
+    targets = np.asarray(results.get("Targets", []), dtype=float)
+    gru_pred = np.asarray(results.get("GRU", np.zeros_like(targets)), dtype=float)
+    tcn_pred = np.asarray(results.get("TCN", np.zeros_like(targets)), dtype=float)
+    lstm_pred = np.asarray(results.get("LSTM", np.zeros_like(targets)), dtype=float)
 
-    if not solution_nodes:
-        return base_figure()
+    tester_fig = go.Figure()
+    if len(targets) > 0:
+        abs_gru = np.abs(targets - gru_pred)
+        abs_tcn = np.abs(targets - tcn_pred)
+        abs_lstm = np.abs(targets - lstm_pred)
+        avg_gru = np.nan if len(abs_gru) == 0 else float(np.mean(abs_gru))
+        avg_tcn = np.nan if len(abs_tcn) == 0 else float(np.mean(abs_tcn))
+        avg_lstm = np.nan if len(abs_lstm) == 0 else float(np.mean(abs_lstm))
+        tester_fig.add_trace(go.Scatter(
+            y=abs_gru, mode="lines",
+            name=f"GRU ABS (avg {avg_gru:.2f})",
+            line=dict(color="blue")
+        ))
+        tester_fig.add_trace(go.Scatter(
+            y=abs_tcn, mode="lines",
+            name=f"TCN ABS (avg {avg_tcn:.2f})",
+            line=dict(color="orange")
+        ))
+        tester_fig.add_trace(go.Scatter(
+            y=abs_lstm, mode="lines",
+            name=f"LSTM ABS (avg {avg_lstm:.2f})",
+            line=dict(color="green")
+        ))
 
-    path_colors = [
-        "blue", "green", "orange", "yellow", "cyan",
-        "magenta", "brown", "pink", "grey", "black"
-    ]
-    fig = base_figure()
-    for i, path in enumerate(solution_nodes):
-        path_states = []
-        node = path
-        while node:
-            path_states.append(node.state)
-            node = node.parent
-        path_states.reverse()
+        tester_fig.update_layout(
+            title=f"Per-timestep Absolute Error (SCATS {origin})",
+            xaxis_title="Timestep index",
+            yaxis_title="Absolute error (TFV)",
+            margin=dict(l=40, r=20, t=40, b=30),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        )
+    else:
+        tester_fig.update_layout(title="No test data available for selected site/time")
+    return map_fig, tester_fig, f"Showing {str(date_val)} at {hour_val:02d}:00"
 
-        coords = nodes_df.set_index("SCATS_Number").loc[path_states]
-        lats, lons = coords["lat"], coords["lon"]
+@app.callback(
+    Output("timer", "disabled"),
+    Input("play-btn", "n_clicks"),
+    Input("pause-btn", "n_clicks"),
+    prevent_initial_call=True
+)
+def play_pause(n_play, n_pause):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        return True
+    trig = ctx.triggered[0]["prop_id"].split(".")[0]
+    return False if trig == "play-btn" else True
 
-        if i == 0:
-            # Optimal path in purple
-            fig.add_trace(
-                go.Scattermapbox(
-                    lat=lats,
-                    lon=lons,
-                    mode="lines+markers",
-                    line=dict(width=4, color="purple"),
-                    marker=dict(size=10, color="purple"),
-                    text=[str(s) for s in path_states],
-                    name="Optimal Path",
-                )
-            )
-        else:
-            # Assign a different color for each alternative path
-            color = random.choice([c for c in path_colors if c not in ("purple", "red")])
-            fig.add_trace(
-                go.Scattermapbox(
-                    lat=lats,
-                    lon=lons,
-                    mode="lines+markers",
-                    line=dict(width=3, color=color),
-                    marker=dict(size=8, color=color),
-                    text=[str(s) for s in path_states],
-                    name=f"Alternative Path {i+1}",
-                )
-            )
-
-    return fig
+@app.callback(
+    Output("hour-slider", "value"),
+    Input("timer", "n_intervals"),
+    State("hour-slider", "value"),
+    prevent_initial_call=True
+)
+def tick(_n, hour_val):
+    return 0 if hour_val >= 23 else hour_val + 1
 
 if __name__ == "__main__":
     app.run(debug=True)
