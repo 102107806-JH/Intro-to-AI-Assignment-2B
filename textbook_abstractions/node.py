@@ -1,10 +1,11 @@
 class Node:
-    def __init__(self, state, parent=None, action=None, path_cost=0, total_cost=0):
+    def __init__(self, state, parent=None, action=None, path_cost=0, total_cost=0, time_cost=0):
         self._state = state  # The node state #
         self._parent = parent  # Reference to the parent node #
         self._action = action  # The Action that was used to get to the state of this node #
         self._path_cost = path_cost  # The path cost of getting to this node (In this node version if there is a heuristic it will be added outside the function)#
         self._total_cost = total_cost  # The total cost at this node #
+        self._time_cost = time_cost  # The time cost at this node #
         self._order_pushed_into_collection = None  # The order which the node was pushed onto the collection #
 
 
@@ -39,3 +40,7 @@ class Node:
     @order_pushed_into_collection.setter
     def order_pushed_into_collection(self, order_pushed_into_collection):
         self._order_pushed_into_collection = order_pushed_into_collection
+
+    @property
+    def time_cost(self):
+        return self._time_cost

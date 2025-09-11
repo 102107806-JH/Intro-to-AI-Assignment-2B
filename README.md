@@ -1,179 +1,228 @@
-# Intro-to-AI-Assignment-2B
+# Intro-to-AI-Assignment-2B Machine learning and software integration Pipeline
 
-# Best LSTM Hyperparameters:
-epochs = 50, learning_rate = 0.01, hidden_size = 150, num_layers = 3, optimizer = Adam
+## Features
+- **Multible Deep-Learning Model Types**: LSTM, GRU, and TCN. 
+- **Comprehensive Evaluation**:
+- **Automated Reporting**: CSV exports, comprehensive visualizations, and per-SCAT Site metrics charts.
+- - **Modular Architecture**: Clean separation of data processing, training, evaluation, and GUI
 
-Best result: ~94% accuracy (SCATS 3120).
-Average across all sites: 85–92% accuracy.
-Worst sites: ~72–75% accuracy (SCATS 3812, 380
+## GUI Interface
+### About the GUI
+The GUI is a web-based interface that allows users to interact with each model. It was built using the Dash Python framework.
 
-# LSTM Model Training Settings
-LSTM Model Results using the provided parameter range:
-param_grid = {
-'epochs': [10, 20, 30, 40, 50, 100],
-'learning_rate': [0.00001, 0.0005, 0.0001, 0.001, 0.01],
-'hidden_size': [50, 100, 200, 300, 400],
-'num_layers': [1, 2, 3, 4],
-'optimizer': ['Adam', 'RMSprop', 'Adagrad', 'Adadelta', 'Adamax', 'NAdam', 'NAG']
-}
+### First Loading the GUI
+To use the GUI effectively, please allow time for all page elements to load. On the left side of the screen, there are adjustable parameters that update the GUI periodically.
 
-# RAW Model Training Data
-Final training for SCATS 970 complete.
-Best sMAPE: 9.29%
-Best Parameters: {'epochs': 40, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'Adagrad'}
+### Interactive Map Controls
+Upon loading the interactive map, you can zoom in and out, pan, and reset the map to the full extent of the data using either your mouse and mouse wheel or the navigation buttons in the top right corner. The red border shows the city limits of the Boroondara area. You can also hover over any of the SCATS sites, indicated by a circle on the map, to see more information about the site. This includes the site's number, the current hour, the volume of traffic during that hour, the delta change in cars from the previous hour, and the percentage of change.
 
-Final training for SCATS 2000 complete.
-Best sMAPE: 8.45%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+The sites are also colour-coded: yellow indicates an increase in traffic volume, blue indicates a decrease in traffic volume, white indicates the peak traffic volume for a given day, and grey indicates the lowest traffic volume for a given day.
 
-Final training for SCATS 2200 complete.
-Best sMAPE: 13.84%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'RMSprop'}
+### Origin SCATS Site Parameters
+The Origin SCATS Site is the starting point of your journey. You can select a new Origin SCATS Site by clicking the drop-down menu and scrolling with either your mouse wheel or the scroll bar. You can also type the SCATS site number in the text box to quickly filter the list.
 
-Final training for SCATS 2820 complete.
-Best sMAPE: 15.04%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 3, 'optimizer': 'RMSprop'}
+### Destination SCATS Site Parameters
+Below the Origin is the Destination SCATS Site. As mentioned previously, you can select a new Destination SCATS Site by clicking the drop-down menu and scrolling. You can also type the SCATS site number in the text box to quickly filter the list. Below the Destination is the Model Type. You can select a new Model Type by clicking the drop-down menu. You can also type the Model Type to quickly filter the list of available models.
 
-Final training for SCATS 2825 complete.
-Best sMAPE: 14.33%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.01, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'Adam'}
+### Sequence Length
+The Sequence Length is the number of time steps used in the model. You cannot change the sequence length, as this is outside the scope of the project. However, it is displayed for your convenience.
 
-Final training for SCATS 2827 complete.
-Best sMAPE: 10.73%
-Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 200, 'num_layers': 1, 'optimizer': 'RMSprop'}
+### K-Value
+Below the sequence length is the K-Value, which is the number of paths that will be generated for the selected model. Each path will be displayed in a different colour to allow for easy visual comparison. Please note that paths may overlap. You can filter them on the right side of the screen by clicking on a desired path to hide the others.
 
-Final training for SCATS 2846 complete.
-Best sMAPE: 10.67%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'Adagrad'}
+### Finding the Paths
+To calculate and find the path, please press the Find Path button below the K-Value input field. This will cause the page to update. The progress of the page update is shown at the top of the page, where the tab is temporarily renamed from "Dash" to "Updating." During this time, please do not change any parameters, as this will cause the page to update again before displaying the previous results. When clicking the Find Path button, also ensure that the "hour of the day" timeline is paused, not playing, as this will cause the page to continuously check for updates and will not load the results.
 
-Final training for SCATS 3001 complete.
-Best sMAPE: 19.24%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 2, 'optimizer': 'NAdam'}
+### Map Visualisation Sidebar
+Once you click the Find Path button and the page finishes updating, a new sidebar will appear on the right side of the map. At the top of this sidebar, the current traffic volume status for the selected Origin SCATS site is displayed.
 
-Final training for SCATS 3002 complete.
-Best sMAPE: 14.30%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 3, 'optimizer': 'Adamax'}
+Below that is the most optimal path, shown in purple. Subsequent paths are shown in random colours for easy visual comparison. To view only one path when multiple are generated, or to compare different paths, you can click on the path's name in the legend to show or hide it. The estimated time of arrival is shown to the right of the path's name in an hourly format (e.g., 0.25 hours is equal to 15 minutes, and 0.5 hours is equal to 30 minutes).
 
-Final training for SCATS 3120 complete.
-Best sMAPE: 5.70%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 2, 'optimizer': 'Adam'}
+### Timeline
+Below the Find Path button is the "hour of the day" timeline. As part of our custom research initiative, we have implemented a feature that allows you to see how busy a SCATS site is at a given hour. You can select a new hour by clicking and dragging the blue timeline. You can also change the date by clicking on the date drop-down menu, which also supports typing to filter the dates. Additionally, you can click the Play button to automatically play back the entire day hour by hour. To update the GUI with new parameters, you must press Pause and wait for the GUI to finish updating. The current date and time are displayed to the right of the Pause button.
 
-Final training for SCATS 3122 complete.
-Best sMAPE: 11.74%
-Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adamax'}
+### ABS Interactive Visualisation
+Below the Pause button is an interactive visualisation that plots the ABS (Average Absolute Difference from Actual). The data shows the calculated difference for each model for the selected Origin SCATS site, where a lower value indicates better accuracy. For example, a score of 10.04 means that, on average, the model's predictions for traffic flow at that location were off by approximately 10.04 TFV (traffic flow volume) units. This value is a measure of the model's prediction error.
 
-Final training for SCATS 3126 complete.
-Best sMAPE: 11.42%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 3, 'optimizer': 'RMSprop'}
+The X-axis of the visualisation shows the sequential prediction step made by the models. The Y-axis shows the ABS difference between the model's prediction and the actual traffic flow. The colour of the line indicates which model made the prediction. You can click and drag on the visualisation to zoom, pan, autoscale, reset the axes, and download it as a PNG using your mouse or the navigation buttons in the top right corner. Additionally, hovering over any data point will provide more details about the model's absolute error at that specific timestep.
+```bash
+# Create virtual environment
+python -m venv .venv
 
-Final training for SCATS 3127 complete.
-Best sMAPE: 11.16%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 2, 'optimizer': 'Adamax'}
+# Activate (Windows)
+.venv\Scripts\activate
 
-Final training for SCATS 3180 complete.
-Best sMAPE: 15.69%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'Adamax'}
+# Install dependencies
+pip install -r requirements.txt
+```
 
-Final training for SCATS 3662 complete.
-Best sMAPE: 10.09%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'NAdam'}
+### 2. Test CUDA GPU availability
+````
+python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('Device count:', torch.cuda.device_count())"
+````
 
-Final training for SCATS 3682 complete.
-Best sMAPE: 13.02%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
+### 3. Run the LSTM Individual Model Training (Optional)
+````
+# Train the LSTM Model for each SCATS site
+python train_individual_models.py
+````
 
-Final training for SCATS 3685 complete.
-Best sMAPE: 12.05%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adamax'}
+### 4. Run the LSTM Combined Model Training (Optional)
+````
+# Combines the previously trained LSTM models and re-trains them into one model, that's universal for every SCATS site
+python evaluate_individual_models.py
+````
 
-Final training for SCATS 3804 complete.
-Best sMAPE: 23.88%
-Best Parameters: {'epochs': 30, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+### ?. Test all Models Performance
+````
+# Displays a graph that plots the ABS difference for a prefered SCAT site, which can be adjusted in the model_tester_demo.py file.
+python model_tester_demo.py
+````
 
-Final training for SCATS 3812 complete.
-Best sMAPE: 27.29%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 400, 'num_layers': 1, 'optimizer': 'Adam'}
+### ?. Run the GUI
+````
+# Run the interactive Dash GUI
+python app.py
+````
 
-Final training for SCATS 4030 complete.
-Best sMAPE: 13.57%
-Best Parameters: {'epochs': 40, 'learning_rate': 0.0005, 'hidden_size': 200, 'num_layers': 3, 'optimizer': 'RMSprop'}
 
-Final training for SCATS 4032 complete.
-Best sMAPE: 14.06%
-Best Parameters: {'epochs': 10, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adam'}
+## Project Structure
+````
+|-- Project Main Folder
+|-- .gitignore
+|-- app.py
+|-- database_creator.py
+|-- jh_training_script.py
+|-- LSTM_Train_Combined_Model.py
+|-- LSTM_Train_Multible_Models.py
+|-- model_tester_demo.py
+|-- path_finding_demo.py
+|-- README.md
+|-- requirements.txt
+|-- data
+|   |-- data_base.xlsx
+|   |-- graph_init_data.xlsx
+|   |-- model_data.xlsx
+|   |-- ~$data_base.xlsx
+|   |-- ~$model_data.xlsx
+|-- data_structures
+|   |-- graph_classes
+|   |   |-- adjacency_list_graph.py
+|   |   |-- destination_distance_pair.py
+|   |   |-- vertex.py
+|   |   |-- linked_list
+|   |   |   |-- list_node.py
+|   |   |   |-- singly_linked_list.py
+|   |   |   |--
+|   |   |       |-- list_node.cpython
+|   |   |       |-- singly_linked_list.cpython
+|   |   |--
+|   |       |-- adjacency_list_graph.cpython
+|   |       |-- destination_distance_pair.cpython
+|   |       |-- vertex.cpython
+|   |-- queues
+|       |-- priority_que.py
+|       |--
+|           |-- priority_que.cpython
+|-- file_handling
+|   |-- graph_vertex_edge_init.py
+|   |--
+|       |-- graph_vertex_edge_init.cpython
+|-- GUI
+|   |-- graph_init_data.xlsx
+|   |-- model_data.xlsx
+|   |-- vic_lga.dbf
+|   |-- vic_lga.prj
+|   |-- vic_lga.shp
+|   |-- vic_lga.shx
+|   |-- vic_lga_locality.dbf
+|   |-- cache
+|       |-- ad0096fdfc4550ffa30b974fefa9a6a657bc949a.json
+|       |-- c36450edb58e0e191825a6e452dde8b8f7e5c436.json
+|       |-- d1fb2cd5aad1c6e024dfaa17b11d027026c73e2f.json
+|-- helper_functions
+|   |-- cycle_checker.py
+|   |-- haversine.py
+|   |--
+|       |-- cycle_checker.cpython
+|       |-- haversine.cpython
+|-- jh_ml_models
+|   |-- model_code
+|   |   |-- gru_model.py
+|   |   |-- model_collection.py
+|   |   |-- tcn_model.py
+|   |   |--
+|   |       |-- gru_model.cpython
+|   |       |-- lstm_data_handler.cpython
+|   |       |-- model_collection.cpython
+|   |       |-- tcn_model.cpython
+|   |-- model_deployment_abstractions
+|   |   |-- current_deployment_data_store.py
+|   |   |-- flowrate_predictor.py
+|   |   |-- deployment_data_testing
+|   |   |   |-- deployment_data_model_tester.py
+|   |   |   |-- flowrate_prediction_tester.py
+|   |   |   |-- test_deployment_data_store.py
+|   |   |   |--
+|   |   |       |-- deployment_data_model_tester.cpython
+|   |   |       |-- flowrate_prediction_tester.cpython
+|   |   |       |-- test_deployment_data_store.cpython
+|   |   |--
+|   |       |-- current_deployment_data_store.cpython
+|   |       |-- flowrate_predictor.cpython
+|   |-- model_fitting
+|   |   |-- data_loader.py
+|   |   |-- model_fitter.py
+|   |   |--
+|   |--
+|       |-- flowrate_predictor.cpython
+|       |-- gru_model.cpython
+|       |-- tcn_model.cpython
+|-- misc
+|   |-- mock_data_base_creator.py
+|   |--
+|       |-- mock_model.cpython
+|-- ml_models
+|   |-- lstm_data_handler.py
+|   |-- lstm_model.py
+|   |--
+|       |-- lstm_data_handler.cpython
+|       |-- lstm_model.cpython
+|-- path_finding
+|   |-- path_finder.py
+|   |--
+|       |-- path_finder.cpython
+|-- saved_models
+|   |-- gru.pth
+|   |-- lstm.pth
+|   |-- tcn.pth
+|-- textbook_abstractions
+|-- node.py
+|-- problem.py
+````
 
-Final training for SCATS 4034 complete.
-Best sMAPE: 9.23%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0001, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adam'}
 
-Final training for SCATS 4035 complete.
-Best sMAPE: 11.23%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
+## Requirements
+- Python 3.8+
+- numpy
+- pandas
+- matplotlib
+- os
+- datetime
+- math
+- torch
+- tqdm
+- re
+- openpyxl
+- copy
+- xlsxwriter
+- geopandas
+- plotly.graph_objects
+- dash
+- dash-core-components
+- scikit-learn
+- glob
+- torch.utils.data.DataLoader
+- ConcatDataset
 
-Final training for SCATS 4040 complete.
-Best sMAPE: 8.06%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'RMSprop'}
-
-Final training for SCATS 4043 complete.
-Best sMAPE: 8.70%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 400, 'num_layers': 4, 'optimizer': 'Adamax'}
-
-Final training for SCATS 4051 complete.
-Best sMAPE: 13.78%
-Best Parameters: {'epochs': 40, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adagrad'}
-
-Final training for SCATS 4057 complete.
-Best sMAPE: 16.10%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.01, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'Adagrad'}
-
-Final training for SCATS 4063 complete.
-Best sMAPE: 10.89%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 50, 'num_layers': 2, 'optimizer': 'Adam'}
-
-Final training for SCATS 4262 complete.
-Best sMAPE: 17.25%
-Best Parameters: {'epochs': 30, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 4, 'optimizer': 'Adam'}
-
-Final training for SCATS 4263 complete.
-Best sMAPE: 9.07%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
-
-Final training for SCATS 4264 complete.
-Best sMAPE: 12.42%
-Best Parameters: {'epochs': 20, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'Adam'}
-
-Final training for SCATS 4266 complete.
-Best sMAPE: 11.14%
-Best Parameters: {'epochs': 30, 'learning_rate': 0.0005, 'hidden_size': 50, 'num_layers': 3, 'optimizer': 'RMSprop'}
-
-Final training for SCATS 4270 complete.
-Best sMAPE: 9.21%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 100, 'num_layers': 4, 'optimizer': 'NAdam'}
-
-Final training for SCATS 4272 complete.
-Best sMAPE: 10.25%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.0005, 'hidden_size': 100, 'num_layers': 3, 'optimizer': 'RMSprop'}
-
-Final training for SCATS 4273 complete.
-Best sMAPE: 20.01%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 1, 'optimizer': 'NAdam'}
-
-Final training for SCATS 4321 complete.
-Best sMAPE: 16.03%
-Best Parameters: {'epochs': 40, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 4, 'optimizer': 'NAdam'}
-
-Final training for SCATS 4324 complete.
-Best sMAPE: 12.11%
-Best Parameters: {'epochs': 50, 'learning_rate': 0.0005, 'hidden_size': 400, 'num_layers': 2, 'optimizer': 'Adam'}
-
-Final training for SCATS 4335 complete.
-Best sMAPE: 16.76%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.001, 'hidden_size': 400, 'num_layers': 1, 'optimizer': 'Adamax'}
-
-Final training for SCATS 4812 complete.
-Best sMAPE: 11.65%
-Best Parameters: {'epochs': 100, 'learning_rate': 0.01, 'hidden_size': 50, 'num_layers': 1, 'optimizer': 'Adagrad'}
-
-Final training for SCATS 4821 complete.
-Best sMAPE: 9.64%
-Best Parameters: {'epochs': 40, 'learning_rate': 0.001, 'hidden_size': 300, 'num_layers': 1, 'optimizer': 'Adam'}
+See `requirements.txt` for specific versions.

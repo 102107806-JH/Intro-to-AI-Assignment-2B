@@ -1,0 +1,33 @@
+attr==0.3.2
+colorama==0.4.6
+ConfigParser==7.2.0
+cryptography==45.0.7
+dash==3.2.0
+dash-core-components>=2.0.0
+docutils==0.22
+filelock==3.19.1
+fonttools==4.58.0
+geopandas==1.1.1
+HTMLParser==0.0.2
+ipython==8.12.3
+ipywidgets==8.1.7
+jnius==1.1.0
+keyring==25.6.0
+matplotlib==3.10.6
+numpy==2.3.3
+openpyxl==3.1.5
+pandas==2.3.2
+Pillow==11.3.0
+plotly==6.3.0
+protobuf==6.32.0
+pyOpenSSL==25.1.0
+redis==6.4.0
+Sphinx==8.2.3
+thread==2.0.5
+torch>=2.0.0 --index-url https://download.pytorch.org/whl/cu118
+torchvision>=0.15.0 --index-url https://download.pytorch.org/whl/cu118
+torchaudio>=2.0.0 --index-url https://download.pytorch.org/whl/cu118
+tqdm==4.66.2
+urllib3_secure_extra==0.1.0
+xlsxwriter==3.2.5
+xmlrpclib==1.0.1
