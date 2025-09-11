@@ -36,7 +36,7 @@ To calculate and find the path, please press the Find Path button below the K-Va
 ### Map Visualisation Sidebar
 Once you click the Find Path button and the page finishes updating, a new sidebar will appear on the right side of the map. At the top of this sidebar, the current traffic volume status for the selected Origin SCATS site is displayed.
 
-Below that is the most optimal path, shown in purple. Subsequent paths are shown in random colours for easy visual comparison. To view only one path when multiple are generated, or to compare different paths, you can click on the path's name in the legend to show or hide it. The estimated time of arrival is shown to the right of the path's name in an hourly format (e.g., 0.25 hours is equal to 15 minutes, and 0.5 hours is equal to 30 minutes).
+Below that is the most optimal path, shown in purple. Subsequent paths are shown in random colours for easy visual comparison. To view only one path when multiple are generated, or to compare different paths, you can click on the path's name in the legend to show or hide it. The estimated time of arrival is shown to the right of the path's name in an hourly format (e.g., 0.25 hours is equal to 25 minutes, and 0.5 hours is equal to 30 minutes).
 
 ### Timeline
 Below the Find Path button is the "hour of the day" timeline. As part of our custom research initiative, we have implemented a feature that allows you to see how busy a SCATS site is at a given hour. You can select a new hour by clicking and dragging the blue timeline. You can also change the date by clicking on the date drop-down menu, which also supports typing to filter the dates. Additionally, you can click the Play button to automatically play back the entire day hour by hour. To update the GUI with new parameters, you must press Pause and wait for the GUI to finish updating. The current date and time are displayed to the right of the Pause button.
@@ -106,6 +106,8 @@ python app.py
 |-- .gitignore
 |-- app.py
 |-- database_creator.py
+|-- GRU_TCN_models.py
+|-- hyper_parameter_tuning_script.py
 |-- jh_training_script.py
 |-- LSTM_Train_Combined_Model.py
 |-- LSTM_Train_Multible_Models.py
@@ -217,26 +219,37 @@ python app.py
 
 
 ## Requirements
-- Python 3.8+
-- numpy
-- pandas
-- matplotlib
-- os
-- datetime
-- math
-- torch
-- tqdm
-- re
-- openpyxl
-- copy
-- xlsxwriter
-- geopandas
-- plotly.graph_objects
+- colorama
+- ConfigParser
+- cryptography
 - dash
 - dash-core-components
-- scikit-learn
-- glob
-- torch.utils.data.DataLoader
-- ConcatDataset
+- docutils
+- filelock
+- fonttools
+- geopandas
+- HTMLParser
+- ipython
+- ipywidgets
+- jnius
+- keyring
+- matplotlib
+- numpy
+- openpyxl
+- pandas
+- Pillow
+- plotly
+- protobuf
+- pyOpenSSL
+- redis
+- Sphinx
+- thread
+- torch
+- torchaudio
+- torchvision
+- tqdm
+- urllib3_secure_extra
+- xlsxwriter
+- xmlrpclib
 
 See `requirements.txt` for specific versions.

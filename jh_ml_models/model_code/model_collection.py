@@ -1,8 +1,5 @@
 import torch
 import numpy as np
-from jh_ml_models.model_code.gru_model import GRU
-from jh_ml_models.model_code.tcn_model import TCN
-from ml_models.lstm_model import LstmTrafficModel
 
 
 class ModelCollection():
@@ -73,9 +70,6 @@ class ModelCollection():
         return tfv_prediction
 
     def _lstm_predict(self, unformatted_input_data, scats_site):
-        """
-        CORRECTED: Uses simple division normalization to match training
-        """
         # Extract volume values and time information
         volumes = []
         time_features = []
@@ -83,8 +77,7 @@ class ModelCollection():
             time_obj = datum[0]
             tfv = datum[1]
 
-            # Calculate seconds in day for cyclical encoding
-            seconds_in_day = 24 * 60 * 60
+            seconds_in_day = 24 * 60 * 60 # Calculate seconds in day for cyclical encoding
             seconds = time_obj.hour * 3600 + time_obj.minute * 60 + time_obj.second
 
             # Cyclical time encoding
@@ -98,13 +91,12 @@ class ModelCollection():
 
             volumes.append(tfv)
             time_features.append([time_sin, time_cos, weekday_sin, weekday_cos])
-
         volumes = np.array(volumes, dtype=np.float32)
         time_features = np.array(time_features, dtype=np.float32)
         if hasattr(self._lstm_model, 'transform_dict'):
-            max_tfv = self._lstm_model.transform_dict.get('max_tfv', 169.7)
+            max_tfv = self._lstm_model.transform_dict.get('max_tfv', 169.70)
         else:
-            max_tfv = 169.7
+            max_tfv = 169.70
 
         volumes_norm = volumes / max_tfv
         # Combine features: [Volume_norm, Time_sin, Time_cos, Weekday_sin, Weekday_cos]
@@ -116,7 +108,6 @@ class ModelCollection():
         formatted_array[0] = input_features
         formatted_tensor = torch.from_numpy(formatted_array).to(torch.float32).to(self._device)
         yhat_norm = self._lstm_model(formatted_tensor).item()
-
         yhat = yhat_norm * max_tfv  # Multiply by the max tfv to get back to the original tfv #
         return yhat
 
