@@ -10,8 +10,7 @@ import datetime as dt
 import numpy as np
 from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployment_data_model_tester import DeploymentDataModelTester
 
-# Load SCATS node metadata
-nodes_df = pd.read_excel("./data/graph_init_data.xlsx")
+nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node metadata
 nodes_df.rename(
     columns={
         "SCATS Number": "SCATS_Number",
@@ -21,12 +20,14 @@ nodes_df.rename(
     inplace=True,
 )
 
-gdf = gpd.read_file("./GUI/vic_lga.shp") # Load map boundaries
+gdf = gpd.read_file("./GUI/vic_lga.shp")  # Load map boundaries
 boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]
 boroondara_geojson = boroondara.__geo_interface__
 
-MODEL_XLSX = "./data/model_data.xlsx" # Load traffic data for timeline (hourly)
-model_df = pd.read_excel(MODEL_XLSX, sheet_name="Sheet1")
+MODEL_XLSX = "./data/data_base.xlsx"  # Load traffic data for timeline (hourly)
+model_df = pd.read_excel(MODEL_XLSX, sheet_name="Current_Data")
+model_df["Date"] = pd.to_datetime(model_df["Date"], dayfirst=True)
+
 time_cols = [c for c in model_df.columns if isinstance(c, dt.time)]
 id_cols = [c for c in model_df.columns if c not in time_cols]
 
@@ -50,8 +51,7 @@ hourly["prev_volume"] = hourly.groupby(["SCATS_Number", "date"])["volume"].shift
 hourly["delta"] = hourly["volume"] - hourly["prev_volume"]
 hourly["pct_change"] = (hourly["delta"] / hourly["prev_volume"].replace(0, np.nan)) * 100
 
-
-daily_extrema = ( # Peak/low daily markers
+daily_extrema = (  # Peak/low daily markers
     hourly.groupby(["SCATS_Number", "date"])
     .agg(peak_volume=("volume", "max"), low_volume=("volume", "min"))
     .reset_index()
@@ -60,6 +60,7 @@ hourly = hourly.merge(daily_extrema, on=["SCATS_Number", "date"], how="left")
 hourly["is_peak"] = hourly["volume"] == hourly["peak_volume"]
 hourly["is_low"] = hourly["volume"] == hourly["low_volume"]
 traffic_df = hourly.merge(nodes_df, on="SCATS_Number", how="inner")
+
 
 def compute_color(row):  # Color for each node based on peak/low/no data
     if row["is_peak"]:
@@ -72,6 +73,7 @@ def compute_color(row):  # Color for each node based on peak/low/no data
         if row["delta"] < 0:
             return "#1F77FF"  # blue
     return "#BDBDBD"  # flat/no data
+
 
 def base_figure():
     fig = go.Figure()
@@ -160,10 +162,11 @@ app.layout = html.Div(
         ),
         html.Div(
             [dcc.Graph(id="map", figure=base_figure())],
-            style={"width": "65%", "display": "inline-block"},
+            style={"marginTop": "10px", "width": "65%", "display": "inline-block"},
         ),
     ]
 )
+
 
 @app.callback(
     [Output("map", "figure"), Output("tester-graph", "figure"), Output("hour-readout", "children")],
@@ -178,6 +181,8 @@ app.layout = html.Div(
 )
 def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, sequence_length, k_val):
     map_fig = base_figure()
+    graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
+    graph = graph_builder.extract_file_contents()
 
     if date_val:
         date_val = pd.to_datetime(date_val).date()
@@ -205,8 +210,6 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
             )
 
     if n_clicks > 0:
-        graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
-        graph = graph_builder.extract_file_contents()
         current_time = datetime.now().replace(month=8)
         path_finder = PathFinder(graph=graph)
         solution_nodes = path_finder.find_paths(
@@ -228,6 +231,8 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
                 path_states.reverse()
                 if path_states:
                     coords = nodes_df.set_index("SCATS_Number").loc[path_states]
+                    total_time = path.time_cost
+                    time_text = f"Est. Time: {total_time:.2f} min"
                     map_fig.add_trace(
                         go.Scattermapbox(
                             lat=coords["lat"],
@@ -236,7 +241,7 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
                             line=dict(width=4, color=colors[i % len(colors)]),
                             marker=dict(size=10, color=colors[i % len(colors)]),
                             text=[str(s) for s in path_states],
-                            name="Optimal Path" if i == 0 else f"Path {i+1}",
+                            name="Optimal Path ({})".format(time_text) if i == 0 else "Path {} ({})".format(i+1, time_text),
                         )
                     )
 
@@ -254,7 +259,6 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
     gru_pred = np.asarray(results.get("GRU", np.zeros_like(targets)), dtype=float)
     tcn_pred = np.asarray(results.get("TCN", np.zeros_like(targets)), dtype=float)
     lstm_pred = np.asarray(results.get("LSTM", np.zeros_like(targets)), dtype=float)
-
     tester_fig = go.Figure()
     if len(targets) > 0:
         abs_gru = np.abs(targets - gru_pred)
@@ -290,6 +294,7 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
         tester_fig.update_layout(title="No test data available for selected site/time")
     return map_fig, tester_fig, f"Showing {str(date_val)} at {hour_val:02d}:00"
 
+
 @app.callback(
     Output("timer", "disabled"),
     Input("play-btn", "n_clicks"),
@@ -303,6 +308,7 @@ def play_pause(n_play, n_pause):
     trig = ctx.triggered[0]["prop_id"].split(".")[0]
     return False if trig == "play-btn" else True
 
+
 @app.callback(
     Output("hour-slider", "value"),
     Input("timer", "n_intervals"),
@@ -311,6 +317,7 @@ def play_pause(n_play, n_pause):
 )
 def tick(_n, hour_val):
     return 0 if hour_val >= 23 else hour_val + 1
+
 
 if __name__ == "__main__":
     app.run(debug=True)
