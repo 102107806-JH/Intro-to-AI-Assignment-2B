@@ -87,13 +87,23 @@ python GRU_TCN_models.py
 # Displays a graph that plots the ABS difference for a prefered SCAT site, which can be adjusted in the model_tester_demo.py file.
 python model_tester_demo.py
 ````
-### 8. Path finding demonstration
+### 8. Path finding demonstration (Optional)
 ````
-# Within the python file you can enter different parameters for the pathfinding function. The path finding function will then find all the solution nodes and print them out.
+# Within the python file you can enter different parameters for the pathfinding function. The path finding function will then find all the solution nodes and print them out in the console.
 python path_finding_demo.py
 ````
+**PLEASE NOTE ALL PATHFINDING AND PREDICITION ALGORITHMS USE THE DATA IN 'DATA_BASE.XLSX'. THE DATA PROCESSING SCRIPTS IN 9 AND 10 WERE USED TO CREATE THIS. THE ONLY OTHER PROCESSING DONE WAS ADDING COLUMN NAMES OUTSIDE OF PYTHON. ANY FILES CREATED WILL NOT HAVE THE NAME 'DATA_BASE.XLSX' TO AVOID CORRUPTING DATA**
+### 9. Mock database creator (**DO NOT RUN**)
+````
+# Extracted the traffic flow volume data from the months of 08/2025 and 09/2025. The files which it extracts data from are not present as there were too many of them. This file has been included for the sake of completeness.
+````
+### 10. Mock database cleaner (Optional)
+````
+# The the traffic flow volume data from the months of 08/2025 and 09/2025 had some corrupted running this script removes all -1's and 0 rows. 
+python mock_database_cleaner_script.py
+````
 
-### ?. Run the GUI
+### 11. Run the GUI
 ````
 # Run the interactive Dash GUI
 python app.py
