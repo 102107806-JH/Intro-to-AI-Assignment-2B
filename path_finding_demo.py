@@ -23,7 +23,7 @@ if __name__ == "__main__":
     current_time = datetime.now()
     current_time = current_time.replace(month=8)  # We dont have access to data from current month faking that we are actually in the 8th month
     path_finder = PathFinder(graph=graph)
-    solution_nodes = path_finder.find_paths(initial_state=4821, goal_state=970, initial_time=current_time, sequence_length=12, k_val=30, mode="GRU")
+    solution_nodes = path_finder.find_paths(initial_state=2000, goal_state=970, initial_time=current_time, sequence_length=12, k_val=3, mode="LSTM")
     for i, node in enumerate(solution_nodes):
         print("__________________________________________________")
         print(f"Solution Number {i + 1}")

@@ -49,7 +49,8 @@ class PathFinder():
                 continue  # Because we want to be able to find multiple paths we keep looking for more paths we use the
                 # continue though because we don't wish to expand the solution node #
             for child in self._expand(problem, node):  # Expand the nodes children
-                if cycle_checker(child):  # No cycles are allowed.
+                #print(child.depth)
+                if cycle_checker(child) or child.depth > 13:  # No cycles are allowed and dont want to go to deep otherwise will go on for ever depth limit trial by experimentation
                     # If detected continue to ensure child node is not pushed onto the frontier #
                     continue
                 frontier.push(child)  # Push child onto the frontier
@@ -70,7 +71,8 @@ class PathFinder():
                     action=action,
                     path_cost=path_cost,
                     total_cost=path_cost,
-                    time_cost=time_cost
+                    time_cost=time_cost,
+                    depth=node.depth+1
                 )
             )
         return children
