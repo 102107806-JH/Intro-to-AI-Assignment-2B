@@ -9,7 +9,7 @@ class Problem:
         self._goal_states = goal_state
         self._flowrate_predictor = FlowratePredictor(initial_time=initial_time,
                                                      sequence_length=sequence_length,
-                                                     database_file_path="data/cleaned_data_base.xlsx",
+                                                     database_file_path="data/data_base.xlsx",
                                                      mode=mode)  # Model that will be used to predict the flow rate
 
     @property

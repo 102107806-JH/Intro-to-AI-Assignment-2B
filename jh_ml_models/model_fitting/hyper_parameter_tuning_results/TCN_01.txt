@@ -351,3 +351,6 @@ kernel_size : 3
 C1_out_channels : 16
 
 Process finished with exit code 0
+
+Notes:-Got rid of lower batches didn't seem to provide any advantage and just slowed it down.
+      -Gave more epochs for convergence

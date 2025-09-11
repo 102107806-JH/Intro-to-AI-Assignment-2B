@@ -1,9 +1,10 @@
 import torch
 from torch.utils.data import DataLoader
 from jh_ml_models.model_fitting.data_loader import TrafficFlowDataSet
+from jh_ml_models.model_code.gru_model import GRU
 
 class Model_Fitter():
-    def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device, split_proportions, validate=True, model_save_path=None):
+    def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device, split_proportions, validate=True, save_directory=None, save_name=None):
         self._model = model
         self._train_loss_function = train_loss_function
         self._test_loss_function = test_loss_function
@@ -14,7 +15,8 @@ class Model_Fitter():
         self._device = device
         self._split_proportions = split_proportions
         self._validate = validate
-        self._model_save_path = model_save_path
+        self._save_directory = save_directory
+        self._save_name = save_name
 
     def fit_model(self, scats_site_number):
         """
@@ -74,8 +76,8 @@ class Model_Fitter():
         metric_dictionary["test_loss"] = test_loss
         print(f"Post-training test loss : {test_loss}")
 
-        if self._model_save_path is not None:  # Save the model if a save path has been set
-            torch.save(self._model, self._model_save_path)
+        if self._save_directory is not None and self._save_name is not None:  # Save the model if a save path has been set
+            torch.save(self._model, self._save_directory + "/" + self._save_name + ".pth")
 
         return metric_dictionary
 

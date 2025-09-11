@@ -4,8 +4,8 @@ import datetime
 from datetime import datetime, timedelta
 if __name__ == "__main__":
     finish_time = datetime.now()
-    finish_time += timedelta(minutes=50)
-    hyper_parameter_tuner = HyperParameterTuner(mode="tcn", epochs_per_run=100)
+    finish_time += timedelta(minutes=45)
+    hyper_parameter_tuner = HyperParameterTuner(mode="tcn", epochs_per_run=300)
 
     hyper_parameter_dictionary = {
         # Common hps

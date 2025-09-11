@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    mode = "gru"
+    mode = "tcn"
 
     # Hyper parameters (Common)
-    batch_size = 5
-    lr = 5e-5
-    num_epochs = 100
+    batch_size = 64
+    lr = 0.001
+    num_epochs = 300
     sequence_length = 12
 
     # Hyper parameters (GRU)
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # Hyper parameters (TCN)
     kernel_size = 4
-    c1_out_channels = 6
+    c1_out_channels = 10
     if mode == "gru":
         model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
     elif mode == "tcn":
@@ -34,9 +34,9 @@ if __name__ == "__main__":
     scats_site_number = 'ALL'
 
     split_proportions = {
-        "train": 0.7,
-        "test": 0.2,
-        "validation": 0.1
+        "train": 0.01,
+        "test": 0.01,
+        "validation": 0.01
     }
     split_proportions["discard"] = 1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
 
@@ -50,7 +50,8 @@ if __name__ == "__main__":
                           device=device,
                           split_proportions=split_proportions,
                           validate=True,
-                          model_save_path="saved_models/" + mode + ".pth")
+                          save_directory="saved_models",
+                          save_name=mode)
 
     metric_dictionary = fitter.fit_model(scats_site_number)
     plt.plot(metric_dictionary["validation_loss"], 'g')
