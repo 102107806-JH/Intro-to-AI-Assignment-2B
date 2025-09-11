@@ -9,17 +9,17 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     mode = "tcn"
 
-    # Hyper parameters (Common)
-    num_epochs = 300
+    # Hyperparameters (Common)
+    num_epochs = 100
     sequence_length = 12
 
-    # Hyper parameters (GRU)
+    # Hyperparameters (GRU)
     #lr = 0.00001
     #batch_size = 128
     #hidden_size = 96
     #num_layers = 5
 
-    # Hyper parameters (TCN)
+    # Hyperparameters (TCN)
     lr = 0.00001
     batch_size = 48
     kernel_size = 5
@@ -36,9 +36,9 @@ if __name__ == "__main__":
     scats_site_number = 'ALL'
 
     split_proportions = {
-        "train": 0.01,
-        "test": 0.01,
-        "validation": 0.01
+        "train": 0.8,
+        "test": 0.1,
+        "validation": 0.1
     }
     split_proportions["discard"] = 1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
 
