@@ -82,6 +82,11 @@ class HyperParameterTuner():
         return metric_dictionary["test_loss"]
 
     def _test_hp_datum_gru(self, hyper_parameter_datum_dictionary):
+        """
+        :param hyper_parameter_datum_dictionary: The hyperparameters that the GRU is to be trained on.
+        :return: Dictionary after training has been completed with summarising the performance of the model.
+        """
+        # Print information to the user #
         print("---------------------------------------------------------------")
         print(f"GRU HYPER-PARAMETER DATUM TEST. The settings are:"
               f"\nLearning Rate: {hyper_parameter_datum_dictionary['lr']}"
@@ -89,6 +94,7 @@ class HyperParameterTuner():
               f"\nHidden Size: {hyper_parameter_datum_dictionary['hidden_size']}"
               f"\nNum Layers: {hyper_parameter_datum_dictionary['num_layers']}")
 
+        # Init the GRU model #
         model = GRU(
             feature_size=self._feature_size,
             sequence_length=self._sequence_length,
@@ -101,6 +107,7 @@ class HyperParameterTuner():
         optimizer = torch.optim.Adam(model.parameters(), lr=hyper_parameter_datum_dictionary["lr"])
         scats_site_number = 'ALL'
 
+        # Init the model fitter
         fitter = Model_Fitter(model=model,
                               train_loss_function=train_loss_function,
                               test_loss_function=test_loss_function,
@@ -112,10 +119,16 @@ class HyperParameterTuner():
                               split_proportions=self._split_proportions,
                               validate=True,
                               model_save_path=None)
+        # Fit the model
         metric_dictionary = fitter.fit_model(scats_site_number)
-        return metric_dictionary
+        return metric_dictionary # Return results #
 
     def _test_hp_datum_tcn(self, hyper_parameter_datum_dictionary):
+        """
+        REFER to "_test_hp_datum_gru" structure is the same except applied to a tcn
+        :param hyper_parameter_datum_dictionary:
+        :return:
+        """
         print("---------------------------------------------------------------")
         print(f"TCN HYPER-PARAMETER DATUM TEST. The settings are:"
               f"\nLearning Rate: {hyper_parameter_datum_dictionary['lr']}"
@@ -150,13 +163,16 @@ class HyperParameterTuner():
         return metric_dictionary
 
 class HyperParameter():
+    """
+    This is a class for managing hyperparameters
+    """
     def __init__(self, lower_limit, upper_limit, data_type, data_list=None):
         self._lower_limit = lower_limit
         self._upper_limit = upper_limit
         self._data_type = data_type
         self._data_list = data_list
 
-    def get_random_bound_val(self):
+    def get_random_bound_val(self): # Retrieve a random hyperparameter depending on how the hyperparameter is represented #
         if self._data_type == int:
             return random.randint(self._lower_limit, self._upper_limit)
         elif self._data_type == float:

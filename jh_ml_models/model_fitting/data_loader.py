@@ -50,7 +50,6 @@ class TrafficFlowDataSet(Dataset):
         pandas_data = pandas.read_excel(data_set_file_name)  # Read the data excel file with pandas #
 
         data_list = []  # list to store the read data #
-        scats_site_count = 0  # counts the number of unique scats sites
         for i in range(0, pandas_data.shape[0]):  # Go through every row #
             scats_number = pandas_data['SCATS_Number'].iloc[i]  # Scats number for given row #
 

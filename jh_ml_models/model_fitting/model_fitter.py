@@ -4,6 +4,9 @@ from jh_ml_models.model_fitting.data_loader import TrafficFlowDataSet
 from jh_ml_models.model_code.gru_model import GRU
 
 class Model_Fitter():
+    """
+    Please note that throughout this class cost and loss are used interchangeably
+    """
     def __init__(self, model, train_loss_function, test_loss_function, optimizer, batch_size, num_epochs, sequence_length, device, split_proportions, validate=True, save_directory=None, save_name=None):
         self._model = model
         self._train_loss_function = train_loss_function
