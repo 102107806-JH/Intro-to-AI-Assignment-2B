@@ -6,7 +6,8 @@ import pandas
 
 
 class MockDataBaseCreator():
-    def __init__(self):
+    def __init__(self, file_path):
+        self._file_path = file_path
         self._scats_site_list = []
         self._populate_scats_site_list()
         self._number_to_weekday = {
@@ -54,7 +55,7 @@ class MockDataBaseCreator():
 
 
         file_as_pd_data_frame = pandas.DataFrame(file_as_list)
-        writer = pandas.ExcelWriter('data/data_base.xlsx', engine='xlsxwriter')
+        writer = pandas.ExcelWriter(self._file_path , engine='xlsxwriter')
         file_as_pd_data_frame.to_excel(writer, sheet_name="Current_Data", index=False)
         writer._save()
 

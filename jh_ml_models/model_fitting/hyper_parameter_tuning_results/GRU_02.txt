@@ -1,0 +1,343 @@
+C:\Users\jotha\Desktop\PythonVeEnvs\Assignment2B\Scripts\python.exe "C:\Users\jotha\Desktop\uni\sem2_2025\Introduction to Artifical Intelligence - COS30019\Assignments\Assignment 2b\Repository\Intro-to-AI-Assignment-2B\hyper_parameter_tuning_script.py"
+Hyper parameter tuning will stop at approximately: 09/09/2025  18:44:16
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 16
+Num Layers: 5
+Testing model that has not been trained ### Pre-training test loss : 0.10685020806208538
+Epoch 50 #### Train loss : 0.005036766029661521 #### Validation loss : 0.004620628256816417 ####
+Testing trained model ###Post-training test loss : 0.004645262932172045
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 128
+Hidden Size: 512
+Num Layers: 1
+Testing model that has not been trained ### Pre-training test loss : 0.028502138343415383
+Epoch 50 #### Train loss : 0.002699737360671861 #### Validation loss : 0.0026696444692788646 ####
+Testing trained model ###Post-training test loss : 0.002668182954948861
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 256
+Num Layers: 1
+Testing model that has not been trained ### Pre-training test loss : 0.02957491555876519
+Epoch 50 #### Train loss : 0.0011249741237406852 #### Validation loss : 0.0011203884278074838 ####
+Testing trained model ###Post-training test loss : 0.0011174678002134897
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 256
+Hidden Size: 512
+Num Layers: 10
+Testing model that has not been trained ### Pre-training test loss : 0.029173368469450126
+Epoch 50 #### Train loss : 0.003512307841447182 #### Validation loss : 0.0032134529610630125 ####
+Testing trained model ###Post-training test loss : 0.0032144500000867993
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 1024
+Num Layers: 6
+Testing model that has not been trained ### Pre-training test loss : 0.035042061950940236
+Epoch 50 #### Train loss : 0.018219060671981424 #### Validation loss : 0.01641481416299939 ####
+Testing trained model ###Post-training test loss : 0.016399788320995867
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 32
+Num Layers: 5
+Testing model that has not been trained ### Pre-training test loss : 0.019465829927527732
+Epoch 50 #### Train loss : 0.001146251297541312 #### Validation loss : 0.0011584514322748873 ####
+Testing trained model ###Post-training test loss : 0.001146267881267704
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Hidden Size: 32
+Num Layers: 8
+Testing model that has not been trained ### Pre-training test loss : 0.07790514661008091
+Epoch 50 #### Train loss : 0.0008820846687740413 #### Validation loss : 0.000989506115729455 ####
+Testing trained model ###Post-training test loss : 0.0009951453321264125
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 1024
+Num Layers: 9
+Testing model that has not been trained ### Pre-training test loss : 0.030339134008783825
+Epoch 50 #### Train loss : 0.017004519468173385 #### Validation loss : 0.019840206252411008 ####
+Testing trained model ###Post-training test loss : 0.01984825369436294
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 512
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.0246457692942741
+Epoch 50 #### Train loss : 0.0010537761700106785 #### Validation loss : 0.0009426674878341146 ####
+Testing trained model ###Post-training test loss : 0.0009450810357520822
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 256
+Hidden Size: 128
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.019184792091014088
+Epoch 50 #### Train loss : 0.003932678198907524 #### Validation loss : 0.0036482783616520464 ####
+Testing trained model ###Post-training test loss : 0.0036484206502791494
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Hidden Size: 256
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.04461787563809558
+Epoch 50 #### Train loss : 0.004980215409887023 #### Validation loss : 0.012591087084729224 ####
+Testing trained model ###Post-training test loss : 0.01253387751057744
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 128
+Hidden Size: 16
+Num Layers: 2
+Testing model that has not been trained ### Pre-training test loss : 0.020821878894498092
+Epoch 50 #### Train loss : 0.014520844852086157 #### Validation loss : 0.014533153618685901 ####
+Testing trained model ###Post-training test loss : 0.014525281090755016
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Hidden Size: 256
+Num Layers: 4
+Testing model that has not been trained ### Pre-training test loss : 0.03176150911233642
+Epoch 50 #### Train loss : 0.0059384726046118885 #### Validation loss : 0.007871009671362117 ####
+Testing trained model ###Post-training test loss : 0.007836046948796138
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 128
+Hidden Size: 32
+Num Layers: 10
+Testing model that has not been trained ### Pre-training test loss : 0.02927245434961821
+Epoch 50 #### Train loss : 0.015388035215437412 #### Validation loss : 0.014374168473295867 ####
+Testing trained model ###Post-training test loss : 0.014309023274108768
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 1024
+Num Layers: 1
+Testing model that has not been trained ### Pre-training test loss : 0.04132014046761261
+Epoch 50 #### Train loss : 0.0017327050445601344 #### Validation loss : 0.0013895547162974253 ####
+Testing trained model ###Post-training test loss : 0.0013931738794781268
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 64
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.06763542653506349
+Epoch 50 #### Train loss : 0.0014510386536130682 #### Validation loss : 0.0012544615747174248 ####
+Testing trained model ###Post-training test loss : 0.0012658443883992732
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 512
+Num Layers: 10
+Testing model that has not been trained ### Pre-training test loss : 0.03637715107553704
+Epoch 50 #### Train loss : 0.0010044347363873385 #### Validation loss : 0.0010950142313959077 ####
+Testing trained model ###Post-training test loss : 0.0010939290514215827
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 64
+Num Layers: 6
+Testing model that has not been trained ### Pre-training test loss : 0.01841219806758936
+Epoch 50 #### Train loss : 0.0011028937442461029 #### Validation loss : 0.0010511729269637726 ####
+Testing trained model ###Post-training test loss : 0.0010530679282965139
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Hidden Size: 16
+Num Layers: 5
+Testing model that has not been trained ### Pre-training test loss : 0.13569881007739693
+Epoch 50 #### Train loss : 0.0009925542035489343 #### Validation loss : 0.0009647196420701221 ####
+Testing trained model ###Post-training test loss : 0.000960302546445746
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 256
+Hidden Size: 512
+Num Layers: 8
+Testing model that has not been trained ### Pre-training test loss : 0.026560131834143665
+Epoch 50 #### Train loss : 0.001040728220687015 #### Validation loss : 0.0009294577102991752 ####
+Testing trained model ###Post-training test loss : 0.0009332568006357178
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Hidden Size: 1024
+Num Layers: 9
+Testing model that has not been trained ### Pre-training test loss : 0.04728449560238414
+Epoch 50 #### Train loss : 0.021620455459924415 #### Validation loss : 0.016114718688186258 ####
+Testing trained model ###Post-training test loss : 0.01606542814988643
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 1e-05
+Batch Size: 128
+Hidden Size: 128
+Num Layers: 7
+Testing model that has not been trained ### Pre-training test loss : 0.05327561007518517
+Epoch 50 #### Train loss : 0.005715621518902481 #### Validation loss : 0.00529008885496296 ####
+Testing trained model ###Post-training test loss : 0.0052408222400117666
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.001
+Batch Size: 128
+Hidden Size: 128
+Num Layers: 6
+Testing model that has not been trained ### Pre-training test loss : 0.030323209847060686
+Epoch 50 #### Train loss : 0.0009182959074678365 #### Validation loss : 0.0012021953152725473 ####
+Testing trained model ###Post-training test loss : 0.0011956097623624373
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 256
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.040610024153854056
+Epoch 50 #### Train loss : 0.017940980207640678 #### Validation loss : 0.018720743479207158 ####
+Testing trained model ###Post-training test loss : 0.01879973046015948
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 512
+Num Layers: 4
+Testing model that has not been trained ### Pre-training test loss : 0.04163189459015783
+Epoch 50 #### Train loss : 0.0010110236307809828 #### Validation loss : 0.0010863163188332692 ####
+Testing trained model ###Post-training test loss : 0.0010917809522652533
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 16
+Num Layers: 10
+Testing model that has not been trained ### Pre-training test loss : 0.03139471432348345
+Epoch 50 #### Train loss : 0.0008069217401498463 #### Validation loss : 0.0009773216297617182 ####
+Testing trained model ###Post-training test loss : 0.0009827457397477701
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 32
+Num Layers: 2
+Testing model that has not been trained ### Pre-training test loss : 0.018847524935596487
+Epoch 50 #### Train loss : 0.0012213162117404863 #### Validation loss : 0.001228542812896194 ####
+Testing trained model ###Post-training test loss : 0.0012497108400566503
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 512
+Num Layers: 3
+Testing model that has not been trained ### Pre-training test loss : 0.04740267217301639
+Epoch 50 #### Train loss : 0.011125109740532935 #### Validation loss : 0.013199986075051129 ####
+Testing trained model ###Post-training test loss : 0.013113426743075252
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 1024
+Num Layers: 4
+Testing model that has not been trained ### Pre-training test loss : 0.02970998887281129
+Epoch 50 #### Train loss : 0.0009146720985881984 #### Validation loss : 0.000920314181712456 ####
+Testing trained model ###Post-training test loss : 0.0009210148127749562
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 128
+Hidden Size: 1024
+Num Layers: 2
+Testing model that has not been trained ### Pre-training test loss : 0.03573932906574134
+Epoch 50 #### Train loss : 0.0009617892137612216 #### Validation loss : 0.0009065995327546261 ####
+Testing trained model ###Post-training test loss : 0.0009110996870731469
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.0001
+Batch Size: 256
+Hidden Size: 256
+Num Layers: 5
+Testing model that has not been trained ### Pre-training test loss : 0.051501365164947355
+Epoch 50 #### Train loss : 0.0009135327491094358 #### Validation loss : 0.000878445767739322 ####
+Testing trained model ###Post-training test loss : 0.000874857090821024
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 256
+Hidden Size: 256
+Num Layers: 5
+Testing model that has not been trained ### Pre-training test loss : 0.030840376605558547
+Epoch 50 #### Train loss : 0.009885941515676677 #### Validation loss : 0.009330470813438296 ####
+Testing trained model ###Post-training test loss : 0.009353003581054509
+
+---------------------------------------------------------------
+GRU HYPER-PARAMETER DATUM TEST. The settings are:
+Learning Rate: 0.01
+Batch Size: 128
+Hidden Size: 16
+Num Layers: 1
+Testing model that has not been trained ### Pre-training test loss : 0.028398551046848297
+Epoch 50 #### Train loss : 0.0009332441150036175 #### Validation loss : 0.000983056153927464 ####
+Testing trained model ###Post-training test loss : 0.0009767207193362992
+RESULTS--------------------------------------
+Best Loss 0.000874857090821024
+Hyper-Parameters
+lr : 0.0001
+batch_size : 256
+hidden_size : 256
+num_layers : 5
+kernel_size : 1
+C1_out_channels : 15
+
+Process finished with exit code 0
