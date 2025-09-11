@@ -15,8 +15,8 @@ class GRU(nn.Module):
             hidden_size=hidden_size,
             batch_first=True,
             num_layers=self._num_layers
-        )
-        self._linear = nn.Linear(in_features=self._hidden_size, out_features=1)  # Init the linear layer #
+        ).to(self._device)
+        self._linear = nn.Linear(in_features=self._hidden_size, out_features=1).to(self._device)  # Init the linear layer #
         self._transform_dict = {}  # Transformation dictionary that can be set using a setter at a later date. This is just a convenient way to store transformations for use during inference #
 
 
@@ -40,5 +40,3 @@ class GRU(nn.Module):
     @transform_dict.setter
     def transform_dict(self, transform_dict):  # Allows setting of the transform dictionary #
         self._transform_dict = transform_dict
-
-

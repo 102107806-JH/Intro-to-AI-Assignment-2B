@@ -12,7 +12,7 @@ from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployme
 
 
 nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node metadata
-nodes_df.rename(  # Rename columns
+nodes_df.rename(  # Renames columns
     columns={
         "SCATS Number": "SCATS_Number",
         "NB_LATITUDE": "lat",

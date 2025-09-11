@@ -1,6 +1,8 @@
 import torch
 import numpy as np
-
+from jh_ml_models.model_code.gru_model import GRU
+from jh_ml_models.model_code.tcn_model import TCN
+from ml_models.lstm_model import LstmTrafficModel
 
 class ModelCollection():
     """
@@ -9,7 +11,6 @@ class ModelCollection():
     a tfv predicition.
     """
     def __init__(self):
-        self._load_models()
         self._days_to_values = {
             "Monday": 0,
             "Tuesday": 1,
@@ -20,6 +21,7 @@ class ModelCollection():
             "Sunday": 6
         }  # Dictionary for converting the days to values #
         self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Set up the device #
+        self._load_models()
 
     def _load_models(self):  # Load all the models #
         self._load_gru()
@@ -27,15 +29,18 @@ class ModelCollection():
         self._load_lstm()
 
     def _load_gru(self):
-        self._gru_model = torch.load("saved_models/gru.pth")
+        self._gru_model = torch.load("saved_models/gru.pth", map_location=self._device)
+        self._gru_model._device = self._device
         self._gru_model.eval()
 
     def _load_tcn(self):
-        self._tcn_model = torch.load("saved_models/tcn.pth")
+        self._tcn_model = torch.load("saved_models/tcn.pth", map_location=self._device)
+        self._tcn_model._device = self._device
         self._tcn_model.eval()
 
     def _load_lstm(self):
-        self._lstm_model = torch.load("saved_models/lstm.pth")
+        self._lstm_model = torch.load("saved_models/lstm.pth", map_location=self._device)
+        self._lstm_model._device = self._device
         self._lstm_model.eval()
 
     def make_predicition(self, unformatted_input_data, scats_site, mode):
