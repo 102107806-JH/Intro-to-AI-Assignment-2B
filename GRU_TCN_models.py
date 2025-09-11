@@ -7,21 +7,23 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    mode = "gru"
+    mode = "tcn"
 
     # Hyper parameters (Common)
-    batch_size = 64
-    lr = 0.001
-    num_epochs = 100
+    num_epochs = 300
     sequence_length = 12
 
     # Hyper parameters (GRU)
-    hidden_size = 128
-    num_layers = 3
+    #lr = 0.00001
+    #batch_size = 128
+    #hidden_size = 96
+    #num_layers = 5
 
     # Hyper parameters (TCN)
-    kernel_size = 4
-    c1_out_channels = 10
+    lr = 0.00001
+    batch_size = 48
+    kernel_size = 5
+    c1_out_channels = 14
     if mode == "gru":
         model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
     elif mode == "tcn":
