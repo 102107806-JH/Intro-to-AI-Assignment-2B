@@ -10,6 +10,7 @@ import datetime as dt
 import numpy as np
 from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployment_data_model_tester import DeploymentDataModelTester
 
+
 nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node metadata
 nodes_df.rename(
     columns={
@@ -20,14 +21,12 @@ nodes_df.rename(
     inplace=True,
 )
 
-gdf = gpd.read_file("./GUI/vic_lga.shp")  # Load map boundaries
+gdf = gpd.read_file("./GUI/vic_lga.shp") # Load map boundaries
 boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]
 boroondara_geojson = boroondara.__geo_interface__
-
 MODEL_XLSX = "./data/data_base.xlsx"  # Load traffic data for timeline (hourly)
 model_df = pd.read_excel(MODEL_XLSX, sheet_name="Current_Data")
 model_df["Date"] = pd.to_datetime(model_df["Date"], dayfirst=True)
-
 time_cols = [c for c in model_df.columns if isinstance(c, dt.time)]
 id_cols = [c for c in model_df.columns if c not in time_cols]
 
@@ -51,7 +50,7 @@ hourly["prev_volume"] = hourly.groupby(["SCATS_Number", "date"])["volume"].shift
 hourly["delta"] = hourly["volume"] - hourly["prev_volume"]
 hourly["pct_change"] = (hourly["delta"] / hourly["prev_volume"].replace(0, np.nan)) * 100
 
-daily_extrema = (  # Peak/low daily markers
+daily_extrema = ( # Peak/low daily markers
     hourly.groupby(["SCATS_Number", "date"])
     .agg(peak_volume=("volume", "max"), low_volume=("volume", "min"))
     .reset_index()
@@ -181,6 +180,7 @@ app.layout = html.Div(
 )
 def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, sequence_length, k_val):
     map_fig = base_figure()
+
     graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
     graph = graph_builder.extract_file_contents()
 
@@ -231,8 +231,9 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
                 path_states.reverse()
                 if path_states:
                     coords = nodes_df.set_index("SCATS_Number").loc[path_states]
-                    total_time = path.time_cost
-                    time_text = f"Est. Time: {total_time:.2f} min"
+                    total_time_minutes = path.time_cost
+                    total_time_hours = total_time_minutes
+                    time_text = f"Est. Time: {total_time_hours:.2f} hours"
                     map_fig.add_trace(
                         go.Scattermapbox(
                             lat=coords["lat"],
@@ -259,6 +260,7 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
     gru_pred = np.asarray(results.get("GRU", np.zeros_like(targets)), dtype=float)
     tcn_pred = np.asarray(results.get("TCN", np.zeros_like(targets)), dtype=float)
     lstm_pred = np.asarray(results.get("LSTM", np.zeros_like(targets)), dtype=float)
+
     tester_fig = go.Figure()
     if len(targets) > 0:
         abs_gru = np.abs(targets - gru_pred)
@@ -318,6 +320,5 @@ def play_pause(n_play, n_pause):
 def tick(_n, hour_val):
     return 0 if hour_val >= 23 else hour_val + 1
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)  # Enable/Disable debugging console

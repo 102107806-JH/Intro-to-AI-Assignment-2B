@@ -72,7 +72,6 @@ class ModelCollection():
         # Extract volume values and time information
         volumes = []
         time_features = []
-
         for datum in unformatted_input_data:
             time_obj = datum[0]
             tfv = datum[1]
@@ -95,26 +94,20 @@ class ModelCollection():
 
         volumes = np.array(volumes, dtype=np.float32)
         time_features = np.array(time_features, dtype=np.float32)
-
-        # FIXED: Use simple division normalization like training
         if hasattr(self._lstm_model, 'transform_dict'):
             max_tfv = self._lstm_model.transform_dict.get('max_tfv', 169.7)
         else:
             max_tfv = 169.7
 
-        volumes_norm = volumes / max_tfv  # Simple division, not min-max
-
+        volumes_norm = volumes / max_tfv
         # Combine features: [Volume_norm, Time_sin, Time_cos, Weekday_sin, Weekday_cos]
         input_features = np.zeros((len(volumes), 5), dtype=np.float32)
         input_features[:, 0] = volumes_norm
         input_features[:, 1:] = time_features
-
         # Shape for LSTM: (batch_size=1, sequence_length, features=5)
         formatted_array = np.zeros((1, input_features.shape[0], input_features.shape[1]))
         formatted_array[0] = input_features
         formatted_tensor = torch.from_numpy(formatted_array).to(torch.float32).to(self._device)
-
-        # Run LSTM model
         yhat_norm = self._lstm_model(formatted_tensor).item()
 
         yhat = yhat_norm * max_tfv  # Multiply by the max tfv to get back to the original tfv #

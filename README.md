@@ -3,8 +3,8 @@
 ## Features
 - **Multible Deep-Learning Model Types**: LSTM, GRU, and TCN. 
 - **Comprehensive Evaluation**:
-- **Automated Reporting**: CSV exports, comprehensive visualizations, and per-class metrics charts.
-- - **Modular Architecture**: Clean separation of data processing, training, evaluation, and serving
+- **Automated Reporting**: CSV exports, comprehensive visualizations, and per-SCAT Site metrics charts.
+- - **Modular Architecture**: Clean separation of data processing, training, evaluation, and GUI
 
 ## Quickstart Guide
 
@@ -40,7 +40,14 @@ python evaluate_individual_models.py
 
 ### ?. Test all Models Performance
 ````
+# Displays a graph that plots the ABS difference for a prefered SCAT site, which can be adjusted in the model_tester_demo.py file.
 python model_tester_demo.py
+````
+
+### ?. Run the GUI
+````
+# Run the interactive Dash GUI
+python app.py
 ````
 
 
