@@ -72,11 +72,25 @@ python train_individual_models.py
 # Combines the previously trained LSTM models and re-trains them into one model, that's universal for every SCATS site
 python evaluate_individual_models.py
 ````
-
-### ?. Test all Models Performance
+### 5. Hyper-Parameter Tuning Script
+````
+# Runs a script that tests random hyper-parameter combinations and returns the best combination at the end of the alloted time period. The finishing time and the different hyper-parameter values to test can be set inside the script.
+python hyper_parameter_tuning_script.py
+````
+### 6. Run the GRU and TCN Training (Optional)
+````
+# Used to train the GRU and the TCN models. The model that is selected for training and the hyperparameters used can be changed inside the script.
+python GRU_TCN_models.py
+````
+### 7. Test all Models Performance
 ````
 # Displays a graph that plots the ABS difference for a prefered SCAT site, which can be adjusted in the model_tester_demo.py file.
 python model_tester_demo.py
+````
+### 8. Path finding demonstration
+````
+# Within the python file you can enter different parameters for the pathfinding function. The path finding function will then find all the solution nodes and print them out.
+python path_finding_demo.py
 ````
 
 ### ?. Run the GUI
