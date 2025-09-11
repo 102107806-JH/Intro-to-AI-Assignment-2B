@@ -128,9 +128,12 @@ app.layout = html.Div(
                     value="LSTM",
                 ),
                 html.Label("Sequence Length"),
-                dcc.Input(id="sequence-length", type="number", value=12, min=1),
-                html.Label("K Value"),
-                dcc.Input(id="k-val", type="number", value=1, min=1),
+                dcc.Input(id="sequence-length", type="number", value=12, min=1, disabled=True),
+                # New Div for K Value to put them on the same line
+                html.Div([
+                    html.Label("K Value:"),
+                    dcc.Input(id="k-val", type="number", value=1, min=1, style={'marginLeft': '5px'})
+                ], style={'display': 'flex', 'alignItems': 'center'}),
                 html.Button("Find Path", id="submit-button", n_clicks=0),
                 html.Hr(),
                 html.Label("Date"),
@@ -282,7 +285,7 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
         tester_fig.add_trace(go.Scatter(
             y=abs_lstm, mode="lines",
             name=f"LSTM ABS (avg {avg_lstm:.2f})",
-            line=dict(color="green")
+            line=dict(color="red")
         ))
 
         tester_fig.update_layout(
@@ -321,4 +324,4 @@ def tick(_n, hour_val):
     return 0 if hour_val >= 23 else hour_val + 1
 
 if __name__ == "__main__":
-    app.run(debug=True)  # Enable/Disable debugging console
+    app.run(debug=False)
