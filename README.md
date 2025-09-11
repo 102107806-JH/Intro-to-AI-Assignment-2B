@@ -45,6 +45,7 @@ python model_tester_demo.py
 
 
 ## Project Structure
+````
 |-- Project Main Folder
 |-- .gitignore
 |-- app.py
@@ -156,7 +157,7 @@ python model_tester_demo.py
 |-- textbook_abstractions
 |-- node.py
 |-- problem.py
-
+````
 
 
 ## Requirements
