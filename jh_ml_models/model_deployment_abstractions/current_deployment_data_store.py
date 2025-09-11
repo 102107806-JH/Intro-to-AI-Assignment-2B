@@ -111,5 +111,5 @@ class CurrentDeploymentDataStore():
             if query_time >= bottom_time and top_time > query_time:
                 tfv = entry[-1]
                 return tfv
-
-        raise("QUERY TIME FOR SCATS SITE HAS NO CORRESPONDING ENTRY!")
+        #print("QUERY TIME FOR SCATS SITE HAS NO CORRESPONDING ENTRY!")
+        return 999 # In case this is reached punish the entry
