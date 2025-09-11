@@ -10,6 +10,10 @@ def combine_all_site_data(data_file_path, all_scats_numbers):
     """
     Combine training data from all SCATS sites into one dataset
     Returns combined DataLoader and global min/max values
+    :param
+    data_file_path: path to data file
+    all_scats_numbers: list of SCATS site numbers
+    :return: combined DataLoader, global min/max values, transform_dict
     """
     print("Combining data from all SCATS sites...")
     all_datasets = []

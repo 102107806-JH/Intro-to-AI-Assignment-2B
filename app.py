@@ -12,7 +12,7 @@ from jh_ml_models.model_deployment_abstractions.deployment_data_testing.deployme
 
 
 nodes_df = pd.read_excel("./data/graph_init_data.xlsx")  # Load SCATS node metadata
-nodes_df.rename(
+nodes_df.rename(  # Rename columns
     columns={
         "SCATS Number": "SCATS_Number",
         "NB_LATITUDE": "lat",
@@ -22,25 +22,24 @@ nodes_df.rename(
 )
 
 gdf = gpd.read_file("./GUI/vic_lga.shp") # Load map boundaries
-boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]
+boroondara = gdf[gdf["LGA_NAME"].str.contains("Boroondara", case=False)]  # Filter the Victoria data to only Boroondara
 boroondara_geojson = boroondara.__geo_interface__
-MODEL_XLSX = "./data/data_base.xlsx"  # Load traffic data for timeline (hourly)
-model_df = pd.read_excel(MODEL_XLSX, sheet_name="Current_Data")
-model_df["Date"] = pd.to_datetime(model_df["Date"], dayfirst=True)
-time_cols = [c for c in model_df.columns if isinstance(c, dt.time)]
-id_cols = [c for c in model_df.columns if c not in time_cols]
+model_df = pd.read_excel("./data/data_base.xlsx", sheet_name="Current_Data")  # Load traffic data for timeline (hourly)
+model_df["Date"] = pd.to_datetime(model_df["Date"], dayfirst=True)  # Convert date to datetime while loading the Excel column
+time_cols = [c for c in model_df.columns if isinstance(c, dt.time)]  # Get the time columns
+id_cols = [c for c in model_df.columns if c not in time_cols]  # Get the id columns
 
-long_df = model_df.melt(
+long_df = model_df.melt(  # Convert to long format
     id_vars=id_cols, value_vars=time_cols,
     var_name="tod", value_name="count"
 )
-long_df["datetime"] = pd.to_datetime(
+long_df["datetime"] = pd.to_datetime(  # Convert datetime to string
     long_df["Date"].dt.date.astype(str) + " " + long_df["tod"].astype(str)
 )
-long_df["date"] = long_df["datetime"].dt.date
-long_df["hour_ts"] = long_df["datetime"].dt.floor("h")
+long_df["date"] = long_df["datetime"].dt.date  # Get date from datetime
+long_df["hour_ts"] = long_df["datetime"].dt.floor("h")  # Get hour from datetime
 
-hourly = (
+hourly = (  # Hourly data
     long_df.groupby(["SCATS_Number", "date", "hour_ts"], as_index=False)["count"]
     .sum()
     .rename(columns={"count": "volume"})
@@ -61,7 +60,12 @@ hourly["is_low"] = hourly["volume"] == hourly["low_volume"]
 traffic_df = hourly.merge(nodes_df, on="SCATS_Number", how="inner")
 
 
-def compute_color(row):  # Color for each node based on peak/low/no data
+def compute_color(row):
+    """"
+    Set the color for each node based on peak/low/no data
+    :param row: pandas dataframe row
+    :return: color for the node
+    """
     if row["is_peak"]:
         return "white"
     if row["is_low"]:
@@ -75,6 +79,11 @@ def compute_color(row):  # Color for each node based on peak/low/no data
 
 
 def base_figure():
+    """
+    Create the map figure for the Dash GUI by loading the geojson file and using the mapbox library to create the map.
+    :param boroondara_geojson:
+    :return: figure
+    """
     fig = go.Figure()
     fig.update_layout(
         mapbox_style="mapbox://styles/mapbox/satellite-streets-v12",
@@ -183,7 +192,6 @@ app.layout = html.Div(
 )
 def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, sequence_length, k_val):
     map_fig = base_figure()
-
     graph_builder = GraphVertexEdgeInit("./GUI/graph_init_data.xlsx")
     graph = graph_builder.extract_file_contents()
 
@@ -263,7 +271,6 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
     gru_pred = np.asarray(results.get("GRU", np.zeros_like(targets)), dtype=float)
     tcn_pred = np.asarray(results.get("TCN", np.zeros_like(targets)), dtype=float)
     lstm_pred = np.asarray(results.get("LSTM", np.zeros_like(targets)), dtype=float)
-
     tester_fig = go.Figure()
     if len(targets) > 0:
         abs_gru = np.abs(targets - gru_pred)
@@ -287,7 +294,6 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
             name=f"LSTM ABS (avg {avg_lstm:.2f})",
             line=dict(color="red")
         ))
-
         tester_fig.update_layout(
             title=f"Per-timestep Absolute Error (SCATS {origin})",
             xaxis_title="Timestep index",
@@ -307,6 +313,11 @@ def update_map(n_clicks, date_val, hour_val, origin, destination, model_type, se
     prevent_initial_call=True
 )
 def play_pause(n_play, n_pause):
+    """
+    Creates a timer that can be used to control the play/pause functionality of the map.
+    :param n_play: Number of clicks on the play button.
+    :return True if the play button was clicked, False if the pause button was clicked.
+    """
     ctx = dash.callback_context
     if not ctx.triggered:
         return True
@@ -321,7 +332,13 @@ def play_pause(n_play, n_pause):
     prevent_initial_call=True
 )
 def tick(_n, hour_val):
+    """
+    Creates the slider for the hour value and adds a callback to update the hour value.
+    :param _n: The number of ticks.
+    :param hour_val: The current hour value.
+    :return: The next hour value to update
+    """
     return 0 if hour_val >= 23 else hour_val + 1
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)  # Set to True for debugging, otherwise False

@@ -6,10 +6,45 @@
 - **Automated Reporting**: CSV exports, comprehensive visualizations, and per-SCAT Site metrics charts.
 - - **Modular Architecture**: Clean separation of data processing, training, evaluation, and GUI
 
-## Quickstart Guide
+## GUI Interface
+### About the GUI
+The GUI is a web-based interface that allows users to interact with each model. It was built using the Dash Python framework.
 
-### 1. Setup Environment
+### First Loading the GUI
+To use the GUI effectively, please allow time for all page elements to load. On the left side of the screen, there are adjustable parameters that update the GUI periodically.
 
+### Interactive Map Controls
+Upon loading the interactive map, you can zoom in and out, pan, and reset the map to the full extent of the data using either your mouse and mouse wheel or the navigation buttons in the top right corner. The red border shows the city limits of the Boroondara area. You can also hover over any of the SCATS sites, indicated by a circle on the map, to see more information about the site. This includes the site's number, the current hour, the volume of traffic during that hour, the delta change in cars from the previous hour, and the percentage of change.
+
+The sites are also colour-coded: yellow indicates an increase in traffic volume, blue indicates a decrease in traffic volume, white indicates the peak traffic volume for a given day, and grey indicates the lowest traffic volume for a given day.
+
+### Origin SCATS Site Parameters
+The Origin SCATS Site is the starting point of your journey. You can select a new Origin SCATS Site by clicking the drop-down menu and scrolling with either your mouse wheel or the scroll bar. You can also type the SCATS site number in the text box to quickly filter the list.
+
+### Destination SCATS Site Parameters
+Below the Origin is the Destination SCATS Site. As mentioned previously, you can select a new Destination SCATS Site by clicking the drop-down menu and scrolling. You can also type the SCATS site number in the text box to quickly filter the list. Below the Destination is the Model Type. You can select a new Model Type by clicking the drop-down menu. You can also type the Model Type to quickly filter the list of available models.
+
+### Sequence Length
+The Sequence Length is the number of time steps used in the model. You cannot change the sequence length, as this is outside the scope of the project. However, it is displayed for your convenience.
+
+### K-Value
+Below the sequence length is the K-Value, which is the number of paths that will be generated for the selected model. Each path will be displayed in a different colour to allow for easy visual comparison. Please note that paths may overlap. You can filter them on the right side of the screen by clicking on a desired path to hide the others.
+
+### Finding the Paths
+To calculate and find the path, please press the Find Path button below the K-Value input field. This will cause the page to update. The progress of the page update is shown at the top of the page, where the tab is temporarily renamed from "Dash" to "Updating." During this time, please do not change any parameters, as this will cause the page to update again before displaying the previous results. When clicking the Find Path button, also ensure that the "hour of the day" timeline is paused, not playing, as this will cause the page to continuously check for updates and will not load the results.
+
+### Map Visualisation Sidebar
+Once you click the Find Path button and the page finishes updating, a new sidebar will appear on the right side of the map. At the top of this sidebar, the current traffic volume status for the selected Origin SCATS site is displayed.
+
+Below that is the most optimal path, shown in purple. Subsequent paths are shown in random colours for easy visual comparison. To view only one path when multiple are generated, or to compare different paths, you can click on the path's name in the legend to show or hide it. The estimated time of arrival is shown to the right of the path's name in an hourly format (e.g., 0.25 hours is equal to 15 minutes, and 0.5 hours is equal to 30 minutes).
+
+### Timeline
+Below the Find Path button is the "hour of the day" timeline. As part of our custom research initiative, we have implemented a feature that allows you to see how busy a SCATS site is at a given hour. You can select a new hour by clicking and dragging the blue timeline. You can also change the date by clicking on the date drop-down menu, which also supports typing to filter the dates. Additionally, you can click the Play button to automatically play back the entire day hour by hour. To update the GUI with new parameters, you must press Pause and wait for the GUI to finish updating. The current date and time are displayed to the right of the Pause button.
+
+### ABS Interactive Visualisation
+Below the Pause button is an interactive visualisation that plots the ABS (Average Absolute Difference from Actual). The data shows the calculated difference for each model for the selected Origin SCATS site, where a lower value indicates better accuracy. For example, a score of 10.04 means that, on average, the model's predictions for traffic flow at that location were off by approximately 10.04 TFV (traffic flow volume) units. This value is a measure of the model's prediction error.
+
+The X-axis of the visualisation shows the sequential prediction step made by the models. The Y-axis shows the ABS difference between the model's prediction and the actual traffic flow. The colour of the line indicates which model made the prediction. You can click and drag on the visualisation to zoom, pan, autoscale, reset the axes, and download it as a PNG using your mouse or the navigation buttons in the top right corner. Additionally, hovering over any data point will provide more details about the model's absolute error at that specific timestep.
 ```bash
 # Create virtual environment
 python -m venv .venv

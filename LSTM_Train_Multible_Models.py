@@ -4,6 +4,15 @@ import pandas as pd
 import torch
 import os
 
+"""
+Train a LSTM model for each SCATS site, this ensures that each SCAT site is accessible to all SCAT sites. 
+:param
+    data_file_path: path to data file
+:return
+    final_flowrate_model: trained LSTM model
+    best_models: dictionary of best models for each SCATS site
+"""
+
 if __name__ == "__main__":
     print("CUDA available:", torch.cuda.is_available())
     print("Device count:", torch.cuda.device_count())
