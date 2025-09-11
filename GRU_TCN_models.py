@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    mode = "tcn"
+    mode = "gru"
 
     # Hyper parameters (Common)
     batch_size = 64
     lr = 0.001
-    num_epochs = 300
+    num_epochs = 100
     sequence_length = 12
 
     # Hyper parameters (GRU)
@@ -54,6 +54,16 @@ if __name__ == "__main__":
                           save_name=mode)
 
     metric_dictionary = fitter.fit_model(scats_site_number)
+
+    print("VALIDATION LOSS_____________________________")
+    print(metric_dictionary["validation_loss"])
+    print("TRAIN LOSS_____________________________")
+    print(metric_dictionary["train_loss"])
+
     plt.plot(metric_dictionary["validation_loss"], 'g')
     plt.plot(metric_dictionary["train_loss"], 'r')
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss (MSE)")
+    plt.savefig('loss_graphs/' + mode +'.png')
+
     plt.show()

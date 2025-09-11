@@ -13,7 +13,7 @@ if __name__ == "__main__":
     end_datetime = datetime(year=2025, month=8, day=2, hour=0,minute=0)
     model_tester = DeploymentDataModelTester(database_file_path="data/data_base.xlsx")
     results = model_tester.test_models(
-        scats_site=970,
+        scats_site=2000,
         prediction_depth=1,
         sequence_length=12,
         start_datetime=start_datetime,
