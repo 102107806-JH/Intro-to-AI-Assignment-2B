@@ -10,7 +10,7 @@ if __name__ == "__main__":
     mode = "tcn"
 
     # Hyperparameters (Common)
-    num_epochs = 100
+    num_epochs = 10
     sequence_length = 12
 
     # Hyperparameters (GRU)
@@ -20,10 +20,10 @@ if __name__ == "__main__":
     #num_layers = 5
 
     # Hyperparameters (TCN)
-    lr = 0.00001
+    lr = 0.001
     batch_size = 48
-    kernel_size = 5
-    c1_out_channels = 14
+    kernel_size = 3
+    c1_out_channels = 1
     if mode == "gru":
         model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
     elif mode == "tcn":
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         "test": 0.1,
         "validation": 0.1
     }
-    split_proportions["discard"] = 1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
+    split_proportions["discard"] = 0#1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
 
     fitter = Model_Fitter(model=model,
                           train_loss_function=train_loss_function,
