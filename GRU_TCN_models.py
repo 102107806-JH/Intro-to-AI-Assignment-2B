@@ -9,21 +9,21 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     mode = "tcn"
 
-    # Hyper parameters (Common)
-    num_epochs = 300
+    # Hyperparameters (Common)
+    num_epochs = 10
     sequence_length = 12
 
-    # Hyper parameters (GRU)
+    # Hyperparameters (GRU)
     #lr = 0.00001
     #batch_size = 128
     #hidden_size = 96
     #num_layers = 5
 
-    # Hyper parameters (TCN)
-    lr = 0.00001
+    # Hyperparameters (TCN)
+    lr = 0.001
     batch_size = 48
-    kernel_size = 5
-    c1_out_channels = 14
+    kernel_size = 3
+    c1_out_channels = 1
     if mode == "gru":
         model = GRU(feature_size=4, sequence_length=sequence_length, hidden_size=hidden_size, num_layers=num_layers, device=device).to(device)
     elif mode == "tcn":
@@ -36,11 +36,11 @@ if __name__ == "__main__":
     scats_site_number = 'ALL'
 
     split_proportions = {
-        "train": 0.01,
-        "test": 0.01,
-        "validation": 0.01
+        "train": 0.8,
+        "test": 0.1,
+        "validation": 0.1
     }
-    split_proportions["discard"] = 1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
+    split_proportions["discard"] = 0#1 - split_proportions["train"] - split_proportions["test"] - split_proportions["validation"]
 
     fitter = Model_Fitter(model=model,
                           train_loss_function=train_loss_function,
