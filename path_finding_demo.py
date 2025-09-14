@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     k_val = 10 # The number of solutions that you want to find
     initial_state = 2000  # Initial state from the below list
-    goal_state = 2000 # Goal state from the below list
+    goal_state = 4821 # Goal state from the below list
     mode = "TCN" # LSTM, GRU or TCN
     # 970, 2000, 2200, 2820, 2825, 2827, 2846, 3001, 3002, 3120,
     # 3122, 3126, 3127, 3180, 3662, 3682, 3685, 3804, 3812, 4030,
