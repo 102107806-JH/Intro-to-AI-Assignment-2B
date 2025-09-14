@@ -35,6 +35,11 @@ class TestFunctionalTesting(unittest.TestCase):
                 return True
         return False
 
+    def get_root_node(self, node):
+        while node.parent != None:
+            node = node.parent
+        return node
+
     # Test Cases ##################################################
     def test_no_duplicate_paths(self):
         """
@@ -98,7 +103,10 @@ class TestFunctionalTesting(unittest.TestCase):
         """
         For the below origin and scats site destination it is know that there is only 1 viable (no cycle)
         path between them as such the algorithm should only produce one result and should not traverse
-        through the graph indefinitely.
+        through the graph indefinitely (in reality it would not be indefinite but it could potentially be an
+        incredibly long time assuming each node has 2.525 neighbours on average and there are 40 nodes.
+        2.525^40 = 1.23*10^16 this estimate is not perfect by any means but indicates why depth limiting
+        is necessary).
         """
         print("Running test number 3")
         time = datetime.now()
@@ -263,6 +271,64 @@ class TestFunctionalTesting(unittest.TestCase):
                                             mode=mode)
 
         self.assertTrue(True) # No exception has been risen the program works #
+
+    def test_solutions_nodes_goals_all_correct(self):
+        """
+        All the returned solution nodes should have the final node as the goal.
+        """
+        print("Running test number 9")
+        time = datetime.now()
+        time = time.replace(month=8)  # We dont have access to data from current month faking that we are actually in the 8th month
+        k_val = 100  # The number of solutions that you want to find
+        initial_state = 2000  # Initial state from the below list
+        goal_state = 4035  # Goal state from the below list
+        mode = TestFunctionalTesting.mode  # LSTM, GRU or TCN
+        # 970, 2000, 2200, 2820, 2825, 2827, 2846, 3001, 3002, 3120, 3122, 3126, 3127, 3180, 3662, 3682, 3685, 3804,
+        # 3812, 4030, 4032, 4034, 4035, 4040, 4043, 4051, 4057, 4063, 4262, 4263, 4264, 4266, 4270, 4272, 4273, 4321,
+        # 4324, 4335, 4812, 4821,
+        solution_nodes = self.find_solution(time=time,
+                                            k_val=k_val,
+                                            initial_state=initial_state,
+                                            goal_state=goal_state,
+                                            mode=mode)
+
+        # Go through all solutions and check all the goals are correct
+        final_nodes_are_all_goal = True
+        for node in solution_nodes:
+            if node.state != goal_state:
+                final_nodes_are_all_goal = False
+                break
+
+        self.assertTrue(final_nodes_are_all_goal)
+
+    def test_initial_nodes_all_correct(self):
+        """
+        All the starting nodes should be the specified starting node.
+        """
+        print("Running test number 10")
+        time = datetime.now()
+        time = time.replace(month=8)  # We dont have access to data from current month faking that we are actually in the 8th month
+        k_val = 100  # The number of solutions that you want to find
+        initial_state = 2000  # Initial state from the below list
+        goal_state = 4035  # Goal state from the below list
+        mode = TestFunctionalTesting.mode  # LSTM, GRU or TCN
+        # 970, 2000, 2200, 2820, 2825, 2827, 2846, 3001, 3002, 3120, 3122, 3126, 3127, 3180, 3662, 3682, 3685, 3804,
+        # 3812, 4030, 4032, 4034, 4035, 4040, 4043, 4051, 4057, 4063, 4262, 4263, 4264, 4266, 4270, 4272, 4273, 4321,
+        # 4324, 4335, 4812, 4821,
+        solution_nodes = self.find_solution(time=time,
+                                            k_val=k_val,
+                                            initial_state=initial_state,
+                                            goal_state=goal_state,
+                                            mode=mode)
+
+        # Go through all root nodes and make sure that they are initial node
+        root_nodes_are_all_initial = True
+        for node in solution_nodes:
+            if self.get_root_node(node).state != initial_state:
+                root_nodes_are_all_initial = False
+                break
+
+        self.assertTrue(root_nodes_are_all_initial)
 
 
 
