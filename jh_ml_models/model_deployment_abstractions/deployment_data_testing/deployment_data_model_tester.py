@@ -70,7 +70,7 @@ class DeploymentDataModelTester():
             output_dictionary["TCN"].append(tcn_prediction)
             output_dictionary["LSTM"].append(lstm_prediction)
             output_dictionary["Targets"].append(target)
-            output_dictionary["Prediction_Times"].append(current_predicition_datetime - timedelta(minutes=15 * prediction_depth))
+            output_dictionary["Prediction_Times"].append(current_predicition_datetime)
 
             current_predicition_datetime = current_predicition_datetime + timedelta(minutes=15)  # Go forward 15 minutes to retrieve the next prediction
         return output_dictionary
