@@ -124,7 +124,7 @@ app.layout = html.Div(
                 dcc.Dropdown(
                     id="destination-input",
                     options=[{"label": str(i), "value": i} for i in nodes_df["SCATS_Number"]],
-                    value=2000,
+                    value=4821,
                 ),
                 html.Label("Model Type"),
                 dcc.Dropdown(
@@ -138,7 +138,6 @@ app.layout = html.Div(
                 ),
                 html.Label("Sequence Length"),
                 dcc.Input(id="sequence-length", type="number", value=12, min=1, disabled=True),
-                # New Div for K Value to put them on the same line
                 html.Div([
                     html.Label("K Value:"),
                     dcc.Input(id="k-val", type="number", value=1, min=1, style={'marginLeft': '5px'})
@@ -341,4 +340,4 @@ def tick(_n, hour_val):
     return 0 if hour_val >= 23 else hour_val + 1
 
 if __name__ == "__main__":
-    app.run(debug=True)  # Set to True for debugging, otherwise False
+    app.run(debug=False)  # Set to True for debugging, otherwise False
