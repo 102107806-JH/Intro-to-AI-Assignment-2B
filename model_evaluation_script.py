@@ -5,21 +5,22 @@ matplotlib.use("TkAgg")
 
 if __name__ == "__main__":
     """
-    Different predicition depths can be accessed by changing the last number in the path
+    Different prediction depths can be accessed by changing the last number in the path
     to the desired depth.
     """
-    results = torch.load("testing/deployment_data_test_results/results_dictionary_depth_1")
+    results = torch.load("testing/deployment_data_test_results/results_dictionary_depth_3")
     """
     'results' is a nested dictionary the outer dictionary links to specific scats sites
     the inner to the different results for that scat site. The example bellow illustrates this
     by using a pyplot. You can also access the times of all predictions eg:
     results[970]["Prediction_Times"].
     Below is the available inner dictionary keys.
-    "Prediction_Time" -> The time for the predicition
-    "Targets" -> The target tfv at that predicition time
-    "GRU", "TCN", "LSTM" -> The tfv predictions for the predicition time
-    You probably wont need the predicition time as all predictions are 15 minutes apart.
-    Its just there for your convenience. I have also provided a scat site list below in case you need it (its currently unused).
+    "Prediction_Time" -> The time for the prediction
+    "Targets" -> The target tfv at that prediction time
+    "GRU", "TCN", "LSTM" -> The tfv predictions for the prediction time
+    You probably wont need the prediction time as all predictions are 15 minutes apart.
+    Its just there for your convenience. I have also provided a scat site list below in case you need it
+    (its currently unused).
     """
     scats_site_list = \
         [970, 2000, 2200, 2820, 2825, 2827, 2846, 3001,

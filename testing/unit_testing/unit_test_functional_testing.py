@@ -8,7 +8,7 @@ class TestFunctionalTesting(unittest.TestCase):
     def setUpClass(cls):
         testFileExtractor = GraphVertexEdgeInit(r"data/graph_init_data.xlsx")
         cls.graph = testFileExtractor.extract_file_contents()
-        cls.mode = "TCN"
+        cls.mode = "LSTM"
 
     # Helper Methods ###################################################
     def find_solution(self, time, k_val, initial_state, goal_state, mode):
@@ -329,10 +329,3 @@ class TestFunctionalTesting(unittest.TestCase):
                 break
 
         self.assertTrue(root_nodes_are_all_initial)
-
-
-
-
-
-
-
