@@ -21,12 +21,13 @@ if __name__ == "__main__":
     testFileExtractor = GraphVertexEdgeInit(r"data/graph_init_data.xlsx")
     graph = testFileExtractor.extract_file_contents()
     current_time = datetime.now()
+    # DO NOT CHANGE THE MONTH IT MUST STAY ON 8
     current_time = current_time.replace(month=8)  # We dont have access to data from current month faking that we are actually in the 8th month
-    current_time = current_time.replace(day=15)
 
+    # THE DAY AND HOUR CAN BE CHANGED
+    current_time = current_time.replace(day=15)
     current_time = current_time.replace(hour=18)
     path_finder = PathFinder(graph=graph)
-
     k_val = 10 # The number of solutions that you want to find
     initial_state = 2000  # Initial state from the below list
     goal_state = 4821 # Goal state from the below list
