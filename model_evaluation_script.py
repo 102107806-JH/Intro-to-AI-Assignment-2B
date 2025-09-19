@@ -58,40 +58,46 @@ if __name__ == "__main__":
     n_plot_cols = 5
     fig, axs = plt.subplots(n_plot_rows,n_plot_cols) # To present the plots
     for i in range(10):
-        results = torch.load(f"testing/deployment_data_test_results/results_dictionary_depth_{i+1}")
+        results = torch.load(f"testing/deployment_data_test_results/results_dictionary_depth_{i+1}", weights_only=False)
 
         results = calculate_metrics(results, remove_sites_list=[4035])  # Calculates the MAE and MSE for each of the models and adds them to the dictionary
 
         print(f"Averages are taken over all the deployment data. Prediction depth: {i+1}")
-        print(f"GRU MSE: {results['Overall_Results']['GRU_MSE']}")
-        print(f"TCN MSE: {results['Overall_Results']['TCN_MSE']}")
-        print(f"LSTM MSE: {results['Overall_Results']['LSTM_MSE']}")
-
-        print(f"GRU MAE: {results['Overall_Results']['GRU_MAE']}")
-        print(f"TCN MAE: {results['Overall_Results']['TCN_MAE']}")
-        print(f"LSTM MAE: {results['Overall_Results']['LSTM_MAE']}")
-        print("-----------------------------------------")
+        print("MSE:{", end="")
+        print(f"GRU: {round(results['Overall_Results']['GRU_MSE'], 2)}", end=" ")
+        print(f"TCN: {round(results['Overall_Results']['TCN_MSE'], 2)}", end=" ")
+        print(f"LSTM: {round(results['Overall_Results']['LSTM_MSE'], 2)}", end="}")
+        print(" MAE:{ ", end="")
+        print(f"GRU: {round(results['Overall_Results']['GRU_MAE'], 2)}",  end=" ")
+        print(f"TCN: {round(results['Overall_Results']['TCN_MAE'], 2)}",  end=" ")
+        print(f"LSTM: {round(results['Overall_Results']['LSTM_MAE'], 2)}", end="}")
+        print("\n-------------------------------------------------------------------------------------")
 
         plotBounds = (0, 96)  # Corresponds to the start (inclusive) and end (exclusive) 15 minute blocks which are to be plotted
         plot_row = i//n_plot_cols
         plot_col = i%n_plot_cols
+        plot_scat_site = 3001
 
-        axs[plot_row,plot_col].plot(results[970]["Targets"][plotBounds[0]:plotBounds[1]], 'g', label="TARGET")
-        axs[plot_row,plot_col].plot(results[970]["GRU"][plotBounds[0]:plotBounds[1]], 'r', label="GRU")
-        axs[plot_row,plot_col].plot(results[970]["TCN"][plotBounds[0]:plotBounds[1]], 'b', label="TCN")
-        axs[plot_row,plot_col].plot(results[970]["LSTM"][plotBounds[0]:plotBounds[1]], 'm', label="LSTM")
+        axs[plot_row,plot_col].plot(results[plot_scat_site]["Targets"][plotBounds[0]:plotBounds[1]], 'g', label="TARGET")
+        axs[plot_row,plot_col].plot(results[plot_scat_site]["GRU"][plotBounds[0]:plotBounds[1]], 'r', label="GRU")
+        axs[plot_row,plot_col].plot(results[plot_scat_site]["TCN"][plotBounds[0]:plotBounds[1]], 'b', label="TCN")
+        axs[plot_row,plot_col].plot(results[plot_scat_site]["LSTM"][plotBounds[0]:plotBounds[1]], 'm', label="LSTM")
         axs[plot_row, plot_col].set_title(f"Depth {i+1}")
 
         if plot_row != n_plot_rows -1:
             axs[plot_row,plot_col].set_xticks([0,31,63,95], labels=[])
         else:
             axs[plot_row,plot_col].set_xticks([0,31,63,95], labels=[0,31,63,95])
+            axs[plot_row, plot_col].set(xlabel="Time\n(Number of 15 min intervals\nsince 2025/08/01 00:00:00)")
+
 
 
         if plot_col != 0:
             axs[plot_row,plot_col].set_yticks([0,50,100,150,200,250], labels=[])
         else:
             axs[plot_row,plot_col].set_yticks([0,50,100,150,200,250], labels=[0,50,100,150,200,250])
+            axs[plot_row, plot_col].set(ylabel="Traffic Flow Volume (TFV)")
+
 
     han, lab = plt.gca().get_legend_handles_labels()
     fig.legend(han, lab, loc='upper right')
