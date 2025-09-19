@@ -3,6 +3,9 @@ import matplotlib
 import torch
 matplotlib.use("TkAgg")
 
+def get_residuals_dictionary():
+    pass
+
 if __name__ == "__main__":
     """
     Different prediction depths can be accessed by changing the last number in the path
