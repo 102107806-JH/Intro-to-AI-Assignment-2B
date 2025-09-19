@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import torch
 import numpy as np
+from matplotlib.ticker import MaxNLocator
+from matplotlib import ticker
 matplotlib.use("TkAgg")
 
 def calculate_metrics(results_dict, remove_sites_list = None):
@@ -52,7 +54,9 @@ def calculate_metrics(results_dict, remove_sites_list = None):
     return results_dict
 
 if __name__ == "__main__":
-    fig, axs = plt.subplots(10) # To present the plots
+    n_plot_rows = 2
+    n_plot_cols = 5
+    fig, axs = plt.subplots(n_plot_rows,n_plot_cols) # To present the plots
     for i in range(10):
         results = torch.load(f"testing/deployment_data_test_results/results_dictionary_depth_{i+1}")
 
@@ -69,9 +73,28 @@ if __name__ == "__main__":
         print("-----------------------------------------")
 
         plotBounds = (0, 96)  # Corresponds to the start (inclusive) and end (exclusive) 15 minute blocks which are to be plotted
-        axs[i].plot(results[970]["Targets"][plotBounds[0]:plotBounds[1]], 'g')
-        axs[i].plot(results[970]["GRU"][plotBounds[0]:plotBounds[1]], 'r')
-        axs[i].plot(results[970]["TCN"][plotBounds[0]:plotBounds[1]], 'b')
-        axs[i].plot(results[970]["LSTM"][plotBounds[0]:plotBounds[1]], 'm')
+        plot_row = i//n_plot_cols
+        plot_col = i%n_plot_cols
+
+        axs[plot_row,plot_col].plot(results[970]["Targets"][plotBounds[0]:plotBounds[1]], 'g', label="TARGET")
+        axs[plot_row,plot_col].plot(results[970]["GRU"][plotBounds[0]:plotBounds[1]], 'r', label="GRU")
+        axs[plot_row,plot_col].plot(results[970]["TCN"][plotBounds[0]:plotBounds[1]], 'b', label="TCN")
+        axs[plot_row,plot_col].plot(results[970]["LSTM"][plotBounds[0]:plotBounds[1]], 'm', label="LSTM")
+        axs[plot_row, plot_col].set_title(f"Depth {i+1}")
+
+        if plot_row != n_plot_rows -1:
+            axs[plot_row,plot_col].set_xticks([0,31,63,95], labels=[])
+        else:
+            axs[plot_row,plot_col].set_xticks([0,31,63,95], labels=[0,31,63,95])
+
+
+        if plot_col != 0:
+            axs[plot_row,plot_col].set_yticks([0,50,100,150,200,250], labels=[])
+        else:
+            axs[plot_row,plot_col].set_yticks([0,50,100,150,200,250], labels=[0,50,100,150,200,250])
+
+    han, lab = plt.gca().get_legend_handles_labels()
+    fig.legend(han, lab, loc='upper right')
+    fig.suptitle('Model Predictions vs Targets at Different Prediction Depths')
     plt.show()
-    print("End")
+    print("Program End")
