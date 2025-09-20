@@ -28,17 +28,17 @@ class ModelCollection():
         self._load_lstm()
 
     def _load_gru(self):
-        self._gru_model = torch.load("saved_models/gru.pth", map_location=self._device)
+        self._gru_model = torch.load("saved_models/gru.pth", map_location=self._device, weights_only=False)
         self._gru_model._device = self._device
         self._gru_model.eval()
 
     def _load_tcn(self):
-        self._tcn_model = torch.load("saved_models/tcn.pth", map_location=self._device)
+        self._tcn_model = torch.load("saved_models/tcn.pth", map_location=self._device, weights_only=False)
         self._tcn_model._device = self._device
         self._tcn_model.eval()
 
     def _load_lstm(self):
-        self._lstm_model = torch.load("saved_models/lstm.pth", map_location=self._device)
+        self._lstm_model = torch.load("saved_models/lstm.pth", map_location=self._device, weights_only=False)
         self._lstm_model._device = self._device
         self._lstm_model.eval()
 
