@@ -76,7 +76,7 @@ if __name__ == "__main__":
         plotBounds = (0, 96)  # Corresponds to the start (inclusive) and end (exclusive) 15 minute blocks which are to be plotted
         plot_row = i//n_plot_cols
         plot_col = i%n_plot_cols
-        plot_scat_site = 3001
+        plot_scat_site = 970
 
         axs[plot_row,plot_col].plot(results[plot_scat_site]["Targets"][plotBounds[0]:plotBounds[1]], 'g', label="TARGET")
         axs[plot_row,plot_col].plot(results[plot_scat_site]["GRU"][plotBounds[0]:plotBounds[1]], 'r', label="GRU")
