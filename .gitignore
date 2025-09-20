@@ -1,6 +1,5 @@
 *.pyc
 __pycache__/
 .idea/
-data/traffic_signal_volume_cur
 .venv/
 loss_graphs/
