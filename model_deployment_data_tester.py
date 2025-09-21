@@ -27,4 +27,4 @@ if __name__ == "__main__":
             sequence_length=12
         )
         # Save the results into a dictionary for later retrival
-        torch.save(results, f"testing/deployment_data_test_results/results_dictionary_depth_new_{prediction_depth}")
+        torch.save(results, f"testing/deployment_data_test_results/results_dictionary_depth_test_{prediction_depth}")

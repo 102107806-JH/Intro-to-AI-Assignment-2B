@@ -91,7 +91,7 @@ class MockDataBaseCleaner():
 
 
     def _write_to_excel(self):
-        pandas.DataFrame(self._np_data_arr).to_excel("data/cleaned_data_base.xlsx", index=False)
+        pandas.DataFrame(self._np_data_arr).to_excel("data/data_base_test_run.xlsx", index=False)
 
 
 
