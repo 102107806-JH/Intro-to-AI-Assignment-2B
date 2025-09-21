@@ -129,22 +129,27 @@ python app.py
 |-- Project Main Folder
 |-- .gitignore
 |-- app.py
-|-- database_creator.py<<<<<<<<<<<
 |-- GRU_TCN_models.py
 |-- hyper_parameter_tuning_script.py
-|-- jh_training_script.py<<<<<<<<<<<<
 |-- LSTM_Train_Combined_Model.py
 |-- LSTM_Train_Multible_Models.py
+|-- mock_database_cleaner_script.py
+|-- mock_database_creator_script.py
+|-- model_deployment_data_tester.py
+|-- model_evaluation_script.py
 |-- model_tester_demo.py
 |-- path_finding_demo.py
 |-- README.md
 |-- requirements.txt
 |-- data
+|   |-- traffic_signal_volume_cur
+|   |   |-- VSDATA_20250701.csv
+|   |   |-- .....
+|   |   |-- VSDATA_20250831.csv
 |   |-- data_base.xlsx
 |   |-- graph_init_data.xlsx
 |   |-- model_data.xlsx
-|   |-- ~$data_base.xlsx
-|   |-- ~$model_data.xlsx
+|   |-- uncleaned_data_base.xlsx
 |-- data_structures
 |   |-- graph_classes
 |   |   |-- adjacency_list_graph.py
@@ -154,20 +159,13 @@ python app.py
 |   |   |   |-- list_node.py
 |   |   |   |-- singly_linked_list.py
 |   |   |   |--
-|   |   |       |-- list_node.cpython
-|   |   |       |-- singly_linked_list.cpython
 |   |   |--
-|   |       |-- adjacency_list_graph.cpython
-|   |       |-- destination_distance_pair.cpython
-|   |       |-- vertex.cpython
 |   |-- queues
 |       |-- priority_que.py
 |       |--
-|           |-- priority_que.cpython
 |-- file_handling
 |   |-- graph_vertex_edge_init.py
 |   |--
-|       |-- graph_vertex_edge_init.cpython
 |-- GUI
 |   |-- graph_init_data.xlsx
 |   |-- model_data.xlsx
@@ -184,18 +182,12 @@ python app.py
 |   |-- cycle_checker.py
 |   |-- haversine.py
 |   |--
-|       |-- cycle_checker.cpython
-|       |-- haversine.cpython
 |-- jh_ml_models
 |   |-- model_code
 |   |   |-- gru_model.py
 |   |   |-- model_collection.py
 |   |   |-- tcn_model.py
 |   |   |--
-|   |       |-- gru_model.cpython
-|   |       |-- lstm_data_handler.cpython
-|   |       |-- model_collection.cpython
-|   |       |-- tcn_model.cpython
 |   |-- model_deployment_abstractions
 |   |   |-- current_deployment_data_store.py
 |   |   |-- flowrate_predictor.py
@@ -203,42 +195,38 @@ python app.py
 |   |   |   |-- deployment_data_model_tester.py
 |   |   |   |-- flowrate_prediction_tester.py
 |   |   |   |-- test_deployment_data_store.py
+|   |   |   |-- multi_scat_site_tester.py
 |   |   |   |--
-|   |   |       |-- deployment_data_model_tester.cpython
-|   |   |       |-- flowrate_prediction_tester.cpython
-|   |   |       |-- test_deployment_data_store.cpython
 |   |   |--
-|   |       |-- current_deployment_data_store.cpython
-|   |       |-- flowrate_predictor.cpython
 |   |-- model_fitting
 |   |   |-- data_loader.py
+|   |   |-- hyper_parameter_tuner.py
 |   |   |-- model_fitter.py
+|   |   |-- hyper_parameter_tuning_results
+|   |   |   |--GRU_01.txt
+|   |   |   |--GRU_02.txt
+|   |   |   |--TCN02.txt
+|   |   |   |--TCN_01.txt 
 |   |   |--
 |   |--
-|       |-- flowrate_predictor.cpython
-|       |-- gru_model.cpython
-|       |-- tcn_model.cpython
 |-- misc
 |   |-- mock_data_base_creator.py
+|   |-- mock_data_base_cleaner.py
 |   |--
-|       |-- mock_model.cpython
 |-- ml_models
 |   |-- lstm_data_handler.py
 |   |-- lstm_model.py
 |   |--
-|       |-- lstm_data_handler.cpython
-|       |-- lstm_model.cpython
 |-- path_finding
 |   |-- path_finder.py
 |   |--
-|       |-- path_finder.cpython
 |-- saved_models
 |   |-- gru.pth
 |   |-- lstm.pth
 |   |-- tcn.pth
 |-- textbook_abstractions
-|-- node.py
-|-- problem.py
+|   |-- node.py
+|   |-- problem.py
 ````
 
 
