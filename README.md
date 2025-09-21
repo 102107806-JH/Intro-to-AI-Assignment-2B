@@ -109,6 +109,7 @@ python path_finding_demo.py
 ### 11. Mock database creator
 ````
 # Extracted the traffic flow volume data from the months of 08/2025 and 09/2025. The files which it extracts data from are not present as there were too many of them. This file has been included for the sake of completeness.
+python mock_database_creator_script.py
 ````
 ### 12. Mock database cleaner (Optional)
 ````
