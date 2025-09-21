@@ -90,7 +90,7 @@ python GRU_TCN_models.py
 # Displays a graph that plots the ABS difference for a prefered SCAT site, which can be adjusted in the model_tester_demo.py file.
 python model_tester_demo.py
 ````
-### 8. Test All Models On Deployment Data
+### 8. Test All Models On Deployment Data (Optinal)
 ````
 # Tests all models on deployment data and saves the results into a dictionary inside the testing/deployment_data_test_results directory
 python model_deployment_data_tester.py
