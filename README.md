@@ -129,10 +129,10 @@ python app.py
 |-- Project Main Folder
 |-- .gitignore
 |-- app.py
-|-- database_creator.py
+|-- database_creator.py<<<<<<<<<<<
 |-- GRU_TCN_models.py
 |-- hyper_parameter_tuning_script.py
-|-- jh_training_script.py
+|-- jh_training_script.py<<<<<<<<<<<<
 |-- LSTM_Train_Combined_Model.py
 |-- LSTM_Train_Multible_Models.py
 |-- model_tester_demo.py

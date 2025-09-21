@@ -16,8 +16,8 @@ if __name__ == "__main__":
     # Hyperparameters (GRU)
     #lr = 0.00001
     #batch_size = 128
-    #hidden_size = 96
-    #num_layers = 5
+    hidden_size = 96
+    num_layers = 5
 
     # Hyperparameters (TCN)
     lr = 0.001
