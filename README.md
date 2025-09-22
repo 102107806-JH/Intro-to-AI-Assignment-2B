@@ -47,7 +47,7 @@ Below the Pause button is an interactive visualisation that plots the ABS (Avera
 The X-axis of the visualisation shows the sequential prediction step made by the models. The Y-axis shows the ABS difference between the model's prediction and the actual traffic flow. The colour of the line indicates which model made the prediction. You can click and drag on the visualisation to zoom, pan, autoscale, reset the axes, and download it as a PNG using your mouse or the navigation buttons in the top right corner. Additionally, hovering over any data point will provide more details about the model's absolute error at that specific timestep.
 
 ## How to Run the Program
-### 1. Create a virtual environment
+### 1. Create a virtual environment (Optional)
 ```bash
 # Create virtual environment
 python -m venv .venv
@@ -55,7 +55,7 @@ python -m venv .venv
 # Activate (Windows)
 .venv\Scripts\activate
 
-# Install dependencies
+# Install dependencies [IF THIS STEP DOES NOT INSTALL ALL OF THE REQUIRED REQUIREMENTS, THEN USE PIP INSTALL FOR EACH OF THE REQUIREMENTS AT THE BOTTOM OF THE README] 
 pip install -r requirements.txt
 ```
 
@@ -66,6 +66,7 @@ python -c "import torch; print('CUDA available:', torch.cuda.is_available()); pr
 
 ### 3. Run the LSTM Individual Model Training (Optional)
 ````
+# The LSTM Model has already been trained and the model has been saved, but this can re-train the model if needed. 
 # Train the LSTM Model for each SCATS site
 python train_individual_models.py
 ````
