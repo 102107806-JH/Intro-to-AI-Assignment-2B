@@ -124,7 +124,7 @@ app.layout = html.Div(
                 dcc.Dropdown(
                     id="destination-input",
                     options=[{"label": str(i), "value": i} for i in nodes_df["SCATS_Number"]],
-                    value=4821,
+                    value=2000,
                 ),
                 html.Label("Model Type"),
                 dcc.Dropdown(

@@ -1,10 +1,10 @@
 # Intro-to-AI-Assignment-2B Machine learning and software integration Pipeline
 
 ## Features
-- **Multible Deep-Learning Model Types**: LSTM, GRU, and TCN. 
+- **Multiple Deep-Learning Model Types**: LSTM, GRU, and TCN. 
 - **Comprehensive Evaluation**:
 - **Automated Reporting**: CSV exports, comprehensive visualizations, and per-SCAT Site metrics charts.
-- - **Modular Architecture**: Clean separation of data processing, training, evaluation, and GUI
+- **Modular Architecture**: Clean separation of data processing, training, evaluation, and GUI
 
 ## GUI Interface
 ### About the GUI
@@ -49,18 +49,22 @@ The X-axis of the visualisation shows the sequential prediction step made by the
 ## How to Run the Program
 ### 1. Create a virtual environment (Optional)
 ```bash
+# This step is for machines that do not use a Windows 10/11 operating system: Do not run this script on a Windows 10/11 machine.
+
 # Create virtual environment
 python -m venv .venv
 
 # Activate (Windows)
 .venv\Scripts\activate
 
-# Install dependencies [IF THIS STEP DOES NOT INSTALL ALL OF THE REQUIRED REQUIREMENTS, THEN USE PIP INSTALL FOR EACH OF THE REQUIREMENTS AT THE BOTTOM OF THE README] 
+# Install dependencies 
+# [IF THIS STEP DOES NOT INSTALL ALL OF THE REQUIRED REQUIREMENTS, THEN USE PIP INSTALL FOR EACH OF THE REQUIREMENTS AT THE BOTTOM OF THE README] 
 pip install -r requirements.txt
 ```
 
-### 2. Test CUDA GPU availability
+### 2. Test CUDA GPU availability (Optional)
 ````
+# If you are attempting to train/re-train the models then it is highly recommended that you have a CUDA GPU available
 python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('Device count:', torch.cuda.device_count())"
 ````
 
@@ -68,13 +72,14 @@ python -c "import torch; print('CUDA available:', torch.cuda.is_available()); pr
 ````
 # The LSTM Model has already been trained and the model has been saved, but this can re-train the model if needed. 
 # Train the LSTM Model for each SCATS site
-python train_individual_models.py
+python LSTM_Train_Multible_Model.py
 ````
 
 ### 4. Run the LSTM Combined Model Training (Optional)
 ````
+# You do not need to run this if you are not training the models or have not completed step 3.
 # Combines the previously trained LSTM models and re-trains them into one model, that's universal for every SCATS site
-python evaluate_individual_models.py
+python LSTM_Train_Combined_Model.py
 ````
 ### 5. Hyper-Parameter Tuning Script
 ````
@@ -83,6 +88,7 @@ python hyper_parameter_tuning_script.py
 ````
 ### 6. Run the GRU and TCN Training (Optional)
 ````
+# The GRU and TCN models have already been trained and the model has been saved, but this can re-train the model if needed.
 # Used to train the GRU and the TCN models. The model that is selected for training and the hyperparameters used can be changed inside the script.
 python GRU_TCN_models.py
 ````
@@ -106,7 +112,7 @@ python model_evaluation_script.py
 # Within the python file you can enter different parameters for the pathfinding function. The path finding function will then find all the solution nodes and print them out in the console.
 python path_finding_demo.py
 ````
-**PLEASE NOTE ALL PATHFINDING AND PREDICITION ALGORITHMS USE THE DATA IN 'DATA_BASE.XLSX'. THE DATA PROCESSING SCRIPTS IN 9 AND 10 WERE USED TO CREATE THIS. THE ONLY OTHER PROCESSING DONE WAS ADDING COLUMN NAMES OUTSIDE OF PYTHON. ANY FILES CREATED WILL NOT HAVE THE NAME 'TEST' IN THEIR TO AVOID CORRUPTING DATA. FURTHERMORE, THESE SCRIPTS MAY TAKE A LONG TIME TO FULLY EXECUTE**
+**PLEASE NOTE ALL PATHFINDING AND PREDICTION ALGORITHMS USE THE DATA IN 'DATA_BASE.XLSX'. THE DATA PROCESSING SCRIPTS IN 9 AND 10 WERE USED TO CREATE THIS. THE ONLY OTHER PROCESSING DONE WAS ADDING COLUMN NAMES OUTSIDE OF PYTHON. ANY FILES CREATED WILL NOT HAVE THE NAME 'TEST' IN THEIR TO AVOID CORRUPTING DATA. FURTHERMORE, THESE SCRIPTS MAY TAKE A LONG TIME TO FULLY EXECUTE**
 ### 11. Mock database creator
 ````
 # Extracted the traffic flow volume data from the months of 08/2025 and 09/2025. The files which it extracts data from are not present as there were too many of them. This file has been included for the sake of completeness.
@@ -145,7 +151,6 @@ python app.py
 |-- data
 |   |-- traffic_signal_volume_cur
 |   |   |-- VSDATA_20250701.csv
-|   |   |-- .....
 |   |   |-- VSDATA_20250831.csv
 |   |-- data_base.xlsx
 |   |-- graph_init_data.xlsx
@@ -159,14 +164,10 @@ python app.py
 |   |   |-- linked_list
 |   |   |   |-- list_node.py
 |   |   |   |-- singly_linked_list.py
-|   |   |   |--
-|   |   |--
 |   |-- queues
 |       |-- priority_que.py
-|       |--
 |-- file_handling
 |   |-- graph_vertex_edge_init.py
-|   |--
 |-- GUI
 |   |-- graph_init_data.xlsx
 |   |-- model_data.xlsx
@@ -182,13 +183,11 @@ python app.py
 |-- helper_functions
 |   |-- cycle_checker.py
 |   |-- haversine.py
-|   |--
 |-- jh_ml_models
 |   |-- model_code
 |   |   |-- gru_model.py
 |   |   |-- model_collection.py
 |   |   |-- tcn_model.py
-|   |   |--
 |   |-- model_deployment_abstractions
 |   |   |-- current_deployment_data_store.py
 |   |   |-- flowrate_predictor.py
@@ -197,8 +196,6 @@ python app.py
 |   |   |   |-- flowrate_prediction_tester.py
 |   |   |   |-- test_deployment_data_store.py
 |   |   |   |-- multi_scat_site_tester.py
-|   |   |   |--
-|   |   |--
 |   |-- model_fitting
 |   |   |-- data_loader.py
 |   |   |-- hyper_parameter_tuner.py
@@ -208,19 +205,14 @@ python app.py
 |   |   |   |--GRU_02.txt
 |   |   |   |--TCN02.txt
 |   |   |   |--TCN_01.txt 
-|   |   |--
-|   |--
 |-- misc
 |   |-- mock_data_base_creator.py
 |   |-- mock_data_base_cleaner.py
-|   |--
 |-- ml_models
 |   |-- lstm_data_handler.py
 |   |-- lstm_model.py
-|   |--
 |-- path_finding
 |   |-- path_finder.py
-|   |--
 |-- saved_models
 |   |-- gru.pth
 |   |-- lstm.pth
@@ -232,6 +224,7 @@ python app.py
 
 
 ## Requirements
+# Please use PIP install for each of the following libraries if they are not already installed
 - colorama
 - ConfigParser
 - cryptography
@@ -244,8 +237,6 @@ python app.py
 - HTMLParser
 - ipython
 - ipywidgets
-- jnius
-- keyring
 - matplotlib
 - numpy
 - openpyxl
@@ -263,6 +254,5 @@ python app.py
 - tqdm
 - urllib3_secure_extra
 - xlsxwriter
-- xmlrpclib
 
-See `requirements.txt` for specific versions.
+See `requirements.txt` for specific versions, this is optional.

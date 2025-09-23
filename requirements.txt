@@ -11,8 +11,6 @@ geopandas==1.1.1
 HTMLParser==0.0.2
 ipython==8.12.3
 ipywidgets==8.1.7
-jnius==1.1.0
-keyring==25.6.0
 matplotlib==3.10.6
 numpy==2.3.3
 openpyxl==3.1.5
@@ -30,4 +28,3 @@ torchaudio>=2.0.0 --index-url https://download.pytorch.org/whl/cu118
 tqdm==4.66.2
 urllib3_secure_extra==0.1.0
 xlsxwriter==3.2.5
-xmlrpclib==1.0.1
